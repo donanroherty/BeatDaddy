@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
+import { ThemeProvider } from '../theme/themed-styled-components'
+import { theme } from '../theme/theme'
+
 import Metronome from './Metronome'
+import PlayButton from '../components/PlayButton'
 
 export interface AppProps {}
 export interface AppState {
@@ -56,18 +60,20 @@ class App extends Component<AppProps, AppState> {
 
   render() {
     return (
-      <div>
-        <Metronome
-          audioCtx={this.audioCtx}
-          tempo={this.state.tempo}
-          beatCount={this.state.beatCount}
-          barCount={this.state.barCount}
-          isPlaying={this.state.isPlaying}
-          setAudioLoaded={this.setAudioLoaded}
-        />
+      <ThemeProvider theme={theme}>
+        <div>
+          <Metronome
+            audioCtx={this.audioCtx}
+            tempo={this.state.tempo}
+            beatCount={this.state.beatCount}
+            barCount={this.state.barCount}
+            isPlaying={this.state.isPlaying}
+            setAudioLoaded={this.setAudioLoaded}
+          />
 
-        <button onClick={this.togglePlayState}>{this.state.isPlaying ? 'Stop' : 'Play'}</button>
-      </div>
+          <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
+        </div>
+      </ThemeProvider>
     )
   }
 }
