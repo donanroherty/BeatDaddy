@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, ChangeEvent } from 'react'
 import { ThemeProvider } from '../theme/themed-styled-components'
 import { theme } from '../theme/theme'
 
@@ -58,6 +58,10 @@ class App extends Component<AppProps, AppState> {
     // TODO: Stop automatically after all bars are played
   }
 
+  handleTempoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    this.setState({ tempo: parseInt(e.target.value) })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -70,7 +74,14 @@ class App extends Component<AppProps, AppState> {
             isPlaying={this.state.isPlaying}
             setAudioLoaded={this.setAudioLoaded}
           />
-
+          <input
+            type="number"
+            name="tempo"
+            value={this.state.tempo}
+            onChange={e => this.handleTempoChange(e)}
+            min="20"
+            max="600"
+          />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
         </div>
       </ThemeProvider>
