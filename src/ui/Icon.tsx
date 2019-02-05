@@ -10,9 +10,11 @@ export interface IconProps {
   fill?: string
   hasShadow?: boolean
   children: ReactNode
+  size?: string
 }
 
 const SVGWrapper = styled('svg')<IconProps>`
+  height: ${props => props.size || '100%'};
   fill: ${props => props.fill};
 `
 

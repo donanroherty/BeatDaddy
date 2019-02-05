@@ -1,9 +1,10 @@
 import React, { Component, ChangeEvent } from 'react'
-import { ThemeProvider } from '../theme/themed-styled-components'
+import { ThemeProvider, createGlobalStyle } from '../theme/themed-styled-components'
 import { theme } from '../theme/theme'
 
 import Metronome from './Metronome'
 import PlayButton from '../components/PlayButton'
+import TempoWidget from '../components/TempoWidget'
 
 export interface AppProps {}
 export interface AppState {
@@ -18,6 +19,14 @@ export interface AppState {
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
 }
+
+const GlobalStyle = createGlobalStyle`
+/* @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto'); */
+body{
+  font-family:'Roboto', arial, sans-serif;
+  color: ${theme.dark}
+}
+`
 
 class App extends Component<AppProps, AppState> {
   audioCtx!: AudioContext
@@ -62,10 +71,15 @@ class App extends Component<AppProps, AppState> {
     this.setState({ tempo: parseInt(e.target.value) })
   }
 
+  setTempo = (val: number) => {
+    this.setState({ tempo: val })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
         <div>
+          <GlobalStyle />
           <Metronome
             audioCtx={this.audioCtx}
             tempo={this.state.tempo}
@@ -74,14 +88,8 @@ class App extends Component<AppProps, AppState> {
             isPlaying={this.state.isPlaying}
             setAudioLoaded={this.setAudioLoaded}
           />
-          <input
-            type="number"
-            name="tempo"
-            value={this.state.tempo}
-            onChange={e => this.handleTempoChange(e)}
-            min="20"
-            max="600"
-          />
+
+          <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
         </div>
       </ThemeProvider>

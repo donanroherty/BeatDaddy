@@ -1,7 +1,13 @@
 export interface ThemeInterface {
-  primaryColor: string
+  primary: string
+  primaryLight: string
+  primaryVeryLight: string
+  dark: string
 }
 
 export const theme: ThemeInterface = {
-  primaryColor: '#2699FB'
+  primary: '#2699FB',
+  primaryLight: '#BCE0FD',
+  primaryVeryLight: '#D0E3F2',
+  dark: '#545454'
 }
