@@ -67,10 +67,6 @@ class App extends Component<AppProps, AppState> {
     // TODO: Stop automatically after all bars are played
   }
 
-  handleTempoChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ tempo: parseInt(e.target.value) })
-  }
-
   setTempo = (val: number) => {
     this.setState({ tempo: val })
   }

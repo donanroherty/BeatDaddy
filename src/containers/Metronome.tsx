@@ -50,6 +50,11 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
         this.stop()
       }
     }
+
+    if (prevProps.tempo !== this.props.tempo && this.props.isPlaying) {
+      this.stop()
+      this.start()
+    }
   }
 
   // Load audio samples

@@ -28,7 +28,7 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
   constructor(props: TempoWidgetProps) {
     super(props)
     this.state = {
-      value: 90,
+      value: this.props.tempo,
       hasValidValue: true
     }
   }
