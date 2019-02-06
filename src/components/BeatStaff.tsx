@@ -6,7 +6,7 @@ import * as React from 'react'
 import styled, { withTheme } from 'styled-components/macro'
 import { ThemeInterface } from '../theme/theme'
 import Icon from '../ui/Icon'
-import { getIconDimensions } from '../ui/iconDefinitions'
+import iconDefinitions, { getIconDimensions } from '../ui/iconDefinitions'
 import { SubDivisionOptions } from '../containers/App'
 
 export interface BeatStaffProps {
@@ -25,7 +25,7 @@ const elementHeight = 70 // Height of element
 const elementWidth = 600 // Max width of element
 
 const BeatStaff = (props: BeatStaffProps) => {
-  const beatIcon = 'note'
+  const beatIcon: keyof typeof iconDefinitions = 'note'
   const beatIconSize = 50
 
   const leftLinePadding = 50 // Space allowed for extension of centerline before first beat
@@ -44,6 +44,7 @@ const BeatStaff = (props: BeatStaffProps) => {
           ? 3
           : 1
 
+  //Get the positions and types of every beat and subdivision
   const staffDivisions = new Array(props.beatCount * divCount).fill(0).map((val, i, arr) => {
     const isBeat = i === 0 || i % (arr.length / props.beatCount) === 0
 
@@ -52,13 +53,13 @@ const BeatStaff = (props: BeatStaffProps) => {
       (props.subdivisions === SubDivisionOptions.triplet ||
         i % (arr.length / props.beatCount / 2) === 0)
 
-    const out = {
+    return {
       time: (100 / arr.length) * i,
       type: isBeat ? SubDivLevel.beat : isEighth ? SubDivLevel.eighth : SubDivLevel.sixteenth
     }
-    return out
   })
 
+  // Creates a vetical line svg used for marking subdivisions
   const makeVertLineMarker = (
     posX: number,
     color: string,
@@ -82,6 +83,7 @@ const BeatStaff = (props: BeatStaffProps) => {
     )
   }
 
+  // Creates an icon used for marking beats
   const makeBeatMarker = (xPos: number, color: string, key: string) => {
     const beatIconDimensions = getIconDimensions(beatIcon, beatIconSize)
     const iconWidthPerc = (beatIconDimensions.width / elementWidth) * 100
@@ -96,6 +98,7 @@ const BeatStaff = (props: BeatStaffProps) => {
     )
   }
 
+  // Generate markers for beats and subdivisions
   const markers = staffDivisions.map((div, i) => {
     const isBeat = div.type === SubDivLevel.beat
     const isEighth = !isBeat && div.type === SubDivLevel.eighth
@@ -111,28 +114,27 @@ const BeatStaff = (props: BeatStaffProps) => {
   })
 
   return (
-    <Wrapper>
-      <svg height={elementHeight} width={`${elementWidth}px`}>
-        {/* <rect x="0" y="0" width="100%" height="100%" fill="lightgray" /> */}
+    <Wrapper height={elementHeight} width={`${elementWidth}px`}>
+      {/* center line */}
+      <line
+        x1={0}
+        y1={verticalCenter}
+        x2={`${100}%`}
+        y2={verticalCenter}
+        style={{ stroke: props.theme.light, strokeWidth: 2 }}
+      />
 
-        {/* center line */}
-        <line
-          x1={0}
-          y1={verticalCenter}
-          x2={`${100}%`}
-          y2={verticalCenter}
-          style={{ stroke: props.theme.light, strokeWidth: 2 }}
-        />
+      {/* beat and subdiv markers */}
+      {markers}
 
-        {markers}
-        {makeVertLineMarker(0, props.theme.dark, endBarLength, 6)}
-        {makeVertLineMarker(100, props.theme.dark, endBarLength, 6)}
-      </svg>
+      {/* end lines */}
+      {makeVertLineMarker(0, props.theme.dark, endBarLength, 6)}
+      {makeVertLineMarker(100, props.theme.dark, endBarLength, 6)}
     </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.svg`
   width: 100%;
   max-width: ${`${elementWidth}px`};
   height: ${`${elementHeight}px`};
