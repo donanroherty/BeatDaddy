@@ -65,14 +65,6 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
   }
 
   public render() {
-    const quarterNoteIcon = (
-      <Icon fill={this.props.theme.dark} size="25px">
-        <title>note</title>
-        <rect x="25.28" width="5.28" height="75.53" />
-        <ellipse cx="50" cy="83.21" rx="15.87" ry="10.99" transform="translate(-62.23 19.76) rotate(-21.98)" />
-      </Icon>
-    )
-
     return (
       <Wrapper {...this.props}>
         <Row>
@@ -80,11 +72,14 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
 
           <MinusBtn onClick={this.handleClickDecrement}>-</MinusBtn>
 
-          <div>{quarterNoteIcon}</div>
+          <Icon icon="note" fillColor={this.props.theme.dark} size={25} />
 
           <Equals>=</Equals>
 
-          <BpmField value={this.state.value} onChange={e => this.handleValueChange(e.target.value)} />
+          <BpmField
+            value={this.state.value}
+            onChange={e => this.handleValueChange(e.target.value)}
+          />
 
           <BpmSuffix>bpm</BpmSuffix>
 
@@ -130,6 +125,7 @@ const BpmSuffix = styled.div`
 const Equals = styled.div`
   color: ${props => props.theme.dark};
   font-size: 20px;
+  padding-left: 6px;
 `
 
 const Btn = styled.div`
