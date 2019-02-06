@@ -10,35 +10,34 @@ import { ThemeInterface } from '../theme/theme'
 type TempoWidgetProps = {
   tempo: number
   setTempo: (val: number) => void
+  minValue?: number
+  maxValue?: number
   theme: ThemeInterface
-} & Partial<DefaultProps>
-
-export interface TempoWidgetState {
-  value: number
-  hasValidValue: boolean
 }
 
-type DefaultProps = Readonly<typeof defaultProps>
-const defaultProps = {
-  minValue: 20,
-  maxValue: 240
+export interface TempoWidgetState {
+  value: string
+  hasValidValue: boolean
 }
 
 class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
   constructor(props: TempoWidgetProps) {
     super(props)
     this.state = {
-      value: this.props.tempo,
+      value: String(this.props.tempo),
       hasValidValue: true
     }
   }
 
-  static defaultProps = defaultProps
+  public static defaultProps = {
+    minValue: 20,
+    maxValue: 240
+  }
 
   componentDidUpdate = (prevProps: TempoWidgetProps, prevState: TempoWidgetState) => {
     if (prevState.value !== this.state.value) {
       if (this.hasValidInput()) {
-        this.props.setTempo(this.state.value)
+        this.props.setTempo(parseInt(this.state.value))
       }
     }
   }
@@ -47,20 +46,20 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
     var reg = new RegExp('^[0-9]+$')
 
     if ((val === '' || reg.test(val)) && val.length < 4) {
-      this.setState({ value: parseInt(val) })
+      this.setState({ value: val })
     }
   }
 
   handleClickIncrement = () => {
-    this.handleValueChange(this.state.value + 1 + '')
+    this.handleValueChange(parseInt(this.state.value) + 1 + '')
   }
   handleClickDecrement = () => {
-    this.handleValueChange(this.state.value - 1 + '')
+    this.handleValueChange(parseInt(this.state.value) - 1 + '')
   }
 
   hasValidInput = () => {
     const val = this.state.value
-    const isValid = val >= 20! && val <= 240!
+    const isValid = parseInt(val) >= this.props.minValue! && parseInt(val) <= this.props.maxValue!
     return isValid
   }
 
@@ -79,6 +78,7 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
           <BpmField
             value={this.state.value}
             onChange={e => this.handleValueChange(e.target.value)}
+            onBlur={e => this.handleValueChange(String(this.props.tempo))}
           />
 
           <BpmSuffix>bpm</BpmSuffix>

@@ -13,12 +13,6 @@ export interface PlayButtonProps {
   theme: ThemeInterface
 }
 
-const Wrapper = styled.div`
-  max-width: 100px;
-  height: 100px;
-  text-align: center;
-`
-
 const PlayButton = (props: PlayButtonProps) => {
   const color = props.theme.primary
   const playIcon = <Icon icon="play" fillColor={color} hover hasShadow size={100} />
@@ -26,5 +20,11 @@ const PlayButton = (props: PlayButtonProps) => {
 
   return <Wrapper {...props}>{props.isPlaying ? pauseIcon : playIcon}</Wrapper>
 }
+
+const Wrapper = styled.div`
+  max-width: 100px;
+  height: 100px;
+  text-align: center;
+`
 
 export default withTheme(PlayButton)

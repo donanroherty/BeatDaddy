@@ -1,8 +1,12 @@
+/**
+ * BeatStaff.tsx
+ * This is a visual representation of the current beat settings.  It displays beats, subdivisions and accents.
+ */
 import * as React from 'react'
 import styled, { withTheme } from 'styled-components/macro'
 import { ThemeInterface } from '../theme/theme'
 import Icon from '../ui/Icon'
-import iconDefinitions, { getIconDimensions } from '../ui/iconDefinitions'
+import { getIconDimensions } from '../ui/iconDefinitions'
 import { SubDivisionOptions } from '../containers/App'
 
 export interface BeatStaffProps {
@@ -11,52 +15,26 @@ export interface BeatStaffProps {
   theme: ThemeInterface
 }
 
-interface Beat {
-  time: number
-  subdivs: Array<SubDivObj>
-}
-
-interface SubDivObj {
-  type: SubDivisionType
-  time: number
-}
-enum SubDivisionType {
+enum SubDivLevel {
   beat = 'BEAT',
   eighth = 'EIGHTH',
   sixteenth = 'SIXTEENTH'
 }
 
-const Wrapper = styled.div`
-  width: 100%;
-  max-width: 600px;
-  height: 100px;
-  background-color: lightgoldenrodyellow;
-`
+const elementHeight = 70 // Height of element
+const elementWidth = 600 // Max width of element
 
 const BeatStaff = (props: BeatStaffProps) => {
-  const dimensions = getIconDimensions('note', 50)
+  const beatIcon = 'note'
+  const beatIconSize = 50
 
-  // const totalWidth = 600 // Total width of svg
-  // const margin = 0 // Perc of staffWidth to use as margin
-  // const width = totalWidth - (totalWidth / 100) * margin // width - margin
-  // const usableWidth = width - dimensions.width // Width that prevents icon overhang into margin as svgs scale to the right
+  const leftLinePadding = 50 // Space allowed for extension of centerline before first beat
+  const leftLinePaddingPerc = (leftLinePadding / elementWidth) * 100
 
-  // const icons = new Array(props.beatCount).fill(undefined).map((val, i) => {
-  //   const usableWidthPerc = 100 * (usableWidth / totalWidth)
-  //   const xPos = (usableWidthPerc / (props.beatCount - 1)) * i
+  const endBarLength = 40 // Vertical length of the bars at the end of the staff
+  const verticalCenter = elementHeight - endBarLength / 2 // Offset center line from the bottom with end bar length
 
-  //   return (
-  //     <svg x={`${xPos}%`} y="25%" key={i}>
-  //       {<Icon icon="note" fillColor={props.theme.primary} size={50} hasShadow />}
-  //     </svg>
-  //   )
-  // })
-  const totalHeight = 100
-  const totalWidth = 600 // Total width of svg
-  const marginPixels = 30
-  const marginPerc = (marginPixels / totalWidth) * 100
-  const innerWidthPerc = 100 - marginPerc * 2
-
+  // The number of times to subdivide the space between 2 beats
   const divCount =
     props.subdivisions === SubDivisionOptions.eighth
       ? 2
@@ -66,7 +44,7 @@ const BeatStaff = (props: BeatStaffProps) => {
           ? 3
           : 1
 
-  const divs = new Array(props.beatCount * divCount).fill(0).map((val, i, arr) => {
+  const staffDivisions = new Array(props.beatCount * divCount).fill(0).map((val, i, arr) => {
     const isBeat = i === 0 || i % (arr.length / props.beatCount) === 0
 
     const isEighth =
@@ -74,65 +52,90 @@ const BeatStaff = (props: BeatStaffProps) => {
       (props.subdivisions === SubDivisionOptions.triplet ||
         i % (arr.length / props.beatCount / 2) === 0)
 
-    const out: SubDivObj = {
+    const out = {
       time: (100 / arr.length) * i,
-      type: isBeat
-        ? SubDivisionType.beat
-        : isEighth
-          ? SubDivisionType.eighth
-          : SubDivisionType.sixteenth
+      type: isBeat ? SubDivLevel.beat : isEighth ? SubDivLevel.eighth : SubDivLevel.sixteenth
     }
     return out
   })
 
-  const makeLine = (posX: number, color: string, length: number, key: string) => {
-    const y1 = (totalHeight - length) / 2
-    const y2 = totalHeight - (totalHeight - length) / 2
+  const makeVertLineMarker = (
+    posX: number,
+    color: string,
+    length: number,
+    thickness: number,
+    key?: string
+  ) => {
+    const y1 = verticalCenter - length / 2
+    const y2 = y1 + length
     return (
       <svg key={key}>
         <line
           x1={`${posX}%`}
-          y1={`${y1}%`}
+          y1={`${y1}`}
           x2={`${posX}%`}
-          y2={`${y2}%`}
-          style={{ stroke: color, strokeWidth: 2 }}
+          y2={`${y2}`}
+          style={{ stroke: color, strokeWidth: thickness }}
           shapeRendering="crispEdges"
         />
       </svg>
     )
   }
 
-  const markers = divs.map((div, i) => {
-    const x = (innerWidthPerc / 100) * div.time + marginPerc
+  const makeBeatMarker = (xPos: number, color: string, key: string) => {
+    const beatIconDimensions = getIconDimensions(beatIcon, beatIconSize)
+    const iconWidthPerc = (beatIconDimensions.width / elementWidth) * 100
+    return (
+      <svg
+        x={`${xPos - iconWidthPerc / 2}%`}
+        y={verticalCenter - beatIconDimensions.height + 9}
+        key={key}
+      >
+        {<Icon icon="note" fillColor={color} size={beatIconSize} hasShadow />}
+      </svg>
+    )
+  }
 
-    const length =
-      div.type === SubDivisionType.beat ? 40 : div.type === SubDivisionType.eighth ? 20 : 15
+  const markers = staffDivisions.map((div, i) => {
+    const isBeat = div.type === SubDivLevel.beat
+    const isEighth = !isBeat && div.type === SubDivLevel.eighth
 
-    const beatColor =
-      div.type === SubDivisionType.beat
-        ? 'blue'
-        : div.type === SubDivisionType.eighth
-          ? 'cyan'
-          : 'yellow'
+    const innerWidthPerc = 100 - leftLinePaddingPerc
+    const xPos = (innerWidthPerc / 100) * div.time + leftLinePaddingPerc
+    const length = isEighth ? 15 : 8
+    const color = isBeat ? props.theme.primary : isEighth ? props.theme.light : props.theme.light
 
-    return makeLine(x, beatColor, length, `${i}`)
+    return isBeat
+      ? makeBeatMarker(xPos, color, String(i))
+      : makeVertLineMarker(xPos, color, length, 1, `${i}`)
   })
 
   return (
     <Wrapper>
-      <svg height="100" width="100%">
-        <rect x="0" y="0" width="100%" height="100%" fill="lightgray" />
+      <svg height={elementHeight} width={`${elementWidth}px`}>
+        {/* <rect x="0" y="0" width="100%" height="100%" fill="lightgray" /> */}
+
+        {/* center line */}
         <line
-          x1={`${marginPerc}%`}
-          y1="50%"
-          x2={`${100 - marginPerc}%`}
-          y2="50%"
-          style={{ stroke: 'rgb(255, 0, 0)', strokeWidth: 2 }}
+          x1={0}
+          y1={verticalCenter}
+          x2={`${100}%`}
+          y2={verticalCenter}
+          style={{ stroke: props.theme.light, strokeWidth: 2 }}
         />
 
         {markers}
+        {makeVertLineMarker(0, props.theme.dark, endBarLength, 6)}
+        {makeVertLineMarker(100, props.theme.dark, endBarLength, 6)}
       </svg>
     </Wrapper>
   )
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+  max-width: ${`${elementWidth}px`};
+  height: ${`${elementHeight}px`};
+`
+
 export default withTheme(BeatStaff)
