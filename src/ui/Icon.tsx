@@ -18,24 +18,18 @@ export interface IconProps {
 }
 
 const Icon = (props: IconProps) => {
-  const shadowX = 0
-  const shadowY = 3
-  const shadowOpacity = 0.16
-  const shadowSpread = 2
+  const SVGWrapper = styled('svg')<IconProps>`
+    ${props => props.hasShadow && `filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.16));`}
 
-  const makeShadowFilter = (x: number, y: number, opacity: number, spread: number) => (
-    <filter id="dropshadow" height="130%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation={spread} />
-      <feOffset dx={x} dy={y} result="offsetblur" />
-      <feComponentTransfer>
-        <feFuncA type="linear" slope={opacity} />
-      </feComponentTransfer>
-      <feMerge>
-        <feMergeNode />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  )
+    fill: ${props => props.fillColor};
+
+    ${props =>
+      props.hover &&
+      `&:hover {
+      fill: ${lighten(0.1, props.fillColor!)};
+      ${props.hasShadow && `filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.16));`}
+    }`}
+  `
 
   // Get viewbox dimensions from icon definition
   const iconDef = iconDefinitions[props.icon]
@@ -51,21 +45,10 @@ const Icon = (props: IconProps) => {
       viewBox={`0 0 ${vbWidth} ${vbHeight}`}
       height={dimensions.height}
       width={dimensions.width}
-      filter={props.hasShadow ? 'url(#dropshadow)' : ''}
     >
-      <defs>{makeShadowFilter(shadowX, shadowY, shadowOpacity, shadowSpread)}</defs>
-
       {iconDef}
     </SVGWrapper>
   )
 }
-
-const SVGWrapper = styled('svg')<IconProps>`
-  fill: ${props => props.fillColor};
-
-  &:hover {
-    fill: ${props => (props.hover ? lighten(0.1, props.fillColor!) : props.fillColor)};
-  }
-`
 
 export default Icon
