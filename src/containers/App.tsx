@@ -3,6 +3,7 @@ import { ThemeProvider, createGlobalStyle } from '../theme/themed-styled-compone
 import { theme } from '../theme/theme'
 
 import Metronome from './Metronome'
+import BeatStaff from '../components/BeatStaff'
 import PlayButton from '../components/PlayButton'
 import TempoWidget from '../components/TempoWidget'
 
@@ -12,12 +13,20 @@ export interface AppState {
   tempo: number
   // Number of beats in a bar
   beatCount: number
+  subdivisions: SubDivisionOptions
   // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
   barCount: number
   // True if app is playing
   isPlaying: boolean
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
+}
+
+export enum SubDivisionOptions {
+  none,
+  eighth,
+  sixteenth,
+  triplet
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -47,6 +56,7 @@ class App extends Component<AppProps, AppState> {
     this.state = {
       tempo: 120,
       beatCount: 4,
+      subdivisions: SubDivisionOptions.sixteenth,
       barCount: 2,
       isPlaying: false,
       audioLoaded: false
@@ -85,6 +95,7 @@ class App extends Component<AppProps, AppState> {
             setAudioLoaded={this.setAudioLoaded}
           />
 
+          <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
           <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
         </div>
