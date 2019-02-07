@@ -4,6 +4,7 @@ export interface ThemeInterface {
   primaryVeryLight: string
   dark: string
   light: string
+  panelBgColor: string
 }
 
 export const theme: ThemeInterface = {
@@ -11,5 +12,6 @@ export const theme: ThemeInterface = {
   primaryLight: '#BCE0FD',
   primaryVeryLight: '#D0E3F2',
   dark: '#545454',
-  light: '#CECBCB'
+  light: '#CECBCB',
+  panelBgColor: 'white'
 }
