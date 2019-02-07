@@ -6,6 +6,23 @@ import Metronome from './Metronome'
 import BeatStaff from '../components/BeatStaff'
 import PlayButton from '../components/PlayButton'
 import TempoWidget from '../components/TempoWidget'
+import TimeSignature from '../components/TimeSignature'
+import styled from 'styled-components'
+
+enum BeatLengthOptions {
+  one = 1,
+  two = 2,
+  four = 4,
+  eight = 8,
+  sixteen = 16,
+  thirtytwo = 32
+}
+export enum SubDivisionOptions {
+  none,
+  eighth,
+  sixteenth,
+  triplet
+}
 
 export interface AppProps {}
 export interface AppState {
@@ -13,6 +30,7 @@ export interface AppState {
   tempo: number
   // Number of beats in a bar
   beatCount: number
+  beatLength: number
   subdivisions: SubDivisionOptions
   // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
   barCount: number
@@ -20,13 +38,6 @@ export interface AppState {
   isPlaying: boolean
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
-}
-
-export enum SubDivisionOptions {
-  none,
-  eighth,
-  sixteenth,
-  triplet
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -56,6 +67,7 @@ class App extends Component<AppProps, AppState> {
     this.state = {
       tempo: 120,
       beatCount: 4,
+      beatLength: BeatLengthOptions.four,
       subdivisions: SubDivisionOptions.sixteenth,
       barCount: 2,
       isPlaying: false,
@@ -84,7 +96,7 @@ class App extends Component<AppProps, AppState> {
   render() {
     return (
       <ThemeProvider theme={theme}>
-        <div>
+        <Wrapper>
           <GlobalStyle />
           <Metronome
             audioCtx={this.audioCtx}
@@ -95,13 +107,31 @@ class App extends Component<AppProps, AppState> {
             setAudioLoaded={this.setAudioLoaded}
           />
 
-          <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
+          <Staff>
+            <TimeSignature />
+            <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
+          </Staff>
+
           <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
-        </div>
+        </Wrapper>
       </ThemeProvider>
     )
   }
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const Staff = styled.div`
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+
+  /* background-color: yellowgreen; */
+`
 
 export default App

@@ -15,8 +15,8 @@ export interface PlayButtonProps {
 
 const PlayButton = (props: PlayButtonProps) => {
   const color = props.theme.primary
-  const playIcon = <Icon icon="play" fillColor={color} hover hasShadow size={100} />
-  const pauseIcon = <Icon icon="pause" fillColor={color} hover hasShadow size={100} />
+  const playIcon = <Icon icon="play" fillColor={color} hover hasShadow size={50} />
+  const pauseIcon = <Icon icon="pause" fillColor={color} hover hasShadow size={50} />
 
   return <Wrapper {...props}>{props.isPlaying ? pauseIcon : playIcon}</Wrapper>
 }
