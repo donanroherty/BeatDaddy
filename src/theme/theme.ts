@@ -5,6 +5,9 @@ export interface ThemeInterface {
   dark: string
   light: string
   panelBgColor: string
+  dropShadow: string
+  hoverDropShadow: string
+  hoverBrightness: number
 }
 
 export const theme: ThemeInterface = {
@@ -13,5 +16,8 @@ export const theme: ThemeInterface = {
   primaryVeryLight: '#D0E3F2',
   dark: '#545454',
   light: '#CECBCB',
-  panelBgColor: 'white'
+  panelBgColor: 'white',
+  dropShadow: '0px 3px 1px rgba(0, 0, 0, 0.16)',
+  hoverDropShadow: 'drop-shadow(0px 4px 2px rgba(0, 0, 0, 0.16))',
+  hoverBrightness: 1.2
 }

@@ -44,9 +44,9 @@ class TimeSignature extends React.Component<TimeSignatureProps, {}> {
     return (
       <Wrapper {...this.props}>
         <Inner onClick={this.props.toggleTimeSigMenu}>
-          <IconWrapper>
-            <Icon icon="chevron" fillColor={this.props.theme.primary} size={8} hover hasShadow />
-          </IconWrapper>
+          <ChevronWrapper>
+            <Icon icon="chevron" fillColor={this.props.theme.primary} size={8} />
+          </ChevronWrapper>
           <Column>
             <Text {...this.props}>{this.props.beatCount}</Text>
 
@@ -71,8 +71,17 @@ const Wrapper = styled.div`
   user-select: none;
   margin-right: 15px;
 `
-const IconWrapper = styled.div`
+const ChevronWrapper = styled.div`
   margin-right: 5px;
+
+  filter: drop-shadow(${props => props.theme.dropShadow});
+  &:hover {
+    filter: brightness(${props => props.theme.hoverBrightness});
+    filter: drop-shadow(${props => props.theme.hoverDropShadow});
+  }
+  &:active {
+    filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
+  }
 `
 const Inner = styled.div`
   display: flex;

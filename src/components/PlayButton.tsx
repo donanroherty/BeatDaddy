@@ -15,10 +15,14 @@ export interface PlayButtonProps {
 
 const PlayButton = (props: PlayButtonProps) => {
   const color = props.theme.primary
-  const playIcon = <Icon icon="play" fillColor={color} hover hasShadow size={50} />
-  const pauseIcon = <Icon icon="pause" fillColor={color} hover hasShadow size={50} />
+  const playIcon = <Icon icon="play" fillColor={color} size={50} />
+  const pauseIcon = <Icon icon="pause" fillColor={color} size={50} />
 
-  return <Wrapper {...props}>{props.isPlaying ? pauseIcon : playIcon}</Wrapper>
+  return (
+    <Wrapper onClick={props.onClick} {...props}>
+      <IconWrapper>{props.isPlaying ? pauseIcon : playIcon}</IconWrapper>
+    </Wrapper>
+  )
 }
 
 const Wrapper = styled.div`
@@ -27,6 +31,18 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: white;
+  border-radius: 50%;
+`
+const IconWrapper = styled.div`
+  filter: drop-shadow(${props => props.theme.dropShadow});
+  &:hover {
+    filter: brightness(${props => props.theme.hoverBrightness});
+    filter: drop-shadow(${props => props.theme.hoverDropsShadow});
+  }
+  &:active {
+    filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
+  }
 `
 
 export default withTheme(PlayButton)

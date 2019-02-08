@@ -157,9 +157,8 @@ const Wrapper = styled.div`
 const Staff = styled.div`
   display: flex;
   flex-direction: row;
-  /* align-items: center; */
-
-  /* background-color: yellowgreen; */
+  justify-content: center;
+  width: 100%;
 `
 
 export default App

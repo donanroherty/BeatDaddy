@@ -92,7 +92,11 @@ const BeatStaff = (props: BeatStaffProps) => {
         y={verticalCenter - beatIconDimensions.height + 9}
         key={key}
       >
-        {<Icon icon="note" fillColor={color} size={beatIconSize} hasShadow />}
+        {
+          <BeatIconWrapper>
+            <Icon icon="note" fillColor={color} size={beatIconSize} />
+          </BeatIconWrapper>
+        }
       </svg>
     )
   }
@@ -137,6 +141,17 @@ const Wrapper = styled.svg`
   width: 100%;
   max-width: ${`${elementWidth}px`};
   height: ${`${elementHeight}px`};
+`
+const BeatIconWrapper = styled.svg`
+  z-index: 5;
+  filter: drop-shadow(${props => props.theme.dropShadow});
+  &:hover {
+    filter: brightness(${props => props.theme.hoverBrightness});
+    filter: drop-shadow(${props => props.theme.hoverDropShadow});
+  }
+  &:active {
+    filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
+  }
 `
 
 export default withTheme(BeatStaff)
