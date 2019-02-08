@@ -77,7 +77,6 @@ const BeatStaff = (props: BeatStaffProps) => {
           x2={`${posX}%`}
           y2={`${y2}`}
           style={{ stroke: color, strokeWidth: thickness }}
-          shapeRendering="crispEdges"
         />
       </svg>
     )

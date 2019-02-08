@@ -1,3 +1,7 @@
+/**
+ * TimeSignature.tsx
+ * Responsible for displaying time signature and opening TimeSignatureMenu
+ */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import styled from '../theme/themed-styled-components'
@@ -7,9 +11,13 @@ import { ThemeInterface } from '../theme/theme'
 import TimeSignatureMenu from './TimeSignatureMenu'
 
 export interface TimeSignatureProps {
-  menuVisible?: boolean
-  toggleTimeSigMenu?: () => void
-  closeTimeSigMenu?: () => void
+  beatCount: number
+  beatLength: number
+  menuVisible: boolean
+  toggleTimeSigMenu: () => void
+  closeTimeSigMenu: () => void
+  setBeatCount: (count: number) => void
+  setBeatLength: (length: number) => void
   theme: ThemeInterface
 }
 
@@ -34,45 +42,38 @@ class TimeSignature extends React.Component<TimeSignatureProps, {}> {
 
   render() {
     return (
-      <Wrapper>
+      <Wrapper {...this.props}>
         <Inner onClick={this.props.toggleTimeSigMenu}>
-          <Icon icon="chevron" fillColor={this.props.theme.primary} size={8} hover hasShadow />
+          <IconWrapper>
+            <Icon icon="chevron" fillColor={this.props.theme.primary} size={8} hover hasShadow />
+          </IconWrapper>
           <Column>
-            <Numerator>4</Numerator>
+            <Text {...this.props}>{this.props.beatCount}</Text>
 
-            <Line />
+            <Line {...this.props} />
 
-            <Denominator>4</Denominator>
+            <Text {...this.props}>{this.props.beatLength}</Text>
           </Column>
         </Inner>
-        <TimeSignatureMenu show={this.props.menuVisible} />
+        <TimeSignatureMenu
+          show={this.props.menuVisible}
+          beatCount={this.props.beatCount}
+          beatLength={this.props.beatLength}
+          setBeatCount={this.props.setBeatCount}
+          setBeatLength={this.props.setBeatLength}
+        />
       </Wrapper>
     )
   }
 }
 
-// const TimeSignature = (props: TimeSignatureProps) => {
-//   return (
-//     <Wrapper>
-//       <Inner onClick={props.toggleTimeSigMenu}>
-//         <Icon icon="chevron" fillColor={props.theme.primary} size={8} hover hasShadow />
-//         <Column>
-//           <Numerator>4</Numerator>
-
-//           <Line />
-
-//           <Denominator>4</Denominator>
-//         </Column>
-//       </Inner>
-//       {props.menuVisible && <MenuPanel closeMenu={props.closeTimeSigMenu} />}
-//     </Wrapper>
-//   )
-// }
-
 const Wrapper = styled.div`
   user-select: none;
+  margin-right: 15px;
 `
-
+const IconWrapper = styled.div`
+  margin-right: 5px;
+`
 const Inner = styled.div`
   display: flex;
   flex-direction: row;
@@ -81,7 +82,6 @@ const Inner = styled.div`
   margin-top: 12px;
   margin-right: 10px;
 `
-
 const Column = styled.div`
   padding-left: 5px;
 `
@@ -91,10 +91,9 @@ const Text = styled.div<TimeSignatureProps>`
   font-weight: bold;
   text-align: center;
 `
-const Numerator = styled(Text)``
-const Denominator = styled(Text)``
+
 const Line = styled.div<TimeSignatureProps>`
-  width: 20px;
+  width: 100%;
   height: 2px;
   background-color: ${props => props.theme.light};
 `

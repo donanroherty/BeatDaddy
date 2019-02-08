@@ -10,102 +10,95 @@ import { ThemeInterface } from '../theme/theme'
 import RadioCheckbox from '../ui/RadioCheckbox'
 
 export interface TimeSignatureMenuProps {
-  show?: boolean
+  show: boolean
+  beatCount: number
+  beatLength: number
+  setBeatCount: (count: number) => void
+  setBeatLength: (length: number) => void
   theme: ThemeInterface
 }
-export interface TimeSignatureMenuState {
-  selectedOption: string
+
+interface PresetType {
+  name: string
+  numerator: number
+  denominator: number
 }
+const Presets: Array<PresetType> = [
+  {
+    name: 'TwoTwo',
+    numerator: 2,
+    denominator: 2
+  },
+  {
+    name: 'TwoFour',
+    numerator: 2,
+    denominator: 4
+  },
+  {
+    name: 'ThreeFour',
+    numerator: 3,
+    denominator: 4
+  },
+  {
+    name: 'FourFour',
+    numerator: 4,
+    denominator: 4
+  },
+  {
+    name: 'SixEight',
+    numerator: 6,
+    denominator: 8
+  },
+  {
+    name: 'TwelveEight',
+    numerator: 12,
+    denominator: 8
+  }
+]
 
-class TimeSignatureMenu extends React.Component<TimeSignatureMenuProps, TimeSignatureMenuState> {
-  constructor(props: TimeSignatureMenuProps) {
-    super(props)
+const TimeSignatureMenu = (props: TimeSignatureMenuProps) => {
+  const optionIsSelected = (id: string) => {
+    const count = props.beatCount
+    const length = props.beatLength
 
-    this.state = {
-      selectedOption: '3'
+    const matchedPreset = Presets.filter(
+      val => val.numerator === count && val.denominator === length
+    )[0]
+
+    return matchedPreset && matchedPreset.name === id
+  }
+
+  const handleClick = (id: string) => {
+    const preset = Presets.filter(val => val.name === id)[0]
+    if (preset) {
+      props.setBeatCount(preset.numerator)
+      props.setBeatLength(preset.denominator)
     }
   }
 
-  handleRadioClick = (id: string) => {
-    this.setState({ selectedOption: id })
-  }
-
-  render() {
-    return (
-      <MenuPanel {...this.props}>
-        <Content>
-          <TopSpan>
-            <TimeSigOption
-              numerator={2}
-              denominator={2}
-              isChecked={this.state.selectedOption === '0'}
-              id="0"
-              onClick={this.handleRadioClick}
-            />
-            <TimeSigOption
-              numerator={2}
-              denominator={4}
-              isChecked={this.state.selectedOption === '1'}
-              id="1"
-              onClick={this.handleRadioClick}
-            />
-            <TimeSigOption
-              numerator={3}
-              denominator={4}
-              isChecked={this.state.selectedOption === '2'}
-              id="2"
-              onClick={this.handleRadioClick}
-            />
-            <TimeSigOption
-              numerator={4}
-              denominator={4}
-              isChecked={this.state.selectedOption === '3'}
-              id="3"
-              onClick={this.handleRadioClick}
-            />
-            <TimeSigOption
-              numerator={6}
-              denominator={8}
-              isChecked={this.state.selectedOption === '4'}
-              id="4"
-              onClick={this.handleRadioClick}
-            />
-            <TimeSigOption
-              numerator={12}
-              denominator={8}
-              isChecked={this.state.selectedOption === '5'}
-              id="5"
-              onClick={this.handleRadioClick}
-            />
-          </TopSpan>
-          {/* <HR /> */}
-        </Content>
-      </MenuPanel>
-    )
-  }
-}
-
-interface TimeSigOptionProps {
-  numerator: number
-  denominator: number
-  isChecked: boolean
-  id: string
-  onClick: (id: string) => void
-}
-
-const TimeSigOption = (props: TimeSigOptionProps) => {
-  const handleClick = (id: string) => {
-    props.onClick(props.id)
-  }
-  return (
-    <OptionWrapper onClick={e => handleClick(props.id)}>
+  const timeSigPresetElements = Presets.map((preset, i) => (
+    <OptionWrapper key={preset.name} onClick={e => handleClick(preset.name)}>
       <TimeSigLabel>
-        <div>{props.numerator}</div>
+        <div>{preset.numerator}</div>
         <Line />
-        <div>{props.numerator}</div>
+        <div>{preset.denominator}</div>
       </TimeSigLabel>
-      <RadioCheckbox isChecked={props.isChecked} id={props.id} onClick={handleClick} />
+
+      <RadioCheckbox
+        isChecked={optionIsSelected(preset.name)}
+        id={preset.name}
+        onClick={handleClick}
+      />
     </OptionWrapper>
+  ))
+
+  return (
+    <MenuPanel {...props}>
+      <Content>
+        <TopSpan>{timeSigPresetElements}</TopSpan>
+        {/* <HR /> */}
+      </Content>
+    </MenuPanel>
   )
 }
 

@@ -106,6 +106,13 @@ class App extends Component<AppProps, AppState> {
     this.setState({ timeSigMenuVisible: false })
   }
 
+  setBeatCount = (count: number) => {
+    this.setState({ beatCount: count })
+  }
+  setBeatLength = (length: number) => {
+    this.setState({ beatLength: length })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -122,9 +129,13 @@ class App extends Component<AppProps, AppState> {
 
           <Staff>
             <TimeSignature
+              beatCount={this.state.beatCount}
+              beatLength={this.state.beatLength}
               menuVisible={this.state.timeSigMenuVisible}
               toggleTimeSigMenu={this.toggleTimeSigMenu}
               closeTimeSigMenu={this.closeTimeSigMenu}
+              setBeatCount={this.setBeatCount}
+              setBeatLength={this.setBeatLength}
             />
             <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
           </Staff>
