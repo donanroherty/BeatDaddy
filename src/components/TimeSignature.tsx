@@ -1,41 +1,87 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import styled from '../theme/themed-styled-components'
 import Icon from '../ui/Icon'
 import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
+import TimeSignatureMenu from './TimeSignatureMenu'
 
 export interface TimeSignatureProps {
+  menuVisible?: boolean
+  toggleTimeSigMenu?: () => void
+  closeTimeSigMenu?: () => void
   theme: ThemeInterface
 }
 
-const TimeSignature = (props: TimeSignatureProps) => {
-  return (
-    <Wrapper>
-      <Inner>
-        <Icon icon="chevron" fillColor={props.theme.primary} size={8} hover hasShadow />
-        <Column>
-          <Numerator>4</Numerator>
+class TimeSignature extends React.Component<TimeSignatureProps, {}> {
+  constructor(props: TimeSignatureProps) {
+    super(props)
+  }
 
-          <Line />
+  componentWillMount = () => {
+    document.addEventListener('mousedown', this.handleClick, false)
+  }
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.handleClick, false)
+  }
 
-          <Denominator>4</Denominator>
-        </Column>
-      </Inner>
-    </Wrapper>
-  )
+  handleClick = (e: any) => {
+    const domNode = ReactDOM.findDOMNode(this)
+    if (!domNode || !domNode.contains(e.target)) {
+      this.props.closeTimeSigMenu!()
+    }
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        <Inner onClick={this.props.toggleTimeSigMenu}>
+          <Icon icon="chevron" fillColor={this.props.theme.primary} size={8} hover hasShadow />
+          <Column>
+            <Numerator>4</Numerator>
+
+            <Line />
+
+            <Denominator>4</Denominator>
+          </Column>
+        </Inner>
+        <TimeSignatureMenu show={this.props.menuVisible} />
+      </Wrapper>
+    )
+  }
 }
 
-const Wrapper = styled.div``
+// const TimeSignature = (props: TimeSignatureProps) => {
+//   return (
+//     <Wrapper>
+//       <Inner onClick={props.toggleTimeSigMenu}>
+//         <Icon icon="chevron" fillColor={props.theme.primary} size={8} hover hasShadow />
+//         <Column>
+//           <Numerator>4</Numerator>
+
+//           <Line />
+
+//           <Denominator>4</Denominator>
+//         </Column>
+//       </Inner>
+//       {props.menuVisible && <MenuPanel closeMenu={props.closeTimeSigMenu} />}
+//     </Wrapper>
+//   )
+// }
+
+const Wrapper = styled.div`
+  user-select: none;
+`
+
 const Inner = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* background-color: red; */
   width: 40px;
-
   margin-top: 12px;
   margin-right: 10px;
 `
+
 const Column = styled.div`
   padding-left: 5px;
 `

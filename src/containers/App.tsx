@@ -1,13 +1,14 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { Component } from 'react'
 import { ThemeProvider, createGlobalStyle } from '../theme/themed-styled-components'
 import { theme } from '../theme/theme'
+import styled from 'styled-components'
 
 import Metronome from './Metronome'
 import BeatStaff from '../components/BeatStaff'
 import PlayButton from '../components/PlayButton'
 import TempoWidget from '../components/TempoWidget'
 import TimeSignature from '../components/TimeSignature'
-import styled from 'styled-components'
+import MenuPanel from '../ui/MenuPanel'
 
 enum BeatLengthOptions {
   one = 1,
@@ -38,6 +39,7 @@ export interface AppState {
   isPlaying: boolean
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
+  timeSigMenuVisible: boolean
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -71,7 +73,8 @@ class App extends Component<AppProps, AppState> {
       subdivisions: SubDivisionOptions.sixteenth,
       barCount: 2,
       isPlaying: false,
-      audioLoaded: false
+      audioLoaded: false,
+      timeSigMenuVisible: true
     }
   }
 
@@ -93,6 +96,16 @@ class App extends Component<AppProps, AppState> {
     this.setState({ tempo: val })
   }
 
+  toggleTimeSigMenu = () => {
+    this.state.timeSigMenuVisible ? this.closeTimeSigMenu() : this.openTimeSigMenu()
+  }
+  openTimeSigMenu = () => {
+    this.setState({ timeSigMenuVisible: true })
+  }
+  closeTimeSigMenu = () => {
+    this.setState({ timeSigMenuVisible: false })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -108,7 +121,11 @@ class App extends Component<AppProps, AppState> {
           />
 
           <Staff>
-            <TimeSignature />
+            <TimeSignature
+              menuVisible={this.state.timeSigMenuVisible}
+              toggleTimeSigMenu={this.toggleTimeSigMenu}
+              closeTimeSigMenu={this.closeTimeSigMenu}
+            />
             <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
           </Staff>
 

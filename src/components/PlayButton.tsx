@@ -22,9 +22,11 @@ const PlayButton = (props: PlayButtonProps) => {
 }
 
 const Wrapper = styled.div`
-  max-width: 100px;
+  width: 100px;
   height: 100px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 export default withTheme(PlayButton)
