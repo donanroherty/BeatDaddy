@@ -70,6 +70,7 @@ const Wrapper = styled.div`
   filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.16));
 `
 const MainBox = styled.div`
+  z-index: 20;
   max-width: 286px;
   width: 286px;
   /* height: 216px; */

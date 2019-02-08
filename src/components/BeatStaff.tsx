@@ -145,15 +145,15 @@ const BeatStaff = (props: BeatStaffProps) => {
     </Wrapper>
   )
 }
+
 const Wrapper = styled.div`
   width: 100%;
   max-width: ${`${elementWidth}px`};
-  height: ${`${elementHeight}px`};
 `
+
 const SVGContainer = styled.svg`
   width: 100%;
-  max-width: ${`${elementWidth}px`};
-  height: ${`${elementHeight}px`};
+  height: 100%;
 `
 const BeatIconWrapper = styled.svg`
   z-index: 5;

@@ -13,8 +13,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "netlify": "react-scripts build && netlify deploy",
-    "netlifyprod": "react-scripts build && netlify deploy --prod"
+    "deploy": "react-scripts build && netlify deploy",
+    "deployprod": "react-scripts build && netlify deploy --prod"
   },
   "eslintConfig": {
     "extends": "react-app"

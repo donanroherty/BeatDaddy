@@ -71,10 +71,10 @@ class App extends Component<AppProps, AppState> {
       beatCount: 4,
       beatLength: BeatLengthOptions.four,
       subdivisions: SubDivisionOptions.sixteenth,
-      barCount: 2,
+      barCount: 1000,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: true
+      timeSigMenuVisible: false
     }
   }
 
@@ -126,19 +126,21 @@ class App extends Component<AppProps, AppState> {
             isPlaying={this.state.isPlaying}
             setAudioLoaded={this.setAudioLoaded}
           />
+          <TopRow>
+            <Staff>
+              <TimeSignature
+                beatCount={this.state.beatCount}
+                beatLength={this.state.beatLength}
+                menuVisible={this.state.timeSigMenuVisible}
+                toggleTimeSigMenu={this.toggleTimeSigMenu}
+                closeTimeSigMenu={this.closeTimeSigMenu}
+                setBeatCount={this.setBeatCount}
+                setBeatLength={this.setBeatLength}
+              />
 
-          <Staff>
-            <TimeSignature
-              beatCount={this.state.beatCount}
-              beatLength={this.state.beatLength}
-              menuVisible={this.state.timeSigMenuVisible}
-              toggleTimeSigMenu={this.toggleTimeSigMenu}
-              closeTimeSigMenu={this.closeTimeSigMenu}
-              setBeatCount={this.setBeatCount}
-              setBeatLength={this.setBeatLength}
-            />
-            <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
-          </Staff>
+              <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
+            </Staff>
+          </TopRow>
 
           <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
@@ -153,12 +155,15 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
 `
+const TopRow = styled.div`
+  width: 100%;
+  height: 100px;
+`
 
 const Staff = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 100%;
 `
 
 export default App

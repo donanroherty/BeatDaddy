@@ -69,11 +69,9 @@ class TimeSignature extends React.Component<TimeSignatureProps, {}> {
 
 const Wrapper = styled.div`
   user-select: none;
-  margin-right: 15px;
+  padding-top: 12px;
 `
 const ChevronWrapper = styled.div`
-  margin-right: 5px;
-
   filter: drop-shadow(${props => props.theme.dropShadow});
   &:hover {
     filter: brightness(${props => props.theme.hoverBrightness});
@@ -87,22 +85,24 @@ const Inner = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 40px;
-  margin-top: 12px;
-  margin-right: 10px;
+  width: 50px;
+
+  padding-right: 5px;
 `
 const Column = styled.div`
-  padding-left: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `
 const Text = styled.div<TimeSignatureProps>`
   color: ${props => props.theme.dark};
   font-size: 31px;
   font-weight: bold;
-  text-align: center;
 `
-
 const Line = styled.div<TimeSignatureProps>`
-  width: 100%;
+  width: 70%;
   height: 2px;
   background-color: ${props => props.theme.light};
 `

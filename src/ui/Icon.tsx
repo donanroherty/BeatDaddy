@@ -29,6 +29,7 @@ const Icon = (props: IconProps) => {
       viewBox={`0 0 ${vbWidth} ${vbHeight}`}
       height={dimensions.height}
       width={dimensions.width}
+      
     >
       {iconDef}
     </SVGWrapper>
@@ -36,8 +37,6 @@ const Icon = (props: IconProps) => {
 }
 
 const SVGWrapper = styled('svg')<IconProps>`
-  pointer-events: none;
-
   fill: ${props => props.fillColor};
 `
 
