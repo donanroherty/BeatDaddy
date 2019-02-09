@@ -40,6 +40,7 @@ export interface AppState {
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
   timeSigMenuVisible: boolean
+  metronomeIsDirty: boolean
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -71,18 +72,33 @@ class App extends Component<AppProps, AppState> {
       beatCount: 4,
       beatLength: BeatLengthOptions.four,
       subdivisions: SubDivisionOptions.sixteenth,
-      barCount: 1000,
+      barCount: 1,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: false
+      timeSigMenuVisible: false,
+      metronomeIsDirty: false
     }
   }
 
+  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    if (
+      prevState.tempo !== this.state.tempo ||
+      prevState.beatCount !== this.state.beatCount ||
+      prevState.beatLength !== this.state.beatLength ||
+      prevState.subdivisions !== this.state.subdivisions
+    ) {
+      if (this.state.isPlaying) {
+        this.setMetronomeDirty()
+      }
+    }
+  }
+
+  setMetronomeDirty = () => this.setState({ metronomeIsDirty: true })
+  onMetronomeGenerated = () => this.setState({ metronomeIsDirty: false })
+
   setAudioLoaded = (val: boolean) => {
     this.setState({ audioLoaded: val })
-    if (this.state.audioLoaded) {
-      console.log('audio loaded')
-    }
+    if (val) console.log('audio loaded')
   }
 
   togglePlayState = () => {
@@ -122,9 +138,12 @@ class App extends Component<AppProps, AppState> {
             audioCtx={this.audioCtx}
             tempo={this.state.tempo}
             beatCount={this.state.beatCount}
+            beatLength={this.state.beatLength}
             barCount={this.state.barCount}
             isPlaying={this.state.isPlaying}
             setAudioLoaded={this.setAudioLoaded}
+            metronomeIsDirty={this.state.metronomeIsDirty}
+            onMetronomeGenerated={this.onMetronomeGenerated}
           />
           <TopRow>
             <Staff>
