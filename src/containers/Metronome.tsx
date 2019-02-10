@@ -9,9 +9,12 @@ export interface MetronomeProps {
   audioCtx: AudioContext
   tempo: number
   beatCount: number
+  beatLength: number
   barCount: number
   isPlaying: boolean
   setAudioLoaded: (val: boolean) => void
+  metronomeIsDirty: boolean
+  onMetronomeGenerated: () => void
 }
 export interface MetronomeState {
   soundPath: string
@@ -30,7 +33,11 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     }
   ]
 
-  private sound: AudioBuffer = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+  private sound: AudioBuffer = this.props.audioCtx.createBuffer(
+    1,
+    1,
+    this.props.audioCtx.sampleRate
+  )
 
   constructor(props: MetronomeProps) {
     super(props)
@@ -51,9 +58,10 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       }
     }
 
-    if (prevProps.tempo !== this.props.tempo && this.props.isPlaying) {
+    if (prevProps.metronomeIsDirty !== this.props.metronomeIsDirty && this.props.metronomeIsDirty) {
       this.stop()
       this.start()
+      this.props.onMetronomeGenerated()
     }
   }
 
@@ -85,8 +93,13 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
   }
 
   // Generates AudioSourceNode and start time for each beat
-  generateBeatAudioSourceNodes = (audioCtx: AudioContext, tempo: number, beatCount: number, barCount: number) => {
-    const beatTime = 60.0 / tempo
+  generateBeatAudioSourceNodes = (
+    audioCtx: AudioContext,
+    tempo: number,
+    beatCount: number,
+    barCount: number
+  ) => {
+    const beatTime = (60.0 / tempo) * (4 / this.props.beatLength)
 
     const beatStartTimes = new Array(beatCount * barCount).fill(0).map((val, i) => {
       return beatTime * i
@@ -99,6 +112,8 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       return { startTime, source }
     })
 
+    this.props.onMetronomeGenerated()
+
     return newBeatSources
   }
 
@@ -109,6 +124,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       this.props.beatCount,
       this.props.barCount
     )
+
     const now = this.props.audioCtx.currentTime
     this.beatSources.forEach(source => source.source.start(now + source.startTime))
   }

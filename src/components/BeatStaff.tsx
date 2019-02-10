@@ -11,6 +11,7 @@ import { SubDivisionOptions } from '../containers/App'
 
 export interface BeatStaffProps {
   beatCount: number
+  beatLength: number
   subdivisions: SubDivisionOptions
   theme: ThemeInterface
 }
@@ -25,7 +26,6 @@ const elementHeight = 70 // Height of element
 const elementWidth = 600 // Max width of element
 
 const BeatStaff = (props: BeatStaffProps) => {
-  const beatIcon: keyof typeof iconDefinitions = 'note'
   const beatIconSize = 50
 
   const leftLinePadding = 50 // Space allowed for extension of centerline before first beat
@@ -77,7 +77,6 @@ const BeatStaff = (props: BeatStaffProps) => {
           x2={`${posX}%`}
           y2={`${y2}`}
           style={{ stroke: color, strokeWidth: thickness }}
-          shapeRendering="crispEdges"
         />
       </svg>
     )
@@ -85,59 +84,103 @@ const BeatStaff = (props: BeatStaffProps) => {
 
   // Creates an icon used for marking beats
   const makeBeatMarker = (xPos: number, color: string, key: string) => {
+    const { beatLength } = props
+    const beatIcon: keyof typeof iconDefinitions =
+      beatLength === 1
+        ? 'wholeNote'
+        : beatLength === 2
+          ? 'halfNote'
+          : beatLength === 4
+            ? 'quarterNote'
+            : beatLength === 8
+              ? 'eighthNote'
+              : 'sixteenthNote'
+
     const beatIconDimensions = getIconDimensions(beatIcon, beatIconSize)
-    const iconWidthPerc = (beatIconDimensions.width / elementWidth) * 100
+    const horizAdjust = -8.0
+    const iconWidthPerc = ((beatIconDimensions.width + horizAdjust) / elementWidth) * 100
     return (
-      <svg
+      <BeatIconWrapper
         x={`${xPos - iconWidthPerc / 2}%`}
-        y={verticalCenter - beatIconDimensions.height + 9}
+        y={verticalCenter - beatIconDimensions.height + 7.5}
         key={key}
       >
-        {<Icon icon="note" fillColor={color} size={beatIconSize} hasShadow />}
-      </svg>
+        <rect
+          x="0"
+          y="0"
+          width={beatIconDimensions.width + horizAdjust}
+          height={beatIconSize}
+          fill="transparent"
+        />
+        <Icon icon={beatIcon} fillColor={color} size={beatIconSize} />
+      </BeatIconWrapper>
     )
   }
 
-  // Generate markers for beats and subdivisions
-  const markers = staffDivisions.map((div, i) => {
-    const isBeat = div.type === SubDivLevel.beat
-    const isEighth = !isBeat && div.type === SubDivLevel.eighth
-
+  // Return the horizontal posiiton of a marker by normalizing it's time to a percentage in the svg container
+  const getMarkerXPosition = (div: any) => {
     const innerWidthPerc = 100 - leftLinePaddingPerc
-    const xPos = (innerWidthPerc / 100) * div.time + leftLinePaddingPerc
-    const length = isEighth ? 15 : 8
-    const color = isBeat ? props.theme.primary : isEighth ? props.theme.light : props.theme.light
+    return (innerWidthPerc / 100) * div.time + leftLinePaddingPerc
+  }
 
-    return isBeat
-      ? makeBeatMarker(xPos, color, String(i))
-      : makeVertLineMarker(xPos, color, length, 1, `${i}`)
+  // Generate markers for beats
+  const beats = staffDivisions.filter(div => div.type === SubDivLevel.beat)
+  const beatMarkers = beats.map(beat => {
+    const xPos = getMarkerXPosition(beat)
+    return makeBeatMarker(xPos, props.theme.primary, String(beat.time))
+  })
+
+  // Generate markers for subdivisions
+  const subdivs = staffDivisions.filter(div => div.type !== SubDivLevel.beat)
+  const subDivMarkers = subdivs.map(subdiv => {
+    const xPos = getMarkerXPosition(subdiv)
+    const length = subdiv.type === SubDivLevel.eighth ? 15 : 8
+    return makeVertLineMarker(xPos, props.theme.light, length, 1, `${subdiv.time}`)
   })
 
   return (
-    <Wrapper height={elementHeight} width={`${elementWidth}px`}>
-      {/* center line */}
-      <line
-        x1={0}
-        y1={verticalCenter}
-        x2={`${100}%`}
-        y2={verticalCenter}
-        style={{ stroke: props.theme.light, strokeWidth: 2 }}
-      />
+    <Wrapper>
+      <SVGContainer height={elementHeight} width={`${elementWidth}px`}>
+        {/* center line */}
+        <line
+          x1={0}
+          y1={verticalCenter}
+          x2={`${100}%`}
+          y2={verticalCenter}
+          style={{ stroke: props.theme.light, strokeWidth: 2 }}
+        />
 
-      {/* beat and subdiv markers */}
-      {markers}
+        {/* beat and subdiv markers */}
+        {subDivMarkers}
+        {beatMarkers}
 
-      {/* end lines */}
-      {makeVertLineMarker(0, props.theme.dark, endBarLength, 6)}
-      {makeVertLineMarker(100, props.theme.dark, endBarLength, 6)}
+        {/* end lines */}
+        {makeVertLineMarker(0, props.theme.dark, endBarLength, 6)}
+        {makeVertLineMarker(100, props.theme.dark, endBarLength, 6)}
+      </SVGContainer>
     </Wrapper>
   )
 }
 
-const Wrapper = styled.svg`
+const Wrapper = styled.div`
   width: 100%;
   max-width: ${`${elementWidth}px`};
-  height: ${`${elementHeight}px`};
+`
+
+const SVGContainer = styled.svg`
+  width: 100%;
+  height: 100%;
+`
+const BeatIconWrapper = styled.svg`
+  z-index: 5;
+  filter: drop-shadow(${props => props.theme.dropShadow});
+  &:hover {
+    filter: brightness(${props => props.theme.hoverBrightness});
+    filter: drop-shadow(${props => props.theme.hoverDropShadow});
+  }
+  &:active {
+    filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
+  }
 `
 
 export default withTheme(BeatStaff)

@@ -71,7 +71,7 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
 
           <MinusBtn onClick={this.handleClickDecrement}>-</MinusBtn>
 
-          <Icon icon="note" fillColor={this.props.theme.dark} size={25} />
+          <Icon icon="quarterNote" fillColor={this.props.theme.dark} size={25} />
 
           <Equals>=</Equals>
 
