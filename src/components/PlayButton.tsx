@@ -25,6 +25,9 @@ const PlayButton = (props: PlayButtonProps) => {
   )
 }
 
+const IconWrapper = styled.div`
+  filter: drop-shadow(${props => props.theme.dropShadow});
+`
 const Wrapper = styled.div`
   width: 100px;
   height: 100px;
@@ -33,14 +36,11 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: white;
   border-radius: 50%;
-`
-const IconWrapper = styled.div`
-  filter: drop-shadow(${props => props.theme.dropShadow});
-  &:hover {
-    filter: brightness(${props => props.theme.hoverBrightness});
-    filter: drop-shadow(${props => props.theme.hoverDropsShadow});
+  &:hover ${IconWrapper} {
+    filter: brightness(${props => props.theme.hoverBrightness})
+      drop-shadow(${props => props.theme.hoverDropShadow});
   }
-  &:active {
+  &:active ${IconWrapper} {
     filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
   }
 `

@@ -175,8 +175,8 @@ const BeatIconWrapper = styled.svg`
   z-index: 5;
   filter: drop-shadow(${props => props.theme.dropShadow});
   &:hover {
-    filter: brightness(${props => props.theme.hoverBrightness});
-    filter: drop-shadow(${props => props.theme.hoverDropShadow});
+    filter: brightness(${props => props.theme.hoverBrightness})
+      drop-shadow(${props => props.theme.hoverDropShadow});
   }
   &:active {
     filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});

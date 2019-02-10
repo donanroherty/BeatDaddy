@@ -66,18 +66,17 @@ class TimeSignature extends React.Component<TimeSignatureProps, {}> {
     )
   }
 }
-
+const ChevronWrapper = styled.div`
+  filter: drop-shadow(${props => props.theme.dropShadow});
+`
 const Wrapper = styled.div`
   user-select: none;
   padding-top: 12px;
-`
-const ChevronWrapper = styled.div`
-  filter: drop-shadow(${props => props.theme.dropShadow});
-  &:hover {
-    filter: brightness(${props => props.theme.hoverBrightness});
-    filter: drop-shadow(${props => props.theme.hoverDropShadow});
+  &:hover ${ChevronWrapper} {
+    filter: brightness(${props => props.theme.hoverBrightness})
+      drop-shadow(${props => props.theme.hoverDropShadow});
   }
-  &:active {
+  &:active ${ChevronWrapper} {
     filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
   }
 `
