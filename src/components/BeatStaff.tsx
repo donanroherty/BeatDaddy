@@ -11,6 +11,7 @@ import { SubDivisionOptions } from '../containers/App'
 
 export interface BeatStaffProps {
   beatCount: number
+  beatLength: number
   subdivisions: SubDivisionOptions
   theme: ThemeInterface
 }
@@ -25,7 +26,6 @@ const elementHeight = 70 // Height of element
 const elementWidth = 600 // Max width of element
 
 const BeatStaff = (props: BeatStaffProps) => {
-  const beatIcon: keyof typeof iconDefinitions = 'note'
   const beatIconSize = 50
 
   const leftLinePadding = 50 // Space allowed for extension of centerline before first beat
@@ -84,20 +84,36 @@ const BeatStaff = (props: BeatStaffProps) => {
 
   // Creates an icon used for marking beats
   const makeBeatMarker = (xPos: number, color: string, key: string) => {
+    const { beatLength } = props
+    const beatIcon: keyof typeof iconDefinitions =
+      beatLength === 1
+        ? 'wholeNote'
+        : beatLength === 2
+          ? 'halfNote'
+          : beatLength === 4
+            ? 'quarterNote'
+            : beatLength === 8
+              ? 'eighthNote'
+              : 'sixteenthNote'
+
     const beatIconDimensions = getIconDimensions(beatIcon, beatIconSize)
-    const iconWidthPerc = (beatIconDimensions.width / elementWidth) * 100
+    const horizAdjust = -8.0
+    const iconWidthPerc = ((beatIconDimensions.width + horizAdjust) / elementWidth) * 100
     return (
-      <svg
+      <BeatIconWrapper
         x={`${xPos - iconWidthPerc / 2}%`}
-        y={verticalCenter - beatIconDimensions.height + 9}
+        y={verticalCenter - beatIconDimensions.height + 7.5}
         key={key}
       >
-        {
-          <BeatIconWrapper>
-            <Icon icon="note" fillColor={color} size={beatIconSize} />
-          </BeatIconWrapper>
-        }
-      </svg>
+        <rect
+          x="0"
+          y="0"
+          width={beatIconDimensions.width + horizAdjust}
+          height={beatIconSize}
+          fill="transparent"
+        />
+        <Icon icon={beatIcon} fillColor={color} size={beatIconSize} />
+      </BeatIconWrapper>
     )
   }
 

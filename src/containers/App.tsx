@@ -157,7 +157,11 @@ class App extends Component<AppProps, AppState> {
                 setBeatLength={this.setBeatLength}
               />
 
-              <BeatStaff beatCount={this.state.beatCount} subdivisions={this.state.subdivisions} />
+              <BeatStaff
+                beatCount={this.state.beatCount}
+                beatLength={this.state.beatLength}
+                subdivisions={this.state.subdivisions}
+              />
             </Staff>
           </TopRow>
 
