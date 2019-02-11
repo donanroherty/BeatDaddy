@@ -4,11 +4,14 @@ import { theme } from '../theme/theme'
 import styled from 'styled-components'
 
 import Metronome from './Metronome'
+import Drone from './Drone'
 import BeatStaff from '../components/BeatStaff'
 import PlayButton from '../components/PlayButton'
 import TempoWidget from '../components/TempoWidget'
 import TimeSignature from '../components/TimeSignature'
-import MenuPanel from '../ui/MenuPanel'
+import Dropdown from '../ui/Dropdown'
+
+import { Key, getKeySafeName } from '../data/Types'
 
 enum BeatLengthOptions {
   one = 1,
@@ -33,6 +36,8 @@ export interface AppState {
   beatCount: number
   beatLength: number
   subdivisions: SubDivisionOptions
+  chordKey: Key
+
   // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
   barCount: number
   // True if app is playing
@@ -41,6 +46,7 @@ export interface AppState {
   audioLoaded: boolean
   timeSigMenuVisible: boolean
   metronomeIsDirty: boolean
+  droneIsDirty: boolean
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -72,11 +78,13 @@ class App extends Component<AppProps, AppState> {
       beatCount: 4,
       beatLength: BeatLengthOptions.four,
       subdivisions: SubDivisionOptions.sixteenth,
-      barCount: 1,
+      chordKey: Key.C,
+      barCount: 1000,
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
-      metronomeIsDirty: false
+      metronomeIsDirty: false,
+      droneIsDirty: false
     }
   }
 
@@ -89,6 +97,11 @@ class App extends Component<AppProps, AppState> {
     ) {
       if (this.state.isPlaying) {
         this.setMetronomeDirty()
+      }
+    }
+    if (prevState.chordKey !== this.state.chordKey) {
+      if (this.state.isPlaying) {
+        this.setState({ droneIsDirty: true })
       }
     }
   }
@@ -129,6 +142,11 @@ class App extends Component<AppProps, AppState> {
     this.setState({ beatLength: length })
   }
 
+  setChordKey = (idx: number) => {
+    const newKey = Key[Object.keys(Key)[idx] as keyof typeof Key]
+    this.setState({ chordKey: newKey })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -144,6 +162,11 @@ class App extends Component<AppProps, AppState> {
             setAudioLoaded={this.setAudioLoaded}
             metronomeIsDirty={this.state.metronomeIsDirty}
             onMetronomeGenerated={this.onMetronomeGenerated}
+          />
+          <Drone
+            audioCtx={this.audioCtx}
+            chordKey={this.state.chordKey}
+            isPlaying={this.state.isPlaying}
           />
           <TopRow>
             <Staff>
@@ -167,6 +190,14 @@ class App extends Component<AppProps, AppState> {
 
           <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
+
+          <Dropdown
+            selected={Object.values(Key).findIndex(val => val === this.state.chordKey)}
+            options={Object.values(Key).map(key => getKeySafeName(key))}
+            handleOptionSelection={this.setChordKey}
+            width={'70px'}
+            dropdownHeight={'200px'}
+          />
         </Wrapper>
       </ThemeProvider>
     )
