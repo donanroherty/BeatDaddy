@@ -14,22 +14,21 @@ interface DroneProps {
   chordKey: Key
   chordType: ChordType
   isPlaying: boolean
+  volume?: number
 }
 
 interface DroneState {}
 
 class Drone extends React.Component<DroneProps, DroneState> {
-  private chordTones: Array<OscillatorNode> = new Array()
+  private chordTones: { oscillator: OscillatorNode; gain: GainNode }[] = new Array()
   private notes: Note[] = []
   private masterGainNode = this.props.audioCtx.createGain()
+  private intervalGainNodes: GainNode[] = [this.props.audioCtx.createGain()]
 
   constructor(props: DroneProps) {
     super(props)
     this.notes = this.getAllNotes()
-
-    this.masterGainNode = this.props.audioCtx.createGain()
     this.masterGainNode.connect(this.props.audioCtx.destination)
-    this.masterGainNode.gain.setValueAtTime(0.04, this.props.audioCtx.currentTime)
   }
 
   static defaultProps: DroneProps = {
@@ -37,7 +36,8 @@ class Drone extends React.Component<DroneProps, DroneState> {
     audioCtx: new AudioContext(),
     chordKey: Key.C,
     chordType: ChordType.Major,
-    isPlaying: false
+    isPlaying: false,
+    volume: 0.05
   }
 
   componentDidUpdate(prevProps: DroneProps, prevState: DroneState) {
@@ -57,18 +57,20 @@ class Drone extends React.Component<DroneProps, DroneState> {
   }
 
   start = () => {
+    this.masterGainNode.gain
+      .setValueAtTime(0, this.props.audioCtx.currentTime)
+      .setTargetAtTime(this.props.volume!, this.props.audioCtx.currentTime, 2)
+
     this.updateChordTones()
-    this.chordTones.forEach(osc => {
-      osc.start()
-    })
   }
   stop = () => {
-    this.chordTones.forEach(osc => {
-      osc.stop()
-    })
+    this.masterGainNode.gain.setTargetAtTime(0, this.props.audioCtx.currentTime, 0.2)
   }
 
   updateChordTones = () => {
+    // Kill existing sounds
+    this.chordTones.forEach(val => val.oscillator.stop())
+
     const chordDef = chords.find(val => val.type === this.props.chordType)
 
     if (chordDef) {
@@ -79,11 +81,18 @@ class Drone extends React.Component<DroneProps, DroneState> {
       // Get note definitions for chord intervals
       const intervals = chordDef.intervals.map(interval => this.notes[keyIndex + interval])
 
-      this.chordTones = intervals.map(interval => {
+      this.chordTones = intervals.map((interval, i) => {
+        this.intervalGainNodes.forEach(val => val.disconnect())
+
+        const gain = this.props.audioCtx.createGain()
+        gain.connect(this.masterGainNode)
+
         const osc = this.props.audioCtx.createOscillator()
         osc.frequency.value = interval.frequency
-        osc.connect(this.masterGainNode)
-        return osc
+        osc.connect(gain)
+        osc.start()
+
+        return { oscillator: osc, gain: gain }
       })
     }
   }

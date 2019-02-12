@@ -74,7 +74,7 @@ class App extends Component<AppProps, AppState> {
     this.audioCtx = new AudioContext()
 
     this.state = {
-      tempo: 120,
+      tempo: 90,
       beatCount: 4,
       beatLength: BeatLengthOptions.four,
       subdivisions: SubDivisionOptions.sixteenth,
