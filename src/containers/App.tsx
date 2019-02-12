@@ -38,6 +38,8 @@ export interface AppState {
   subdivisions: SubDivisionOptions
   chordKey: Key
   chordType: ChordType
+  metronomeVolume: number
+  droneVolume: number
   // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
   barCount: number
   // True if app is playing
@@ -46,7 +48,6 @@ export interface AppState {
   audioLoaded: boolean
   timeSigMenuVisible: boolean
   metronomeIsDirty: boolean
-  droneIsDirty: boolean
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -80,12 +81,13 @@ class App extends Component<AppProps, AppState> {
       subdivisions: SubDivisionOptions.sixteenth,
       chordKey: Key.C,
       chordType: ChordType.Major,
+      metronomeVolume: 1.0,
+      droneVolume: 0.05,
       barCount: 1000,
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
-      metronomeIsDirty: false,
-      droneIsDirty: false
+      metronomeIsDirty: false
     }
   }
 
@@ -98,11 +100,6 @@ class App extends Component<AppProps, AppState> {
     ) {
       if (this.state.isPlaying) {
         this.setMetronomeDirty()
-      }
-    }
-    if (prevState.chordKey !== this.state.chordKey) {
-      if (this.state.isPlaying) {
-        this.setState({ droneIsDirty: true })
       }
     }
   }
@@ -165,6 +162,7 @@ class App extends Component<AppProps, AppState> {
             beatLength={this.state.beatLength}
             barCount={this.state.barCount}
             isPlaying={this.state.isPlaying}
+            volume={this.state.metronomeVolume}
             setAudioLoaded={this.setAudioLoaded}
             metronomeIsDirty={this.state.metronomeIsDirty}
             onMetronomeGenerated={this.onMetronomeGenerated}
@@ -174,6 +172,7 @@ class App extends Component<AppProps, AppState> {
             chordKey={this.state.chordKey}
             chordType={this.state.chordType}
             isPlaying={this.state.isPlaying}
+            volume={this.state.droneVolume}
           />
           <TopRow>
             <Staff>

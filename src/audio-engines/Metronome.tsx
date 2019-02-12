@@ -12,6 +12,7 @@ export interface MetronomeProps {
   beatLength: number
   barCount: number
   isPlaying: boolean
+  volume: number
   setAudioLoaded: (val: boolean) => void
   metronomeIsDirty: boolean
   onMetronomeGenerated: () => void
@@ -26,6 +27,7 @@ interface BeatSource {
 }
 
 class Metronome extends Component<MetronomeProps, MetronomeState> {
+  private masterGainNode = this.props.audioCtx.createGain()
   private beatSources: Array<BeatSource> = [
     {
       startTime: 0,
@@ -41,7 +43,8 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
 
   constructor(props: MetronomeProps) {
     super(props)
-
+    this.masterGainNode.gain.value = this.props.volume
+    this.masterGainNode.connect(this.props.audioCtx.destination)
     this.state = {
       soundPath: '/audio/metronome.wav'
     }
@@ -108,7 +111,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     const newBeatSources = beatStartTimes.map((startTime, i) => {
       const source = audioCtx.createBufferSource()
       source.buffer = this.sound
-      source.connect(audioCtx.destination)
+      source.connect(this.masterGainNode)
       return { startTime, source }
     })
 

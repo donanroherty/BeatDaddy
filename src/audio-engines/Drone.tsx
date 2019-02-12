@@ -14,7 +14,7 @@ interface DroneProps {
   chordKey: Key
   chordType: ChordType
   isPlaying: boolean
-  volume?: number
+  volume: number
 }
 
 interface DroneState {}
@@ -89,6 +89,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
 
         const osc = this.props.audioCtx.createOscillator()
         osc.frequency.value = interval.frequency
+
         osc.connect(gain)
         osc.start()
 
