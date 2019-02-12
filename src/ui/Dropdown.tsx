@@ -28,7 +28,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
   static defaultProps: DropdownProps = {
     width: '200px',
-    dropdownHeight: '100px',
     options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
     selected: 0,
     borderRadius: '10px'
@@ -62,7 +61,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     })
 
     return (
-      <Wrapper {...this.props}>
+      <Wrapper {...this.props} isOpen={this.state.isOpen}>
         <TopSection {...this.props} isOpen={this.state.isOpen} onClick={this.toggleMenuOpen}>
           <Selection>
             <div>{this.props.options![this.props.selected]}</div>
@@ -79,8 +78,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
 }
 
-const Wrapper = styled.div<DropdownProps>`
+const Wrapper = styled.div<any>`
   width: ${props => props.width};
+  height: ${props => (props.isOpen ? 'auto' : '40px')};
   background-color: white;
   font-size: 14px;
   font-weight: bold;
@@ -91,11 +91,9 @@ const Wrapper = styled.div<DropdownProps>`
 `
 const ChevronWrapper = styled.div`
   width: 38px;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-
   filter: drop-shadow(${props => props.theme.dropShadow});
 `
 const TopSection = styled.div<any>`
@@ -131,13 +129,15 @@ const Selection = styled.div`
 const OptionPanelWrapper = styled.div<any>`
   display: ${props => (props.isOpen ? 'inherit' : 'none')};
 `
+const optionItemHeight = 35
 const OptionPanel = styled.div<DropdownProps>`
-  height: ${props => props.dropdownHeight};
+  height: ${props =>
+    props.dropdownHeight ? props.dropdownHeight : optionItemHeight * props.options.length + 'px'};
   overflow-y: auto;
   border-top: 1px solid ${props => props.theme.primaryLight};
 `
 const Option = styled.div`
-  height: 35px;
+  height: ${optionItemHeight}px;
   display: flex;
   flex-direction: column;
   justify-content: center;
