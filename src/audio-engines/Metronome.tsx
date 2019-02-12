@@ -14,8 +14,6 @@ export interface MetronomeProps {
   isPlaying: boolean
   volume: number
   setAudioLoaded: (val: boolean) => void
-  metronomeIsDirty: boolean
-  onMetronomeGenerated: () => void
 }
 export interface MetronomeState {
   soundPath: string
@@ -61,10 +59,15 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       }
     }
 
-    if (prevProps.metronomeIsDirty !== this.props.metronomeIsDirty && this.props.metronomeIsDirty) {
-      this.stop()
-      this.start()
-      this.props.onMetronomeGenerated()
+    if (
+      prevProps.tempo !== this.props.tempo ||
+      prevProps.beatCount !== this.props.beatCount ||
+      prevProps.beatLength !== this.props.beatLength
+    ) {
+      if (this.props.isPlaying) {
+        this.stop()
+        this.start()
+      }
     }
   }
 
@@ -108,14 +111,12 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       return beatTime * i
     })
 
-    const newBeatSources = beatStartTimes.map((startTime, i) => {
+    const newBeatSources = beatStartTimes.map(startTime => {
       const source = audioCtx.createBufferSource()
       source.buffer = this.sound
       source.connect(this.masterGainNode)
       return { startTime, source }
     })
-
-    this.props.onMetronomeGenerated()
 
     return newBeatSources
   }
@@ -137,11 +138,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
   }
 
   render() {
-    return (
-      <div>
-        <div />
-      </div>
-    )
+    return <div />
   }
 }
 

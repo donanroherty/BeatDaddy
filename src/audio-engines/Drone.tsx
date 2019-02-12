@@ -31,15 +31,6 @@ class Drone extends React.Component<DroneProps, DroneState> {
     this.masterGainNode.connect(this.props.audioCtx.destination)
   }
 
-  static defaultProps: DroneProps = {
-    a4: 440,
-    audioCtx: new AudioContext(),
-    chordKey: Key.C,
-    chordType: ChordType.Major,
-    isPlaying: false,
-    volume: 0.05
-  }
-
   componentDidUpdate(prevProps: DroneProps, prevState: DroneState) {
     if (prevProps.isPlaying !== this.props.isPlaying) {
       this.props.isPlaying ? this.start() : this.stop()

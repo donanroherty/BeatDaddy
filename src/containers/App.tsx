@@ -13,13 +13,13 @@ import Dropdown from '../ui/Dropdown'
 
 import { Key, getKeySafeName, ChordType, getChordTypeSafeName } from '../data/Types'
 
-enum BeatLengthOptions {
-  one = 1,
-  two = 2,
-  four = 4,
-  eight = 8,
-  sixteen = 16,
-  thirtytwo = 32
+export enum BeatLengthOptions {
+  one,
+  two,
+  four,
+  eight,
+  sixteen,
+  thirtytwo
 }
 export enum SubDivisionOptions {
   none,
@@ -38,6 +38,7 @@ export interface AppState {
   subdivisions: SubDivisionOptions
   chordKey: Key
   chordType: ChordType
+  a4: number
   metronomeVolume: number
   droneVolume: number
   // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
@@ -47,7 +48,6 @@ export interface AppState {
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
   timeSigMenuVisible: boolean
-  metronomeIsDirty: boolean
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -77,35 +77,21 @@ class App extends Component<AppProps, AppState> {
     this.state = {
       tempo: 90,
       beatCount: 4,
-      beatLength: BeatLengthOptions.four,
+      beatLength: 4,
       subdivisions: SubDivisionOptions.sixteenth,
       chordKey: Key.C,
       chordType: ChordType.Major,
+      a4: 440,
       metronomeVolume: 1.0,
       droneVolume: 0.05,
-      barCount: 1000,
+      barCount: 100,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: false,
-      metronomeIsDirty: false
+      timeSigMenuVisible: false
     }
   }
 
-  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
-    if (
-      prevState.tempo !== this.state.tempo ||
-      prevState.beatCount !== this.state.beatCount ||
-      prevState.beatLength !== this.state.beatLength ||
-      prevState.subdivisions !== this.state.subdivisions
-    ) {
-      if (this.state.isPlaying) {
-        this.setMetronomeDirty()
-      }
-    }
-  }
-
-  setMetronomeDirty = () => this.setState({ metronomeIsDirty: true })
-  onMetronomeGenerated = () => this.setState({ metronomeIsDirty: false })
+  componentDidUpdate(prevProps: AppProps, prevState: AppState) {}
 
   setAudioLoaded = (val: boolean) => {
     this.setState({ audioLoaded: val })
@@ -164,8 +150,6 @@ class App extends Component<AppProps, AppState> {
             isPlaying={this.state.isPlaying}
             volume={this.state.metronomeVolume}
             setAudioLoaded={this.setAudioLoaded}
-            metronomeIsDirty={this.state.metronomeIsDirty}
-            onMetronomeGenerated={this.onMetronomeGenerated}
           />
           <Drone
             audioCtx={this.audioCtx}
@@ -173,6 +157,7 @@ class App extends Component<AppProps, AppState> {
             chordType={this.state.chordType}
             isPlaying={this.state.isPlaying}
             volume={this.state.droneVolume}
+            a4={this.state.a4}
           />
           <TopRow>
             <Staff>
