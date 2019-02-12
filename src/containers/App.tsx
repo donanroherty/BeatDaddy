@@ -3,15 +3,15 @@ import { ThemeProvider, createGlobalStyle } from '../theme/themed-styled-compone
 import { theme } from '../theme/theme'
 import styled from 'styled-components'
 
-import Metronome from './Metronome'
-import Drone from './Drone'
+import Metronome from '../audio-engines/Metronome'
+import Drone from '../audio-engines/Drone'
 import BeatStaff from '../components/BeatStaff'
 import PlayButton from '../components/PlayButton'
 import TempoWidget from '../components/TempoWidget'
 import TimeSignature from '../components/TimeSignature'
 import Dropdown from '../ui/Dropdown'
 
-import { Key, getKeySafeName } from '../data/Types'
+import { Key, getKeySafeName, ChordType, getChordTypeSafeName } from '../data/Types'
 
 enum BeatLengthOptions {
   one = 1,
@@ -37,7 +37,7 @@ export interface AppState {
   beatLength: number
   subdivisions: SubDivisionOptions
   chordKey: Key
-
+  chordType: ChordType
   // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
   barCount: number
   // True if app is playing
@@ -79,6 +79,7 @@ class App extends Component<AppProps, AppState> {
       beatLength: BeatLengthOptions.four,
       subdivisions: SubDivisionOptions.sixteenth,
       chordKey: Key.C,
+      chordType: ChordType.Major,
       barCount: 1000,
       isPlaying: false,
       audioLoaded: false,
@@ -147,6 +148,11 @@ class App extends Component<AppProps, AppState> {
     this.setState({ chordKey: newKey })
   }
 
+  setChordType = (idx: number) => {
+    const newType = ChordType[Object.keys(ChordType)[idx] as keyof typeof ChordType]
+    this.setState({ chordType: newType })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -166,6 +172,7 @@ class App extends Component<AppProps, AppState> {
           <Drone
             audioCtx={this.audioCtx}
             chordKey={this.state.chordKey}
+            chordType={this.state.chordType}
             isPlaying={this.state.isPlaying}
           />
           <TopRow>
@@ -191,13 +198,21 @@ class App extends Component<AppProps, AppState> {
           <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
           <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
 
-          <Dropdown
-            selected={Object.values(Key).findIndex(val => val === this.state.chordKey)}
-            options={Object.values(Key).map(key => getKeySafeName(key))}
-            handleOptionSelection={this.setChordKey}
-            width={'70px'}
-            dropdownHeight={'200px'}
-          />
+          <DroneControls>
+            <Dropdown
+              selected={Object.values(Key).findIndex(val => val === this.state.chordKey)}
+              options={Object.values(Key).map(key => getKeySafeName(key))}
+              handleOptionSelection={this.setChordKey}
+              width={'70px'}
+              dropdownHeight={'200px'}
+            />
+            <Dropdown
+              selected={Object.values(ChordType).findIndex(val => val === this.state.chordType)}
+              options={Object.values(ChordType).map(type => getChordTypeSafeName(type))}
+              handleOptionSelection={this.setChordType}
+              width={'70px'}
+            />
+          </DroneControls>
         </Wrapper>
       </ThemeProvider>
     )
@@ -213,11 +228,15 @@ const TopRow = styled.div`
   width: 100%;
   height: 100px;
 `
-
 const Staff = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+`
+const DroneControls = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
 `
 
 export default App

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Key, ChordType, Interval } from '../data/Types'
+import { Key, ChordType } from '../data/Types'
 import { chords } from '../data/ChordIntervals'
 
 interface Note {
@@ -12,6 +12,7 @@ interface DroneProps {
   a4: number
   audioCtx: AudioContext
   chordKey: Key
+  chordType: ChordType
   isPlaying: boolean
 }
 
@@ -35,6 +36,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
     a4: 440,
     audioCtx: new AudioContext(),
     chordKey: Key.C,
+    chordType: ChordType.Major,
     isPlaying: false
   }
 
@@ -43,7 +45,10 @@ class Drone extends React.Component<DroneProps, DroneState> {
       this.props.isPlaying ? this.start() : this.stop()
     }
 
-    if (prevProps.chordKey !== this.props.chordKey) {
+    if (
+      prevProps.chordKey !== this.props.chordKey ||
+      prevProps.chordType !== this.props.chordType
+    ) {
       if (this.props.isPlaying) {
         this.stop()
         this.start()
@@ -64,20 +69,23 @@ class Drone extends React.Component<DroneProps, DroneState> {
   }
 
   updateChordTones = () => {
-    const key = this.props.chordKey
-    const chordDef = chords.Major
+    const chordDef = chords.find(val => val.type === this.props.chordType)
 
-    const keyIndex = this.notes.findIndex(val => val.key === key && val.octave === 4)
+    if (chordDef) {
+      const keyIndex = this.notes.findIndex(
+        val => val.key === this.props.chordKey && val.octave === 4
+      )
 
-    // Get note definitions for chord intervals
-    const intervals = chordDef.intervals.map(interval => this.notes[keyIndex + interval])
+      // Get note definitions for chord intervals
+      const intervals = chordDef.intervals.map(interval => this.notes[keyIndex + interval])
 
-    this.chordTones = intervals.map(interval => {
-      const osc = this.props.audioCtx.createOscillator()
-      osc.frequency.value = interval.frequency
-      osc.connect(this.masterGainNode)
-      return osc
-    })
+      this.chordTones = intervals.map(interval => {
+        const osc = this.props.audioCtx.createOscillator()
+        osc.frequency.value = interval.frequency
+        osc.connect(this.masterGainNode)
+        return osc
+      })
+    }
   }
 
   // Returns a 12 note chromatic scale in the given octave.
@@ -115,11 +123,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
   }
 
   render() {
-    return (
-      <div>
-        <div />
-      </div>
-    )
+    return <div />
   }
 }
 

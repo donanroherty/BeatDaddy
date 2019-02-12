@@ -45,11 +45,28 @@ export const getKeySafeName = (key: Key) => {
 }
 
 export enum ChordType {
-  Major,
-  Minor,
-  Major7,
-  Minor7,
-  Dominant7
+  Major = 'MAJOR',
+  Minor = 'MINOR',
+  Major7 = 'MAJOR7',
+  Minor7 = 'MINOR7',
+  Dominant7 = 'DOMINANT7'
+}
+
+export const getChordTypeSafeName = (chord: ChordType) => {
+  switch (chord) {
+    case ChordType.Major:
+      return 'M'
+    case ChordType.Minor:
+      return 'm'
+    case ChordType.Major7:
+      return 'maj7'
+    case ChordType.Minor7:
+      return 'm7'
+    case ChordType.Dominant7:
+      return '7'
+    default:
+      return 'Error'
+  }
 }
 
 // export enum Interval {
