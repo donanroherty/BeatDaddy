@@ -4,13 +4,13 @@
  */
 
 import React, { Component } from 'react'
+import { setTimeout } from 'timers'
 
 export interface MetronomeProps {
   audioCtx: AudioContext
   tempo: number
   beatCount: number
   beatLength: number
-  barCount: number
   isPlaying: boolean
   volume: number
   setAudioLoaded: (val: boolean) => void
@@ -19,30 +19,17 @@ export interface MetronomeState {
   soundPath: string
 }
 
-interface BeatSource {
-  startTime: number
-  source: AudioBufferSourceNode
-}
-
 class Metronome extends Component<MetronomeProps, MetronomeState> {
-  private masterGainNode = this.props.audioCtx.createGain()
-  private beatSources: Array<BeatSource> = [
-    {
-      startTime: 0,
-      source: this.props.audioCtx.createBufferSource()
-    }
-  ]
-
-  private sound: AudioBuffer = this.props.audioCtx.createBuffer(
-    1,
-    1,
-    this.props.audioCtx.sampleRate
-  )
+  private metronomeMasterGain = this.props.audioCtx.createGain()
+  private metronomeBuffer = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+  private sound = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+  private metronomeSource!: AudioBufferSourceNode
 
   constructor(props: MetronomeProps) {
     super(props)
-    this.masterGainNode.gain.value = this.props.volume
-    this.masterGainNode.connect(this.props.audioCtx.destination)
+    this.metronomeMasterGain.gain.value = this.props.volume
+    this.metronomeMasterGain.connect(this.props.audioCtx.destination)
+
     this.state = {
       soundPath: '/audio/metronome.wav'
     }
@@ -90,51 +77,49 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       .catch(err => console.log(err))
   }
 
-  clearBeatSources = () => {
-    if (this.beatSources) {
-      this.beatSources.forEach(source => {
-        source.source.stop()
-      })
-    }
-  }
-
-  // Generates AudioSourceNode and start time for each beat
-  generateBeatAudioSourceNodes = (
-    audioCtx: AudioContext,
-    tempo: number,
-    beatCount: number,
-    barCount: number
-  ) => {
-    const beatTime = (60.0 / tempo) * (4 / this.props.beatLength)
-
-    const beatStartTimes = new Array(beatCount * barCount).fill(0).map((val, i) => {
-      return beatTime * i
-    })
-
-    const newBeatSources = beatStartTimes.map(startTime => {
-      const source = audioCtx.createBufferSource()
-      source.buffer = this.sound
-      source.connect(this.masterGainNode)
-      return { startTime, source }
-    })
-
-    return newBeatSources
-  }
-
   start = () => {
-    this.beatSources = this.generateBeatAudioSourceNodes(
-      this.props.audioCtx,
-      this.props.tempo,
-      this.props.beatCount,
-      this.props.barCount
-    )
-
-    const now = this.props.audioCtx.currentTime
-    this.beatSources.forEach(source => source.source.start(now + source.startTime))
+    this.buildMetronomeSource()
+    this.metronomeSource.start()
   }
 
   stop = () => {
-    this.clearBeatSources()
+    this.metronomeSource.stop()
+  }
+
+  updateMetronomeBuffer = () => {
+    const beatTime = (60.0 / this.props.tempo) * (4 / this.props.beatLength)
+    const barTime = beatTime * this.props.beatCount
+    const sampleCount = this.props.audioCtx.sampleRate * barTime
+
+    const sampleStartTimes = new Array(this.props.beatCount).fill(0).map((val, i) => {
+      return (sampleCount / this.props.beatCount) * i
+    })
+
+    // Add a sample to the buffer for each beat
+    const filledBuffer = sampleStartTimes.reduce((acc, time, i) => {
+      acc.copyToChannel(this.sound.getChannelData(0), 0, time)
+      return acc
+    }, this.props.audioCtx.createBuffer(1, sampleCount + this.sound.length, this.props.audioCtx.sampleRate))
+
+    // Crop the buffer to correct length
+    const croppedTrack = this.props.audioCtx.createBuffer(
+      1,
+      sampleCount,
+      this.props.audioCtx.sampleRate
+    )
+    croppedTrack.copyToChannel(filledBuffer.getChannelData(0).subarray(0, sampleCount), 0, 0)
+
+    this.metronomeBuffer = croppedTrack
+  }
+
+  buildMetronomeSource = () => {
+    this.updateMetronomeBuffer()
+    // Initiate a new audio source and add buffer to it
+    const newSource: AudioBufferSourceNode = this.props.audioCtx.createBufferSource()
+    newSource.buffer = this.metronomeBuffer
+    newSource.loop = true
+    newSource.connect(this.metronomeMasterGain)
+    this.metronomeSource = newSource
   }
 
   render() {

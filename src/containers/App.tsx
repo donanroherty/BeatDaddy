@@ -41,8 +41,6 @@ export interface AppState {
   a4: number
   metronomeVolume: number
   droneVolume: number
-  // Number of bars to be generate.  Should be set very high to simulate a looping metronome.
-  barCount: number
   // True if app is playing
   isPlaying: boolean
   // True if required media samples are fetched and decoded
@@ -84,7 +82,6 @@ class App extends Component<AppProps, AppState> {
       a4: 440,
       metronomeVolume: 1.0,
       droneVolume: 0.05,
-      barCount: 100,
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false
@@ -95,13 +92,13 @@ class App extends Component<AppProps, AppState> {
 
   setAudioLoaded = (val: boolean) => {
     this.setState({ audioLoaded: val })
-    if (val) console.log('audio loaded')
   }
 
   togglePlayState = () => {
-    if (this.state.audioLoaded) {
-      this.setState({ isPlaying: !this.state.isPlaying })
-    }
+    this.audioCtx.resume()
+    // if (this.state.audioLoaded) {
+    this.setState({ isPlaying: !this.state.isPlaying })
+    // }
     // TODO: Stop automatically after all bars are played
   }
 
@@ -146,7 +143,6 @@ class App extends Component<AppProps, AppState> {
             tempo={this.state.tempo}
             beatCount={this.state.beatCount}
             beatLength={this.state.beatLength}
-            barCount={this.state.barCount}
             isPlaying={this.state.isPlaying}
             volume={this.state.metronomeVolume}
             setAudioLoaded={this.setAudioLoaded}
