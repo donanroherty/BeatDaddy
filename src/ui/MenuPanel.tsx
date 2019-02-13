@@ -66,11 +66,11 @@ const MenuPanel = (props: MenuPanelProps) => {
 }
 
 const Wrapper = styled.div`
-  z-index: 10;
+  position: relative;
+  z-index: 50;
   filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.16));
 `
 const MainBox = styled.div`
-  z-index: 20;
   max-width: 286px;
   width: 286px;
   /* height: 216px; */
@@ -78,8 +78,8 @@ const MainBox = styled.div`
   border-radius: 12px;
   border: 2px solid ${props => props.theme.primaryLight};
   position: absolute;
-  top: 5px;
-  left: -21px;
+  top: 15px;
+  left: 2px;
 `
 const Content = styled.div<MenuPanelProps>`
   height: calc(100% + ${props => props.arrowHeight!}px);

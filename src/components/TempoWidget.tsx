@@ -135,7 +135,6 @@ const Btn = styled.div`
   height: 20px;
   text-align: center;
   border-radius: 5px;
-  position: relative;
 
   &:hover {
     background-color: ${props => props.theme.primaryVeryLight};
