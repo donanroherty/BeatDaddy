@@ -40,25 +40,30 @@ class Drone extends React.Component<DroneProps, DroneState> {
       prevProps.chordType !== this.props.chordType
     ) {
       if (this.props.isPlaying) {
-        // this.stop()
+        this.stop()
         this.start()
       }
     }
   }
 
   start = () => {
-    this.updatechordToneOscillators()
-    this.chordToneOscillators = this.updatechordToneOscillators()
+    this.stop()
+    this.chordToneOscillators = this.getChordToneOscillators()
 
     const now = this.props.audioCtx.currentTime
     this.droneMasterGain.gain.setValueAtTime(0, now).setTargetAtTime(this.props.volume, now, 2)
   }
 
   stop = () => {
-    this.droneMasterGain.gain.setTargetAtTime(0, this.props.audioCtx.currentTime, 0.2)
+    // this.droneMasterGain.gain.setTargetAtTime(0, this.props.audioCtx.currentTime, 0.2)
+    // Kill existing sounds
+    this.chordToneOscillators.forEach(val => {
+      val.oscillator.stop()
+      val.gain.disconnect()
+    })
   }
 
-  updatechordToneOscillators = (): Array<{ oscillator: OscillatorNode; gain: GainNode }> => {
+  getChordToneOscillators = (): Array<{ oscillator: OscillatorNode; gain: GainNode }> => {
     const chordDef = chords.find(val => val.type === this.props.chordType)
 
     const keyIndex = this.notes.findIndex(
@@ -67,12 +72,6 @@ class Drone extends React.Component<DroneProps, DroneState> {
 
     // Get note definitions for chord intervals
     const intervals = chordDef!.intervals.map(interval => this.notes[keyIndex + interval])
-
-    // Kill existing sounds
-    this.chordToneOscillators.forEach(val => {
-      val.oscillator.stop()
-      val.gain.disconnect()
-    })
 
     return intervals.map((interval, i) => {
       const gain = this.props.audioCtx.createGain()
