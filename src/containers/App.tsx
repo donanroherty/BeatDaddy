@@ -6,12 +6,14 @@ import styled from 'styled-components'
 import Metronome from '../audio-engines/Metronome'
 import Drone from '../audio-engines/Drone'
 import BeatStaff from '../components/BeatStaff'
-import PlayButton from '../components/PlayButton'
-import TempoWidget from '../components/TempoWidget'
-import TimeSignature from '../components/TimeSignature'
-import Dropdown from '../ui/Dropdown'
 
-import { Key, getKeySafeName, ChordType, getChordTypeSafeName } from '../data/Types'
+import TimeSignature from '../components/TimeSignature'
+import MainControls from './MainControls'
+import StaffSection from './StaffSection'
+
+import Navbar from '../components/Navbar'
+
+import { Key, ChordType } from '../data/Types'
 
 export enum BeatLengthOptions {
   one,
@@ -52,7 +54,8 @@ const GlobalStyle = createGlobalStyle`
 /* @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto'); */
 body{
   font-family:'Roboto', arial, sans-serif;
-  color: ${theme.dark}
+  color: ${theme.dark};
+  margin: 0px;
 }
 `
 
@@ -133,6 +136,10 @@ class App extends Component<AppProps, AppState> {
     this.setState({ chordType: newType })
   }
 
+  openAudioMenu = () => {}
+
+  tapTempo = () => {}
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -155,44 +162,38 @@ class App extends Component<AppProps, AppState> {
             volume={this.state.droneVolume}
             a4={this.state.a4}
           />
-          <TopRow>
-            <Staff>
-              <TimeSignature
-                beatCount={this.state.beatCount}
-                beatLength={this.state.beatLength}
-                menuVisible={this.state.timeSigMenuVisible}
-                toggleTimeSigMenu={this.toggleTimeSigMenu}
-                closeTimeSigMenu={this.closeTimeSigMenu}
-                setBeatCount={this.setBeatCount}
-                setBeatLength={this.setBeatLength}
-              />
+          <Inner>
+            <Navbar />
 
-              <BeatStaff
-                beatCount={this.state.beatCount}
-                beatLength={this.state.beatLength}
-                subdivisions={this.state.subdivisions}
-              />
-            </Staff>
-          </TopRow>
-
-          <TempoWidget tempo={this.state.tempo} setTempo={this.setTempo} />
-          <PlayButton onClick={this.togglePlayState} isPlaying={this.state.isPlaying} />
-
-          <DroneControls>
-            <Dropdown
-              selected={Object.values(Key).findIndex(val => val === this.state.chordKey)}
-              options={Object.values(Key).map(key => getKeySafeName(key))}
-              handleOptionSelection={this.setChordKey}
-              width={'70px'}
-              dropdownHeight={'200px'}
-            />
-            <Dropdown
-              selected={Object.values(ChordType).findIndex(val => val === this.state.chordType)}
-              options={Object.values(ChordType).map(type => getChordTypeSafeName(type))}
-              handleOptionSelection={this.setChordType}
-              width={'70px'}
-            />
-          </DroneControls>
+            <AppControlsWrapper>
+              <TopRow>
+                <StaffSection
+                  beatCount={this.state.beatCount}
+                  beatLength={this.state.beatLength}
+                  timeSigMenuVisible={this.state.timeSigMenuVisible}
+                  toggleTimeSigMenu={this.toggleTimeSigMenu}
+                  closeTimeSigMenu={this.closeTimeSigMenu}
+                  setBeatCount={this.setBeatCount}
+                  setBeatLength={this.setBeatLength}
+                  subdivisions={this.state.subdivisions}
+                />
+              </TopRow>
+              <BottomRow>
+                <MainControls
+                  chordKey={this.state.chordKey}
+                  chordType={this.state.chordType}
+                  setChordKey={this.setChordKey}
+                  setChordType={this.setChordType}
+                  tempo={this.state.tempo}
+                  setTempo={this.setTempo}
+                  isPlaying={this.state.isPlaying}
+                  togglePlayState={this.togglePlayState}
+                  openAudioMenu={this.openAudioMenu}
+                  tapTempo={this.tapTempo}
+                />
+              </BottomRow>
+            </AppControlsWrapper>
+          </Inner>
         </Wrapper>
       </ThemeProvider>
     )
@@ -200,23 +201,37 @@ class App extends Component<AppProps, AppState> {
 }
 
 const Wrapper = styled.div`
-  display: flex;
+  /* background-color: lightskyblue; */
+  max-width: 900px;
+  height: 100vh;
+  padding: 0px 20px 0px 20px;
+  margin-left: auto;
+  margin-right: auto;
+`
+const Inner = styled.div`
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
   flex-direction: column;
-  align-items: center;
+`
+const AppControlsWrapper = styled.div`
+  /* background-color: lightslategrey; */
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
 `
 const TopRow = styled.div`
+  /* background-color: lightcoral; */
+  margin-top: auto;
+  margin-bottom: auto;
   width: 100%;
-  height: 100px;
 `
-const Staff = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-`
-const DroneControls = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 10px;
+const BottomRow = styled.div`
+  /* background-color: lightgreen; */
+  /* margin-top: auto; */
+  margin-bottom: 80px;
+  width: 100%;
 `
 
 export default App

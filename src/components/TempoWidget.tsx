@@ -50,18 +50,16 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
     }
   }
 
-  handleClickIncrement = () => {
-    this.handleValueChange(parseInt(this.state.value) + 1 + '')
-  }
-  handleClickDecrement = () => {
-    this.handleValueChange(parseInt(this.state.value) - 1 + '')
-  }
-
   hasValidInput = () => {
     const val = this.state.value
     const isValid = parseInt(val) >= this.props.minValue! && parseInt(val) <= this.props.maxValue!
     return isValid
   }
+  handleClickIncrement = () => this.handleValueChange(parseInt(this.state.value) + 1 + '')
+  handleClickDecrement = () => this.handleValueChange(parseInt(this.state.value) - 1 + '')
+  handleInputChange = (e: any) => this.handleValueChange(e.target.value)
+  handleInputBlur = (e: any) => this.handleValueChange(String(this.props.tempo))
+  handleInputFocus = (e: any) => e.target.select()
 
   public render() {
     return (
@@ -77,8 +75,10 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
 
           <BpmField
             value={this.state.value}
-            onChange={e => this.handleValueChange(e.target.value)}
-            onBlur={e => this.handleValueChange(String(this.props.tempo))}
+            onChange={this.handleInputChange}
+            onBlur={this.handleInputBlur}
+            onFocus={this.handleInputFocus}
+            type="number"
           />
 
           <BpmSuffix>bpm</BpmSuffix>
@@ -93,7 +93,7 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
 
 const Wrapper = styled('div')`
   width: 188px;
-  height: 44px;
+
   display: flex;
   flex-direction: column;
   font-weight: bold;
@@ -116,6 +116,13 @@ const BpmField = styled.input`
   height: 22px;
   padding: 0 6px 0 6px;
   border: 0;
+  background-color: transparent;
+  appearance: textfield;
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `
 
 const BpmSuffix = styled.div`

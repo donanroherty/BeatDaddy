@@ -20,13 +20,16 @@ const PlayButton = (props: PlayButtonProps) => {
 
   return (
     <Wrapper onClick={props.onClick} {...props}>
-      <IconWrapper>{props.isPlaying ? pauseIcon : playIcon}</IconWrapper>
+      <IconWrapper isPlaying={props.isPlaying}>
+        {props.isPlaying ? pauseIcon : playIcon}
+      </IconWrapper>
     </Wrapper>
   )
 }
 
-const IconWrapper = styled.div`
+const IconWrapper = styled.div<any>`
   filter: drop-shadow(${props => props.theme.dropShadow});
+  ${props => !props.isPlaying && 'margin-left: 10px;'};
 `
 const Wrapper = styled.div`
   width: 100px;

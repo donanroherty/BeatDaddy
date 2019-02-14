@@ -1,6 +1,18 @@
 import React from 'react'
 
-const iconDefinitions = {
+interface IconDefinitionsType {
+  wholeNote: JSX.Element
+  halfNote: JSX.Element
+  quarterNote: JSX.Element
+  eighthNote: JSX.Element
+  sixteenthNote: JSX.Element
+  play: JSX.Element
+  pause: JSX.Element
+  chevron: JSX.Element
+  volume: JSX.Element
+}
+
+const iconDefinitions: IconDefinitionsType = {
   wholeNote: (
     <svg viewBox="0 0 43.97 78.5">
       <path
@@ -59,6 +71,12 @@ const iconDefinitions = {
   chevron: (
     <svg viewBox="0 0 74.37 46.17">
       <path d="M34.42,45,1.15,11.75a3.9,3.9,0,0,1,0-5.53L6.22,1.15a3.91,3.91,0,0,1,5.53,0L34.42,23.81a3.91,3.91,0,0,0,5.53,0L62.62,1.15a3.89,3.89,0,0,1,5.52,0l5.08,5.07a3.9,3.9,0,0,1,0,5.53L40,45A3.92,3.92,0,0,1,34.42,45Z" />
+    </svg>
+  ),
+  volume: (
+    <svg viewBox="0 0 23.57 24">
+      <path d="M19.27,20.56A1.28,1.28,0,0,1,18,19.27a1.3,1.3,0,0,1,.37-.91,9,9,0,0,0,0-12.72,1.3,1.3,0,0,1-.05-1.82,1.28,1.28,0,0,1,1.82,0l.05,0a11.56,11.56,0,0,1,0,16.36,1.3,1.3,0,0,1-.91.38ZM14.7,18.13a1.28,1.28,0,0,1-1.28-1.28,1.25,1.25,0,0,1,.38-.91,5.58,5.58,0,0,0,0-7.88,1.28,1.28,0,0,1,1.81-1.82,8.15,8.15,0,0,1,0,11.52,1.28,1.28,0,0,1-.91.38Z" />
+      <path d="M11.14,24a.86.86,0,0,1-.6-.25L3.93,17.14H.86A.85.85,0,0,1,0,16.29H0V7.71a.85.85,0,0,1,.86-.85H3.93L10.54.25A.86.86,0,0,1,12,.86V23.14a.86.86,0,0,1-.85.86Z" />
     </svg>
   )
 }

@@ -9,19 +9,25 @@ import styled from '../theme/themed-styled-components'
 import iconDefinitions, { getIconDimensions } from './iconDefinitions'
 
 export interface IconProps {
-  fillColor: string
-  size: number
-  icon: keyof typeof iconDefinitions
+  fillColor?: string
+  size?: number
+  icon?: keyof typeof iconDefinitions
+}
+
+const defaultProps: IconProps = {
+  fillColor: 'black',
+  size: 50,
+  icon: 'pause'
 }
 
 const Icon = (props: IconProps) => {
   // Get viewbox dimensions from icon definition
-  const iconDef = iconDefinitions[props.icon]
+  const iconDef = iconDefinitions[props.icon!]
   const viewBox = iconDef.props.viewBox.split(' ')
   const vbWidth = viewBox[2]
   const vbHeight = viewBox[3]
 
-  const dimensions = getIconDimensions(props.icon, props.size)
+  const dimensions = getIconDimensions(props.icon!, props.size!)
 
   return (
     <SVGWrapper
@@ -29,7 +35,6 @@ const Icon = (props: IconProps) => {
       viewBox={`0 0 ${vbWidth} ${vbHeight}`}
       height={dimensions.height}
       width={dimensions.width}
-      
     >
       {iconDef}
     </SVGWrapper>
@@ -40,4 +45,5 @@ const SVGWrapper = styled('svg')<IconProps>`
   fill: ${props => props.fillColor};
 `
 
+Icon.defaultProps = defaultProps
 export default Icon

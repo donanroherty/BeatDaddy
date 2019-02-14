@@ -70,8 +70,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             <Icon icon="chevron" fillColor={this.props.theme!.primary} size={6} />
           </ChevronWrapper>
         </TopSection>
-        <OptionPanelWrapper isOpen={this.state.isOpen}>
-          <OptionPanel {...this.props}>{optionComps}</OptionPanel>
+        <OptionPanelWrapper {...this.props} isOpen={this.state.isOpen}>
+          <OptionPanel {...this.props} isOpen={this.state.isOpen}>
+            {optionComps}
+          </OptionPanel>
         </OptionPanelWrapper>
       </Wrapper>
     )
@@ -126,15 +128,21 @@ const Selection = styled.div`
   padding-left: 14px;
 `
 
-const OptionPanelWrapper = styled.div<any>`
-  display: ${props => (props.isOpen ? 'inherit' : 'none')};
-`
 const optionItemHeight = 35
-const OptionPanel = styled.div<DropdownProps>`
+const OptionPanelWrapper = styled.div<any>`
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid ${props => props.theme.primaryLight};
+  border-radius: ${props => props.borderRadius};
+  display: ${props => (props.isOpen ? 'inherit' : 'none')};
+  background-color: white;
+`
+const OptionPanel = styled.div<any>`
+  overflow-y: auto;
   height: ${props =>
     props.dropdownHeight ? props.dropdownHeight : optionItemHeight * props.options.length + 'px'};
-  overflow-y: auto;
-  border-top: 1px solid ${props => props.theme.primaryLight};
+  width: ${props => props.width};
 `
 const Option = styled.div`
   height: ${optionItemHeight}px;
