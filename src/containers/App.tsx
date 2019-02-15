@@ -50,15 +50,6 @@ export interface AppState {
   timeSigMenuVisible: boolean
 }
 
-const GlobalStyle = createGlobalStyle`
-/* @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto'); */
-body{
-  font-family:'Roboto', arial, sans-serif;
-  color: ${theme.dark};
-  margin: 0px;
-}
-`
-
 class App extends Component<AppProps, AppState> {
   audioCtx!: AudioContext
 
@@ -200,10 +191,26 @@ class App extends Component<AppProps, AppState> {
   }
 }
 
+const GlobalStyle = createGlobalStyle`
+/* @import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto'); */
+body{
+  font-family:'Roboto', arial, sans-serif;
+  color: ${theme.dark};
+  margin: 0px;
+  height: 100%;
+}
+:root {
+  height: 100%;
+}
+#root{
+  height: 100%;
+}
+`
+
 const Wrapper = styled.div`
   /* background-color: lightskyblue; */
   max-width: 900px;
-  height: 100vh;
+  height: 100%;
   padding: 0px 20px 0px 20px;
   margin-left: auto;
   margin-right: auto;
@@ -230,7 +237,7 @@ const TopRow = styled.div`
 const BottomRow = styled.div`
   /* background-color: lightgreen; */
   /* margin-top: auto; */
-  margin-bottom: 80px;
+  margin-bottom: 110px;
   width: 100%;
 `
 
