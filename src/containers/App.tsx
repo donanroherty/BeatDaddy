@@ -5,13 +5,10 @@ import styled from 'styled-components'
 
 import Metronome from '../audio-engines/Metronome'
 import Drone from '../audio-engines/Drone'
-import BeatStaff from '../components/BeatStaff'
-
-import TimeSignature from '../components/TimeSignature'
 import MainControls from './MainControls'
 import StaffSection from './StaffSection'
-
 import Navbar from '../components/Navbar'
+import AudioMenu from '../components/AudioMenu'
 
 import { Key, ChordType } from '../data/Types'
 
@@ -48,6 +45,7 @@ export interface AppState {
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
   timeSigMenuVisible: boolean
+  audioMenuVisible: boolean
 }
 
 class App extends Component<AppProps, AppState> {
@@ -75,10 +73,11 @@ class App extends Component<AppProps, AppState> {
       chordType: ChordType.Major,
       a4: 440,
       metronomeVolume: 1.0,
-      droneVolume: 0.05,
+      droneVolume: 0.25,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: false
+      timeSigMenuVisible: false,
+      audioMenuVisible: false
     }
   }
 
@@ -90,9 +89,9 @@ class App extends Component<AppProps, AppState> {
 
   togglePlayState = () => {
     this.audioCtx.resume()
-    // if (this.state.audioLoaded) {
-    this.setState({ isPlaying: !this.state.isPlaying })
-    // }
+    if (this.state.audioLoaded) {
+      this.setState({ isPlaying: !this.state.isPlaying })
+    }
     // TODO: Stop automatically after all bars are played
   }
 
@@ -108,6 +107,16 @@ class App extends Component<AppProps, AppState> {
   }
   closeTimeSigMenu = () => {
     this.setState({ timeSigMenuVisible: false })
+  }
+
+  toggleAudioMenu = () => {
+    this.state.audioMenuVisible ? this.closeAudioMenu() : this.openAudioMenu()
+  }
+  openAudioMenu = () => {
+    this.setState({ audioMenuVisible: true })
+  }
+  closeAudioMenu = () => {
+    this.setState({ audioMenuVisible: false })
   }
 
   setBeatCount = (count: number) => {
@@ -127,7 +136,12 @@ class App extends Component<AppProps, AppState> {
     this.setState({ chordType: newType })
   }
 
-  openAudioMenu = () => {}
+  setMetronomeVolume = (value: number) => {
+    this.setState({ metronomeVolume: value })
+  }
+  setDroneVolume = (value: number) => {
+    this.setState({ droneVolume: value })
+  }
 
   tapTempo = () => {}
 
@@ -153,6 +167,15 @@ class App extends Component<AppProps, AppState> {
             volume={this.state.droneVolume}
             a4={this.state.a4}
           />
+
+          <AudioMenu
+            metronomeVolume={this.state.metronomeVolume}
+            setMetronomeVolume={this.setMetronomeVolume}
+            droneVolume={this.state.droneVolume}
+            setDroneVolume={this.setDroneVolume}
+            isVisible={this.state.audioMenuVisible}
+          />
+
           <Inner>
             <Navbar />
 
@@ -179,7 +202,7 @@ class App extends Component<AppProps, AppState> {
                   setTempo={this.setTempo}
                   isPlaying={this.state.isPlaying}
                   togglePlayState={this.togglePlayState}
-                  openAudioMenu={this.openAudioMenu}
+                  toggleAudioMenu={this.toggleAudioMenu}
                   tapTempo={this.tapTempo}
                 />
               </BottomRow>

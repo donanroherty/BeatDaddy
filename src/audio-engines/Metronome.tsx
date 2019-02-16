@@ -56,6 +56,10 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
         this.start()
       }
     }
+
+    if (prevProps.volume !== this.props.volume) {
+      this.metronomeMasterGain.gain.value = this.props.volume
+    }
   }
 
   // Load audio samples

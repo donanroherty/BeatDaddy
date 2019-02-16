@@ -28,6 +28,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
     super(props)
     this.notes = this.getAllNotes()
     this.droneMasterGain.connect(this.props.audioCtx.destination)
+    this.droneMasterGain.gain.value = this.props.volume
   }
 
   componentDidUpdate(prevProps: DroneProps, prevState: DroneState) {
@@ -44,23 +45,32 @@ class Drone extends React.Component<DroneProps, DroneState> {
         this.start()
       }
     }
+
+    if (prevProps.volume !== this.props.volume) {
+      const now = this.props.audioCtx.currentTime
+      this.droneMasterGain.gain.cancelScheduledValues(now)
+      this.droneMasterGain.gain.setTargetAtTime(this.props.volume, now, 1)
+    }
   }
 
   start = () => {
-    this.stop()
-    this.chordToneOscillators = this.getChordToneOscillators()
-
-    const now = this.props.audioCtx.currentTime
-    this.droneMasterGain.gain.setValueAtTime(0, now).setTargetAtTime(this.props.volume, now, 2)
-  }
-
-  stop = () => {
-    // this.droneMasterGain.gain.setTargetAtTime(0, this.props.audioCtx.currentTime, 0.2)
     // Kill existing sounds
     this.chordToneOscillators.forEach(val => {
       val.oscillator.stop()
       val.gain.disconnect()
     })
+
+    this.chordToneOscillators = this.getChordToneOscillators()
+
+    const now = this.props.audioCtx.currentTime
+    this.droneMasterGain.gain.cancelScheduledValues(now)
+    this.droneMasterGain.gain.setValueAtTime(0, now).setTargetAtTime(this.props.volume, now, 2)
+  }
+
+  stop = () => {
+    const now = this.props.audioCtx.currentTime
+    this.droneMasterGain.gain.cancelScheduledValues(now)
+    this.droneMasterGain.gain.setTargetAtTime(0, now, 0.5)
   }
 
   getChordToneOscillators = (): Array<{ oscillator: OscillatorNode; gain: GainNode }> => {

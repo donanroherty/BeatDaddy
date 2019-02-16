@@ -56,7 +56,7 @@ const MenuPanel = (props: MenuPanelProps) => {
       {props.show && (
         <Wrapper>
           <MainBox>
-            {makeArrow()}
+            {props.hasArrow && makeArrow()}
             <Content {...props}>{props.children}</Content>
           </MainBox>
         </Wrapper>
@@ -85,7 +85,7 @@ const Content = styled.div<MenuPanelProps>`
   height: calc(100% + ${props => props.arrowHeight!}px);
   width: 100%;
   position: relative;
-  top: ${props => -props.arrowHeight!}px;
+  top: ${props => (props.arrowHeight ? -props.arrowHeight! : 0)}px;
 `
 
 const StyledSVG = styled.svg<MenuPanelProps>`

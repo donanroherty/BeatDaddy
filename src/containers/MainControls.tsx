@@ -21,7 +21,8 @@ interface MainControlsProps {
   isPlaying: boolean
   togglePlayState: () => void
 
-  openAudioMenu: () => void
+  toggleAudioMenu: () => void
+
   tapTempo: () => void
 
   theme: ThemeInterface
@@ -48,9 +49,9 @@ const MainControls = (props: MainControlsProps) => {
 
       <StyledTempoWidget tempo={props.tempo} setTempo={props.setTempo} />
       <ThumbControlsWrapper>
-        <MuteButton width="40px" height="40px" onClick={props.openAudioMenu}>
+        <AudioMenuButton width="40px" height="40px" onClick={props.toggleAudioMenu}>
           <Icon icon="volume" fillColor={props.theme.primary} size={32} />
-        </MuteButton>
+        </AudioMenuButton>
 
         <PlayBtnWrapper>
           <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
@@ -70,8 +71,6 @@ const MainControls = (props: MainControlsProps) => {
 }
 
 const Wrapper = styled.div`
-  /* background-color: lightgreen; */
-  /* margin-top: auto; */
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -116,7 +115,7 @@ const StyledButton = styled(Button)`
   margin-left: auto;
   margin-right: auto;
 `
-const MuteButton = styled(StyledButton)`
+const AudioMenuButton = styled(StyledButton)`
   /* margin-left: 100%; */
 `
 const TapButton = styled(StyledButton)`
