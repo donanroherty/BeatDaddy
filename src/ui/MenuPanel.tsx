@@ -5,7 +5,9 @@ import { ThemeInterface } from '../theme/theme'
 import { withTheme } from 'styled-components'
 
 export interface MenuPanelProps {
-  show?: boolean
+  show: boolean
+  posX: number
+  posY: number
   hasArrow?: boolean
   arrowDirection?: 'up' | 'right' | 'left' | 'down'
   arrowPosition?: number
@@ -18,6 +20,8 @@ export interface MenuPanelProps {
 
 const defaultProps = {
   show: false,
+  posX: 0,
+  posY: 0,
   hasArrow: true,
   arrowDirection: 'up',
   arrowPosition: 2, // Used to slide arrow along an edge
@@ -38,7 +42,7 @@ const MenuPanel = (props: MenuPanelProps) => {
     const points = `${0},${arrowHeight} ${arrowWidth! * 0.5},${0} ${arrowWidth},${arrowHeight}`
 
     return (
-      <StyledSVG {...props} viewBox={viewBox}>
+      <ArrowSvg {...props} viewBox={viewBox}>
         <polygon
           points={points}
           style={{
@@ -47,14 +51,14 @@ const MenuPanel = (props: MenuPanelProps) => {
             strokeWidth: borderThickness
           }}
         />
-      </StyledSVG>
+      </ArrowSvg>
     )
   }
 
   return (
     <div>
       {props.show && (
-        <Wrapper>
+        <Wrapper {...props}>
           <MainBox>
             {props.hasArrow && makeArrow()}
             <Content {...props}>{props.children}</Content>
@@ -65,8 +69,10 @@ const MenuPanel = (props: MenuPanelProps) => {
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<any>`
   position: relative;
+  left: ${props => props.posX}px;
+  top: ${props => props.posY}px;
   z-index: 50;
   filter: drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.16));
 `
@@ -78,8 +84,6 @@ const MainBox = styled.div`
   border-radius: 12px;
   border: 2px solid ${props => props.theme.primaryLight};
   position: absolute;
-  top: 15px;
-  left: 2px;
 `
 const Content = styled.div<MenuPanelProps>`
   height: calc(100% + ${props => props.arrowHeight!}px);
@@ -88,7 +92,7 @@ const Content = styled.div<MenuPanelProps>`
   top: ${props => (props.arrowHeight ? -props.arrowHeight! : 0)}px;
 `
 
-const StyledSVG = styled.svg<MenuPanelProps>`
+const ArrowSvg = styled.svg<MenuPanelProps>`
   z-index: 1;
   width: ${props => props.arrowWidth}px;
   height: ${props => props.arrowHeight}px;

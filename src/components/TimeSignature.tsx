@@ -56,6 +56,8 @@ class TimeSignature extends React.Component<TimeSignatureProps, {}> {
           </Column>
         </Inner>
         <TimeSignatureMenu
+          posX={2}
+          posY={15}
           show={this.props.menuVisible}
           beatCount={this.props.beatCount}
           beatLength={this.props.beatLength}

@@ -11,6 +11,8 @@ import RadioCheckbox from '../ui/RadioCheckbox'
 
 export interface TimeSignatureMenuProps {
   show: boolean
+  posX?: number
+  posY?: number
   beatCount: number
   beatLength: number
   setBeatCount: (count: number) => void
@@ -93,7 +95,7 @@ const TimeSignatureMenu = (props: TimeSignatureMenuProps) => {
   ))
 
   return (
-    <MenuPanel {...props}>
+    <MenuPanel posX={props.posX!} posY={props.posY!} show={props.show!}>
       <Content>
         <TopSpan>{timeSigPresetElements}</TopSpan>
         {/* <HR /> */}

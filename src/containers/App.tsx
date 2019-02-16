@@ -140,7 +140,8 @@ class App extends Component<AppProps, AppState> {
     this.setState({ metronomeVolume: value })
   }
   setDroneVolume = (value: number) => {
-    this.setState({ droneVolume: value })
+    const val = value < 0.3 ? value : 0.3
+    this.setState({ droneVolume: val })
   }
 
   tapTempo = () => {}
@@ -166,14 +167,6 @@ class App extends Component<AppProps, AppState> {
             isPlaying={this.state.isPlaying}
             volume={this.state.droneVolume}
             a4={this.state.a4}
-          />
-
-          <AudioMenu
-            metronomeVolume={this.state.metronomeVolume}
-            setMetronomeVolume={this.setMetronomeVolume}
-            droneVolume={this.state.droneVolume}
-            setDroneVolume={this.setDroneVolume}
-            isVisible={this.state.audioMenuVisible}
           />
 
           <Inner>
@@ -204,6 +197,11 @@ class App extends Component<AppProps, AppState> {
                   togglePlayState={this.togglePlayState}
                   toggleAudioMenu={this.toggleAudioMenu}
                   tapTempo={this.tapTempo}
+                  metronomeVolume={this.state.metronomeVolume}
+                  setMetronomeVolume={this.setMetronomeVolume}
+                  droneVolume={this.state.droneVolume}
+                  setDroneVolume={this.setDroneVolume}
+                  audioMenuVisible={this.state.audioMenuVisible}
                 />
               </BottomRow>
             </AppControlsWrapper>

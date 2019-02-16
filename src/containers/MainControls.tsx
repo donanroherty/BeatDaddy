@@ -8,23 +8,24 @@ import TempoWidget from '../components/TempoWidget'
 import Button from '../ui/Button'
 import Icon from '../ui/Icon'
 import PlayButton from '../components/PlayButton'
+import AudioMenu from '../components/AudioMenu'
 
 interface MainControlsProps {
   chordKey: Key
   chordType: ChordType
   setChordKey: (idx: number) => void
   setChordType: (idx: number) => void
-
   tempo: number
   setTempo: (newTempo: number) => void
-
   isPlaying: boolean
   togglePlayState: () => void
-
   toggleAudioMenu: () => void
-
+  metronomeVolume: number
+  setMetronomeVolume: (value: number) => void
+  droneVolume: number
+  setDroneVolume: (value: number) => void
+  audioMenuVisible: boolean
   tapTempo: () => void
-
   theme: ThemeInterface
 }
 
@@ -49,9 +50,22 @@ const MainControls = (props: MainControlsProps) => {
 
       <StyledTempoWidget tempo={props.tempo} setTempo={props.setTempo} />
       <ThumbControlsWrapper>
-        <AudioMenuButton width="40px" height="40px" onClick={props.toggleAudioMenu}>
-          <Icon icon="volume" fillColor={props.theme.primary} size={32} />
-        </AudioMenuButton>
+        <AudioButtonWrapper>
+          <AudioButtonInner>
+            <AudioMenuButton width="40px" height="40px" onClick={props.toggleAudioMenu}>
+              <Icon icon="volume" fillColor={props.theme.primary} size={32} />
+            </AudioMenuButton>
+            <AudioMenu
+              posX={-80}
+              posY={-180}
+              metronomeVolume={props.metronomeVolume}
+              setMetronomeVolume={props.setMetronomeVolume}
+              droneVolume={props.droneVolume}
+              setDroneVolume={props.setDroneVolume}
+              show={props.audioMenuVisible}
+            />
+          </AudioButtonInner>
+        </AudioButtonWrapper>
 
         <PlayBtnWrapper>
           <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
@@ -115,6 +129,15 @@ const StyledButton = styled(Button)`
   margin-left: auto;
   margin-right: auto;
 `
+const AudioButtonWrapper = styled.div`
+  display: flex;
+`
+const AudioButtonInner = styled.div`
+  margin: auto auto 0 auto;
+  display: flex;
+  width: 40px;
+  height: 40px;
+`
 const AudioMenuButton = styled(StyledButton)`
   /* margin-left: 100%; */
 `
@@ -122,9 +145,7 @@ const TapButton = styled(StyledButton)`
   /* margin-right: 100%; */
 `
 
-const StyledPlayButton = styled(PlayButton)`
-  background-color: white;
-`
+const StyledPlayButton = styled(PlayButton)``
 
 const PlayBtnWrapper = styled.div`
   /* background-color: lightseagreen; */

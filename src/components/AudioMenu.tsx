@@ -7,11 +7,13 @@ import { ThemeInterface } from '../theme/theme'
 import { withTheme } from 'styled-components'
 
 interface AudioMenuProps {
+  posX?: number
+  posY?: number
   metronomeVolume: number
   setMetronomeVolume: (newVolume: number) => void
   droneVolume: number
   setDroneVolume: (newVolume: number) => void
-  isVisible: boolean
+  show: boolean
   theme?: ThemeInterface
 }
 
@@ -25,7 +27,7 @@ const AudioMenu = (props: AudioMenuProps) => {
   }
 
   return (
-    <MenuPanel show={props.isVisible} hasArrow={true}>
+    <MenuPanel posX={props.posX!} posY={props.posY!} show={props.show} hasArrow={true}>
       <Inner>
         <Section>
           <IconWrapper>
@@ -64,7 +66,6 @@ const AudioMenu = (props: AudioMenuProps) => {
 
 const Inner = styled.div`
   height: 100%;
-  /* background-color: red; */
   padding: 10px;
   display: grid;
   grid-gap: 20px;
