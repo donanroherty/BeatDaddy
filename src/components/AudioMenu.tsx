@@ -2,18 +2,16 @@ import React from 'react'
 import styled from '../theme/themed-styled-components'
 import Slider from '@material-ui/lab/Slider'
 import MenuPanel from '../ui/MenuPanel'
+import { MenuPanelProps } from '../ui/MenuPanel'
 import Icon from '../ui/Icon'
 import { ThemeInterface } from '../theme/theme'
 import { withTheme } from 'styled-components'
 
-interface AudioMenuProps {
-  posX?: number
-  posY?: number
+interface AudioMenuProps extends MenuPanelProps {
   metronomeVolume: number
   setMetronomeVolume: (newVolume: number) => void
   droneVolume: number
   setDroneVolume: (newVolume: number) => void
-  show: boolean
   theme?: ThemeInterface
 }
 
@@ -27,9 +25,9 @@ const AudioMenu = (props: AudioMenuProps) => {
   }
 
   return (
-    <MenuPanel posX={props.posX!} posY={props.posY!} show={props.show} hasArrow={true}>
-      <Inner>
-        <Section>
+    <Wrapper {...props}>
+      <Content>
+        <MetronomeSection>
           <IconWrapper>
             <Icon
               icon="metronome"
@@ -41,11 +39,11 @@ const AudioMenu = (props: AudioMenuProps) => {
           <SectionContent>
             <Slider value={props.metronomeVolume * 100} onChange={handleSetMetronomeVolume} />
           </SectionContent>
-        </Section>
+        </MetronomeSection>
 
         <HR />
 
-        <Section>
+        <DroneSection>
           <IconWrapper>
             <Icon
               icon="keyboard"
@@ -58,43 +56,50 @@ const AudioMenu = (props: AudioMenuProps) => {
           <SectionContent>
             <Slider value={props.droneVolume * 100} onChange={handleSetDroneVolume} />
           </SectionContent>
-        </Section>
-      </Inner>
-    </MenuPanel>
+        </DroneSection>
+      </Content>
+    </Wrapper>
   )
 }
 
-const Inner = styled.div`
-  height: 100%;
-  padding: 10px;
-  display: grid;
-  grid-gap: 20px;
-  grid-template-rows: 1fr auto 1fr;
+const Wrapper = styled(MenuPanel)`
+  /* position: relative; */
+`
+
+const Content = styled.div`
+  max-width: 300px;
+  width: calc(100vw - 40px); // 40px allows for viewport padding
 `
 const Section = styled.div`
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-content: center;
+  padding-left: 20px;
 `
+const MetronomeSection = styled(Section)`
+  padding-top: 20px;
+`
+const DroneSection = styled(Section)`
+  padding-bottom: 30px;
+`
+
 const IconWrapper = styled.div`
   width: 50px;
   display: flex;
   align-items: center;
 `
 const SectionContent = styled.div`
-  width: 50px;
   display: flex;
   align-items: center;
-  width: 100%;
-  padding: 0 20px 0 20px;
+  width: 60%;
 `
 const HR = styled.div`
   background-color: ${props => props.theme.light};
   height: 1px;
   width: 90%;
+  margin-top: 20px;
+  margin-bottom: 20px;
   margin-left: auto;
   margin-right: auto;
 `

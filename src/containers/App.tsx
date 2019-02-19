@@ -8,7 +8,6 @@ import Drone from '../audio-engines/Drone'
 import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
-import AudioMenu from '../components/AudioMenu'
 
 import { Key, ChordType } from '../data/Types'
 
@@ -99,9 +98,6 @@ class App extends Component<AppProps, AppState> {
     this.setState({ tempo: val })
   }
 
-  toggleTimeSigMenu = () => {
-    this.state.timeSigMenuVisible ? this.closeTimeSigMenu() : this.openTimeSigMenu()
-  }
   openTimeSigMenu = () => {
     this.setState({ timeSigMenuVisible: true })
   }
@@ -178,7 +174,7 @@ class App extends Component<AppProps, AppState> {
                   beatCount={this.state.beatCount}
                   beatLength={this.state.beatLength}
                   timeSigMenuVisible={this.state.timeSigMenuVisible}
-                  toggleTimeSigMenu={this.toggleTimeSigMenu}
+                  openTimeSigMenu={this.openTimeSigMenu}
                   closeTimeSigMenu={this.closeTimeSigMenu}
                   setBeatCount={this.setBeatCount}
                   setBeatLength={this.setBeatLength}
@@ -196,6 +192,7 @@ class App extends Component<AppProps, AppState> {
                   isPlaying={this.state.isPlaying}
                   togglePlayState={this.togglePlayState}
                   toggleAudioMenu={this.toggleAudioMenu}
+                  closeAudioMenu={this.closeAudioMenu}
                   tapTempo={this.tapTempo}
                   metronomeVolume={this.state.metronomeVolume}
                   setMetronomeVolume={this.setMetronomeVolume}

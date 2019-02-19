@@ -20,6 +20,7 @@ interface MainControlsProps {
   isPlaying: boolean
   togglePlayState: () => void
   toggleAudioMenu: () => void
+  closeAudioMenu: () => void
   metronomeVolume: number
   setMetronomeVolume: (value: number) => void
   droneVolume: number
@@ -49,20 +50,20 @@ const MainControls = (props: MainControlsProps) => {
       </DroneControls>
 
       <StyledTempoWidget tempo={props.tempo} setTempo={props.setTempo} />
+
       <ThumbControlsWrapper>
         <AudioButtonWrapper>
           <AudioButtonInner>
             <AudioMenuButton width="40px" height="40px" onClick={props.toggleAudioMenu}>
               <Icon icon="volume" fillColor={props.theme.primary} size={32} />
             </AudioMenuButton>
-            <AudioMenu
-              posX={-80}
-              posY={-180}
+            <StyledAudioMenu
               metronomeVolume={props.metronomeVolume}
               setMetronomeVolume={props.setMetronomeVolume}
               droneVolume={props.droneVolume}
               setDroneVolume={props.setDroneVolume}
               show={props.audioMenuVisible}
+              handleOutsideClick={props.closeAudioMenu}
             />
           </AudioButtonInner>
         </AudioButtonWrapper>
@@ -138,12 +139,15 @@ const AudioButtonInner = styled.div`
   width: 40px;
   height: 40px;
 `
-const AudioMenuButton = styled(StyledButton)`
-  /* margin-left: 100%; */
+const AudioMenuButton = styled(StyledButton)``
+const StyledAudioMenu = styled(AudioMenu)`
+  height: 150px;
+  position: relative;
+  top: -80px;
+  left: -50px;
+  margin-left: 20px;
 `
-const TapButton = styled(StyledButton)`
-  /* margin-right: 100%; */
-`
+const TapButton = styled(StyledButton)``
 
 const StyledPlayButton = styled(PlayButton)``
 

@@ -8,11 +8,9 @@ import MenuPanel from '../ui/MenuPanel'
 import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
 import RadioCheckbox from '../ui/RadioCheckbox'
+import { MenuPanelProps } from '../ui/MenuPanel'
 
-export interface TimeSignatureMenuProps {
-  show: boolean
-  posX?: number
-  posY?: number
+export interface TimeSignatureMenuProps extends MenuPanelProps {
   beatCount: number
   beatLength: number
   setBeatCount: (count: number) => void
@@ -25,6 +23,7 @@ interface PresetType {
   numerator: number
   denominator: number
 }
+
 const Presets: Array<PresetType> = [
   {
     name: 'TwoTwo',
@@ -95,7 +94,7 @@ const TimeSignatureMenu = (props: TimeSignatureMenuProps) => {
   ))
 
   return (
-    <MenuPanel posX={props.posX!} posY={props.posY!} show={props.show!}>
+    <MenuPanel {...props}>
       <Content>
         <TopSpan>{timeSigPresetElements}</TopSpan>
         {/* <HR /> */}
@@ -104,13 +103,17 @@ const TimeSignatureMenu = (props: TimeSignatureMenuProps) => {
   )
 }
 
-const Content = styled.div``
+const Content = styled.div`
+  max-width: 300px;
+  width: calc(100vw - 40px); // 40px allows for viewport padding
+`
+
 const TopSpan = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 17px 20px 0px 20px;
+  padding: 20px;
 `
 const HR = styled.div`
   background-color: ${props => props.theme.light};
@@ -120,7 +123,7 @@ const HR = styled.div`
   margin-right: auto;
 `
 const OptionWrapper = styled.div`
-  width: 22px;
+  /* width: 22px; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -133,7 +136,7 @@ const TimeSigLabel = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 17px;
+  margin-bottom: 8px;
 `
 const Line = styled.div`
   width: 17px;
