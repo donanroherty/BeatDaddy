@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from '../theme/themed-styled-components'
-import Slider from '@material-ui/lab/Slider'
 import MenuPanel from '../ui/MenuPanel'
 import { MenuPanelProps } from '../ui/MenuPanel'
 import Icon from '../ui/Icon'
 import { ThemeInterface } from '../theme/theme'
 import { withTheme } from 'styled-components'
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
 
 interface AudioMenuProps extends MenuPanelProps {
   metronomeVolume: number
@@ -16,13 +17,28 @@ interface AudioMenuProps extends MenuPanelProps {
 }
 
 const AudioMenu = (props: AudioMenuProps) => {
-  const handleSetMetronomeVolume = (event: any, value: number) => {
-    props.setMetronomeVolume(value / 100)
+  const handleChangeMnVolume = (val: number) => {
+    props.setMetronomeVolume(val / 100)
+  }
+  const handleChangeDroneVolume = (val: number) => {
+    props.setDroneVolume(val / 100)
   }
 
-  const handleSetDroneVolume = (event: any, value: number) => {
-    props.setDroneVolume(value / 100)
+  const handleStyle = {
+    borderColor: props.theme!.primaryLight!,
+    height: 28,
+    width: 28,
+    marginLeft: -14,
+    marginTop: -9,
+    backgroundColor: props.theme!.primaryLight!
   }
+  const railStyle = {
+    backgroundColor: 'transparent',
+    height: 10,
+    borderColor: props.theme!.primaryLight!,
+    border: `2px solid ${props.theme!.primaryLight!}`
+  }
+  const trackStyle = { backgroundColor: props.theme!.primary!, height: 10 }
 
   return (
     <Wrapper {...props}>
@@ -37,7 +53,15 @@ const AudioMenu = (props: AudioMenuProps) => {
             />
           </IconWrapper>
           <SectionContent>
-            <Slider value={props.metronomeVolume * 100} onChange={handleSetMetronomeVolume} />
+            <Slider
+              min={0}
+              max={100}
+              value={props.metronomeVolume * 100}
+              onChange={handleChangeMnVolume}
+              trackStyle={trackStyle}
+              handleStyle={handleStyle}
+              railStyle={railStyle}
+            />
           </SectionContent>
         </MetronomeSection>
 
@@ -54,7 +78,15 @@ const AudioMenu = (props: AudioMenuProps) => {
             />
           </IconWrapper>
           <SectionContent>
-            <Slider value={props.droneVolume * 100} onChange={handleSetDroneVolume} />
+            <Slider
+              min={0}
+              max={100}
+              value={props.droneVolume * 100}
+              onChange={handleChangeDroneVolume}
+              trackStyle={trackStyle}
+              handleStyle={handleStyle}
+              railStyle={railStyle}
+            />
           </SectionContent>
         </DroneSection>
       </Content>
@@ -92,7 +124,9 @@ const IconWrapper = styled.div`
 const SectionContent = styled.div`
   display: flex;
   align-items: center;
-  width: 60%;
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 35px;
 `
 const HR = styled.div`
   background-color: ${props => props.theme.light};

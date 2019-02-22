@@ -76,7 +76,7 @@ class App extends Component<AppProps, AppState> {
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
-      audioMenuVisible: false
+      audioMenuVisible: true
     }
   }
 
