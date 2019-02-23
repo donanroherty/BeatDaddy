@@ -18,10 +18,10 @@ interface AudioMenuProps extends MenuPanelProps {
 
 const AudioMenu = (props: AudioMenuProps) => {
   const handleChangeMnVolume = (val: number) => {
-    props.setMetronomeVolume(val / 100)
+    props.setMetronomeVolume(val)
   }
   const handleChangeDroneVolume = (val: number) => {
-    props.setDroneVolume(val / 100)
+    props.setDroneVolume(val)
   }
 
   const handleStyle = {
@@ -56,7 +56,7 @@ const AudioMenu = (props: AudioMenuProps) => {
             <Slider
               min={0}
               max={100}
-              value={props.metronomeVolume * 100}
+              value={props.metronomeVolume}
               onChange={handleChangeMnVolume}
               trackStyle={trackStyle}
               handleStyle={handleStyle}
@@ -81,7 +81,7 @@ const AudioMenu = (props: AudioMenuProps) => {
             <Slider
               min={0}
               max={100}
-              value={props.droneVolume * 100}
+              value={props.droneVolume}
               onChange={handleChangeDroneVolume}
               trackStyle={trackStyle}
               handleStyle={handleStyle}

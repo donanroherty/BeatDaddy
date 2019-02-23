@@ -27,7 +27,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
 
   constructor(props: MetronomeProps) {
     super(props)
-    this.metronomeMasterGain.gain.value = this.props.volume
+    this.metronomeMasterGain.gain.value = this.props.volume / 100
     this.metronomeMasterGain.connect(this.props.audioCtx.destination)
 
     this.state = {
@@ -58,7 +58,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     }
 
     if (prevProps.volume !== this.props.volume) {
-      this.metronomeMasterGain.gain.value = this.props.volume
+      this.metronomeMasterGain.gain.value = this.props.volume / 100
     }
   }
 

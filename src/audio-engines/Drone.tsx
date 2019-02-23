@@ -28,7 +28,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
     super(props)
     this.notes = this.getAllNotes()
     this.droneMasterGain.connect(this.props.audioCtx.destination)
-    this.droneMasterGain.gain.value = this.props.volume
+    this.droneMasterGain.gain.value = this.getSafeVolume()
   }
 
   componentDidUpdate(prevProps: DroneProps, prevState: DroneState) {
@@ -49,8 +49,13 @@ class Drone extends React.Component<DroneProps, DroneState> {
     if (prevProps.volume !== this.props.volume) {
       const now = this.props.audioCtx.currentTime
       this.droneMasterGain.gain.cancelScheduledValues(now)
-      this.droneMasterGain.gain.setTargetAtTime(this.props.volume, now, 1)
+      this.droneMasterGain.gain.setTargetAtTime(this.getSafeVolume(), now, 0)
     }
+  }
+
+  getSafeVolume = () => {
+    const volMax = 0.25
+    return (volMax / 100) * this.props.volume
   }
 
   start = () => {
@@ -64,7 +69,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
 
     const now = this.props.audioCtx.currentTime
     this.droneMasterGain.gain.cancelScheduledValues(now)
-    this.droneMasterGain.gain.setValueAtTime(0, now).setTargetAtTime(this.props.volume, now, 2)
+    this.droneMasterGain.gain.setValueAtTime(0, now).setTargetAtTime(this.getSafeVolume(), now, 2)
   }
 
   stop = () => {

@@ -10,6 +10,7 @@ import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
 
 import { Key, ChordType } from '../data/Types'
+import { clamp } from '../utils/utils'
 
 export enum BeatLengthOptions {
   one,
@@ -71,11 +72,11 @@ class App extends Component<AppProps, AppState> {
       chordKey: Key.C,
       chordType: ChordType.Major,
       a4: 440,
-      metronomeVolume: 1.0,
-      droneVolume: 0.25,
+      metronomeVolume: 75,
+      droneVolume: 75,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: false,
+      timeSigMenuVisible: true,
       audioMenuVisible: true
     }
   }
@@ -133,11 +134,10 @@ class App extends Component<AppProps, AppState> {
   }
 
   setMetronomeVolume = (value: number) => {
-    this.setState({ metronomeVolume: value })
+    this.setState({ metronomeVolume: clamp(value, 0.0, 100.0) })
   }
   setDroneVolume = (value: number) => {
-    const val = value < 0.3 ? value : 0.3
-    this.setState({ droneVolume: val })
+    this.setState({ droneVolume: clamp(value, 0.0, 100.0) })
   }
 
   tapTempo = () => {}
