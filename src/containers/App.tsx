@@ -76,8 +76,8 @@ class App extends Component<AppProps, AppState> {
       droneVolume: 75,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: true,
-      audioMenuVisible: true
+      timeSigMenuVisible: false,
+      audioMenuVisible: false
     }
   }
 

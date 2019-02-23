@@ -41,7 +41,7 @@ const AudioMenu = (props: AudioMenuProps) => {
   const trackStyle = { backgroundColor: props.theme!.primary!, height: 10 }
 
   return (
-    <Wrapper {...props}>
+    <MenuPanel {...props}>
       <Content>
         <MetronomeSection>
           <IconWrapper>
@@ -90,13 +90,9 @@ const AudioMenu = (props: AudioMenuProps) => {
           </SectionContent>
         </DroneSection>
       </Content>
-    </Wrapper>
+    </MenuPanel>
   )
 }
-
-const Wrapper = styled(MenuPanel)`
-  /* position: relative; */
-`
 
 const Content = styled.div`
   max-width: 300px;

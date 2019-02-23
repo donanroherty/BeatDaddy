@@ -6,9 +6,8 @@ import Dropdown from '../ui/Dropdown'
 import { Key, getKeySafeName, getChordTypeSafeName, ChordType } from '../data/Types'
 import TempoWidget from '../components/TempoWidget'
 import Button from '../ui/Button'
-import Icon from '../ui/Icon'
 import PlayButton from '../components/PlayButton'
-import AudioMenu from '../components/AudioMenu'
+import AudioMenuButton from '../components/AudioMenuButton'
 
 interface MainControlsProps {
   chordKey: Key
@@ -52,21 +51,15 @@ const MainControls = (props: MainControlsProps) => {
       <StyledTempoWidget tempo={props.tempo} setTempo={props.setTempo} />
 
       <ThumbControlsWrapper>
-        <AudioButtonWrapper>
-          <AudioButtonInner>
-            <AudioMenuButton width="40px" height="40px" onClick={props.toggleAudioMenu}>
-              <Icon icon="volume" fillColor={props.theme.primary} size={32} />
-            </AudioMenuButton>
-            <StyledAudioMenu
-              metronomeVolume={props.metronomeVolume}
-              setMetronomeVolume={props.setMetronomeVolume}
-              droneVolume={props.droneVolume}
-              setDroneVolume={props.setDroneVolume}
-              show={props.audioMenuVisible}
-              handleOutsideClick={props.closeAudioMenu}
-            />
-          </AudioButtonInner>
-        </AudioButtonWrapper>
+        <AudioMenuButton
+          toggleAudioMenu={props.toggleAudioMenu}
+          closeAudioMenu={props.closeAudioMenu}
+          metronomeVolume={props.metronomeVolume}
+          setMetronomeVolume={props.setMetronomeVolume}
+          droneVolume={props.droneVolume}
+          setDroneVolume={props.setDroneVolume}
+          audioMenuVisible={props.audioMenuVisible}
+        />
 
         <PlayBtnWrapper>
           <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
@@ -117,42 +110,19 @@ const StyledTempoWidget = styled(TempoWidget)`
 
 const ThumbControlsWrapper = styled.div`
   grid-area: thumb-controls;
-
-  display: grid;
-  grid-template-columns: 45px auto 45px;
-  grid-template-rows: auto;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  width: 300px;
 `
 
-const StyledButton = styled(Button)`
-  margin-top: auto;
-  margin-left: auto;
-  margin-right: auto;
-`
-const AudioButtonWrapper = styled.div`
-  display: flex;
-`
-const AudioButtonInner = styled.div`
-  margin: auto auto 0 auto;
-  display: flex;
-  width: 40px;
-  height: 40px;
-`
-const AudioMenuButton = styled(StyledButton)``
-const StyledAudioMenu = styled(AudioMenu)`
-  height: 150px;
-  position: relative;
-  top: -80px;
-  left: -50px;
-  margin-left: 20px;
-`
-const TapButton = styled(StyledButton)``
+const TapButton = styled(Button)``
 
 const StyledPlayButton = styled(PlayButton)``
 
 const PlayBtnWrapper = styled.div`
-  /* background-color: lightseagreen; */
   display: flex;
   justify-content: center;
   align-items: center;
