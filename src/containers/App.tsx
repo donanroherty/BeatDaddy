@@ -50,6 +50,7 @@ export interface AppState {
 
 class App extends Component<AppProps, AppState> {
   audioCtx!: AudioContext
+  masterGain!: GainNode
 
   constructor(props: AppProps) {
     super(props)
@@ -63,6 +64,10 @@ class App extends Component<AppProps, AppState> {
       window.AudioContext = (window as any).webkitAudioContext
     }
     this.audioCtx = new AudioContext()
+
+    this.masterGain = this.audioCtx.createGain()
+    this.masterGain.connect(this.audioCtx.destination)
+    this.masterGain.gain.setValueAtTime(1.0, this.audioCtx.currentTime)
 
     this.state = {
       tempo: 90,
@@ -149,6 +154,7 @@ class App extends Component<AppProps, AppState> {
           <GlobalStyle />
           <Metronome
             audioCtx={this.audioCtx}
+            masterGain={this.masterGain}
             tempo={this.state.tempo}
             beatCount={this.state.beatCount}
             beatLength={this.state.beatLength}
@@ -157,12 +163,11 @@ class App extends Component<AppProps, AppState> {
             setAudioLoaded={this.setAudioLoaded}
           />
           <Drone
-            audioCtx={this.audioCtx}
             chordKey={this.state.chordKey}
             chordType={this.state.chordType}
+            chordOctave={4}
             isPlaying={this.state.isPlaying}
             volume={this.state.droneVolume}
-            a4={this.state.a4}
           />
 
           <Inner>

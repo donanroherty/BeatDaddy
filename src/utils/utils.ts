@@ -1,3 +1,4 @@
+// Simple timer.  Useful for benchmarking code blocks
 export const timer = (name: string) => {
   var start = new Date()
   return {
@@ -9,6 +10,18 @@ export const timer = (name: string) => {
   }
 }
 
+// Clamps a number between min and max
 export const clamp = (val: number, min: number, max: number) => {
   return val < min ? min : val > max ? max : val
+}
+
+// Returns num within range A  mapped to be within range B
+export const mapToRange = (
+  num: number,
+  inRangeA: number,
+  inRangeB: number,
+  outRangeA: number,
+  outRangeB: number
+) => {
+  return ((num - inRangeA) / (inRangeB - inRangeA)) * (outRangeB - outRangeA) + outRangeA
 }

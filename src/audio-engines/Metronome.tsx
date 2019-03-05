@@ -8,6 +8,7 @@ import { setTimeout } from 'timers'
 
 export interface MetronomeProps {
   audioCtx: AudioContext
+  masterGain: GainNode
   tempo: number
   beatCount: number
   beatLength: number
@@ -20,15 +21,15 @@ export interface MetronomeState {
 }
 
 class Metronome extends Component<MetronomeProps, MetronomeState> {
-  private metronomeMasterGain = this.props.audioCtx.createGain()
+  private metronomeGain = this.props.audioCtx.createGain()
   private metronomeBuffer = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
   private sound = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
   private metronomeSource!: AudioBufferSourceNode
 
   constructor(props: MetronomeProps) {
     super(props)
-    this.metronomeMasterGain.gain.value = this.props.volume / 100
-    this.metronomeMasterGain.connect(this.props.audioCtx.destination)
+    this.metronomeGain.gain.value = this.getSafeVolume()
+    this.metronomeGain.connect(this.props.masterGain)
 
     this.state = {
       soundPath: '/audio/metronome.wav'
@@ -58,8 +59,13 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     }
 
     if (prevProps.volume !== this.props.volume) {
-      this.metronomeMasterGain.gain.value = this.props.volume / 100
+      this.metronomeGain.gain.value = this.getSafeVolume()
     }
+  }
+
+  getSafeVolume = () => {
+    const volMax = 1.0
+    return (volMax / 100) * this.props.volume
   }
 
   // Load audio samples
@@ -122,7 +128,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     const newSource: AudioBufferSourceNode = this.props.audioCtx.createBufferSource()
     newSource.buffer = this.metronomeBuffer
     newSource.loop = true
-    newSource.connect(this.metronomeMasterGain)
+    newSource.connect(this.metronomeGain)
     this.metronomeSource = newSource
   }
 
