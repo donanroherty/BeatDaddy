@@ -1,3 +1,10 @@
+export enum Accent {
+  normal,
+  light,
+  heavy,
+  silent
+}
+
 export enum Key {
   C = 'C',
   CSharp = 'C_SHARP',

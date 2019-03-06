@@ -9,7 +9,7 @@ import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
 
-import { Key, ChordType } from '../data/Types'
+import { Key, ChordType, Accent } from '../data/Types'
 import { clamp } from '../utils/utils'
 
 export enum BeatLengthOptions {
@@ -20,6 +20,7 @@ export enum BeatLengthOptions {
   sixteen,
   thirtytwo
 }
+
 export enum SubDivisionOptions {
   none,
   eighth,
@@ -48,6 +49,7 @@ export interface AppState {
   audioLoaded: boolean
   timeSigMenuVisible: boolean
   audioMenuVisible: boolean
+  beatAccents: Accent[]
 }
 
 class App extends Component<AppProps, AppState> {
@@ -87,11 +89,20 @@ class App extends Component<AppProps, AppState> {
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
-      audioMenuVisible: false
+      audioMenuVisible: false,
+      beatAccents: new Array(4).fill(undefined).map(() => Accent.normal)
     }
   }
 
-  componentDidUpdate(prevProps: AppProps, prevState: AppState) {}
+  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    if (prevState.beatCount !== this.state.beatCount) {
+      const newBeatAccents = new Array(this.state.beatCount)
+        .fill(undefined)
+        .map(() => Accent.normal)
+
+      this.setState({ beatAccents: newBeatAccents })
+    }
+  }
 
   setAudioLoaded = (val: boolean) => {
     this.setState({ audioLoaded: val })
@@ -162,6 +173,20 @@ class App extends Component<AppProps, AppState> {
     }
   }
 
+  cycleBeatAccent = (beatIdx: number) => {
+    const newAccents = this.state.beatAccents.map((val, i) => {
+      if (i === beatIdx) {
+        const max = Object.keys(Accent).length / 2
+        const current = this.state.beatAccents[beatIdx]
+        const newAccent = current + 1 < max ? current + 1 : 0
+
+        return newAccent
+      } else return val
+    })
+
+    this.setState({ beatAccents: newAccents })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -199,6 +224,8 @@ class App extends Component<AppProps, AppState> {
                   setBeatCount={this.setBeatCount}
                   setBeatLength={this.setBeatLength}
                   subdivisions={this.state.subdivisions}
+                  beatAccents={this.state.beatAccents}
+                  cycleBeatAccent={this.cycleBeatAccent}
                 />
               </TopRow>
               <BottomRow>
