@@ -35,8 +35,6 @@ const Icon = (props: IconProps) => {
   const dimensions = getIconDimensions(props.icon!, props.size!)
 
   const paths = iconDef.paths.map((val, i) => {
-    console.log(val)
-
     const color = val.props.className
       ? val.props.className === 'color1'
         ? props.fillColor
@@ -67,6 +65,7 @@ const Icon = (props: IconProps) => {
 }
 
 const SVGWrapper = styled.svg<IconProps>`
+  pointer-events: none;
   fill: ${props => props.fillColor};
 `
 const SVGInner = styled.svg<any>`

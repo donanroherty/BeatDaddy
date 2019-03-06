@@ -1,17 +1,13 @@
 import React from 'react'
-import { Key, ChordType } from '../data/Types'
+import { Key, ChordType, getKeySafeName } from '../data/Types'
 import { chords } from '../data/ChordIntervals'
-
-interface Note {
-  key: Key
-  octave: number
-  frequency: number
-}
+// @ts-ignore
+import Tone from 'tone'
+import { mapToRange } from '../utils/utils'
 
 interface DroneProps {
-  a4: number
-  audioCtx: AudioContext
   chordKey: Key
+  chordOctave: number
   chordType: ChordType
   isPlaying: boolean
   volume: number
@@ -20,14 +16,18 @@ interface DroneProps {
 interface DroneState {}
 
 class Drone extends React.Component<DroneProps, DroneState> {
-  private chordToneOscillators: { oscillator: OscillatorNode; gain: GainNode }[] = new Array()
-  private notes: Note[] = []
-  private droneMasterGain = this.props.audioCtx.createGain()
+  private keys: string[] = []
+  private synth = new Tone.PolySynth(4, Tone.Synth).toMaster()
+  private volume = new Tone.Volume(0)
+  private chordTones: string[] = new Array()
 
   constructor(props: DroneProps) {
     super(props)
-    this.notes = this.getAllNotes()
-    this.droneMasterGain.connect(this.props.audioCtx.destination)
+
+    this.synth.chain(this.volume, Tone.Master)
+    this.synth.volume.rampTo(this.getSafeVolume(), 0)
+
+    this.handleChordChanged()
   }
 
   componentDidUpdate(prevProps: DroneProps, prevState: DroneState) {
@@ -39,86 +39,64 @@ class Drone extends React.Component<DroneProps, DroneState> {
       prevProps.chordKey !== this.props.chordKey ||
       prevProps.chordType !== this.props.chordType
     ) {
-      if (this.props.isPlaying) {
-        this.stop()
-        this.start()
-      }
+      this.handleChordChanged()
     }
+
+    if (prevProps.volume !== this.props.volume) {
+      this.synth.volume.rampTo(this.getSafeVolume(), 0)
+    }
+  }
+
+  // Returns volume prop mapped within a usable range for the drone
+  getSafeVolume = () => {
+    const min = -20
+    const max = 0
+    return mapToRange(this.props.volume, 0, 100, min, max)
   }
 
   start = () => {
-    this.stop()
-    this.chordToneOscillators = this.getChordToneOscillators()
-
-    const now = this.props.audioCtx.currentTime
-    this.droneMasterGain.gain.setValueAtTime(0, now).setTargetAtTime(this.props.volume, now, 2)
+    this.synth.triggerAttack(this.chordTones)
   }
 
   stop = () => {
-    // this.droneMasterGain.gain.setTargetAtTime(0, this.props.audioCtx.currentTime, 0.2)
-    // Kill existing sounds
-    this.chordToneOscillators.forEach(val => {
-      val.oscillator.stop()
-      val.gain.disconnect()
-    })
+    this.synth.triggerRelease(this.chordTones)
   }
 
-  getChordToneOscillators = (): Array<{ oscillator: OscillatorNode; gain: GainNode }> => {
-    const chordDef = chords.find(val => val.type === this.props.chordType)
+  handleChordChanged = () => {
+    const prevChordTones = this.chordTones
 
-    const keyIndex = this.notes.findIndex(
-      val => val.key === this.props.chordKey && val.octave === 4
+    this.chordTones = this.getChordNotes(
+      this.props.chordKey,
+      this.props.chordOctave,
+      this.props.chordType
     )
 
-    // Get note definitions for chord intervals
-    const intervals = chordDef!.intervals.map(interval => this.notes[keyIndex + interval])
+    // release previously held keys if they are not still being held in the new chord
+    this.synth.triggerRelease(
+      prevChordTones.filter(prevTone => this.chordTones.findIndex(tone => tone === prevTone) === -1)
+    )
 
-    return intervals.map((interval, i) => {
-      const gain = this.props.audioCtx.createGain()
-      gain.connect(this.droneMasterGain)
-
-      const osc = this.props.audioCtx.createOscillator()
-      osc.frequency.value = interval.frequency
-
-      osc.connect(gain)
-      osc.start()
-
-      return { oscillator: osc, gain: gain }
-    })
-  }
-
-  // Returns a 12 note chromatic scale in the given octave.
-  getOctaveChromaticScale = (octaveNumber: number) => {
-    const aFourRelativeOctNumber = octaveNumber - 4
-    const aFreqAtOctave = this.props.a4 * Math.pow(2, aFourRelativeOctNumber)
-
-    const getNthKeyFrequency = (n: number, a: number) => {
-      return a * Math.pow(2, n / 12)
-    }
-
-    const octaveChromaticScale = new Array(12).fill(0).map((val, i) => {
-      const pianoKeyNumber = i - 9
-      const freq = getNthKeyFrequency(pianoKeyNumber, aFreqAtOctave)
-
-      const note: Note = {
-        key: Key[Object.keys(Key)[i] as keyof typeof Key],
-        octave: octaveNumber,
-        frequency: freq
+    // Timeout allows time for previous chord to release
+    setTimeout(() => {
+      if (this.props.isPlaying) {
+        this.start()
       }
-      return note
-    })
-
-    return octaveChromaticScale
+    }, 1)
   }
 
-  getAllNotes = () => {
-    const octaveCount = 8
-    return new Array(octaveCount)
-      .fill([])
-      .map((val, i) => this.getOctaveChromaticScale(i))
-      .reduce((acc, curr, i) => {
-        return [...acc, ...curr]
-      }, [])
+  // Get the notes of a predefined chord type
+  getChordNotes = (key: Key, octave: number, type: ChordType) => {
+    const keyFinal = getKeySafeName(key) + octave
+    const chordDef = chords.find(val => val.type === type)
+
+    if (!chordDef) return []
+
+    const intervals = Tone.Frequency(keyFinal).harmonize(chordDef.intervals)
+    const freqs = intervals.reduce((acc: string[], curr: any) => {
+      return [...acc, curr._val]
+    }, [])
+
+    return freqs
   }
 
   render() {

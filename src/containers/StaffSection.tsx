@@ -4,6 +4,7 @@ import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
 import { SubDivisionOptions } from './App'
 import TimeSignature from '../components/TimeSignature'
+
 import BeatStaff from '../components/BeatStaff'
 
 interface StaffSectionProps {
@@ -11,7 +12,7 @@ interface StaffSectionProps {
   beatLength: number
   subdivisions: SubDivisionOptions
   timeSigMenuVisible: boolean
-  toggleTimeSigMenu: () => void
+  openTimeSigMenu: () => void
   closeTimeSigMenu: () => void
   setBeatCount: (count: number) => void
   setBeatLength: (length: number) => void
@@ -26,8 +27,8 @@ const StaffSection = (props: StaffSectionProps) => {
           beatCount={props.beatCount}
           beatLength={props.beatLength}
           menuVisible={props.timeSigMenuVisible}
-          toggleTimeSigMenu={props.toggleTimeSigMenu}
           closeTimeSigMenu={props.closeTimeSigMenu}
+          openTimeSigMenu={props.openTimeSigMenu}
           setBeatCount={props.setBeatCount}
           setBeatLength={props.setBeatLength}
         />

@@ -6,24 +6,26 @@ import Dropdown from '../ui/Dropdown'
 import { Key, getKeySafeName, getChordTypeSafeName, ChordType } from '../data/Types'
 import TempoWidget from '../components/TempoWidget'
 import Button from '../ui/Button'
-import Icon from '../ui/Icon'
 import PlayButton from '../components/PlayButton'
+import AudioMenuButton from '../components/AudioMenuButton'
 
 interface MainControlsProps {
   chordKey: Key
   chordType: ChordType
   setChordKey: (idx: number) => void
   setChordType: (idx: number) => void
-
   tempo: number
   setTempo: (newTempo: number) => void
-
   isPlaying: boolean
   togglePlayState: () => void
-
-  openAudioMenu: () => void
+  toggleAudioMenu: () => void
+  closeAudioMenu: () => void
+  metronomeVolume: number
+  setMetronomeVolume: (value: number) => void
+  droneVolume: number
+  setDroneVolume: (value: number) => void
+  audioMenuVisible: boolean
   tapTempo: () => void
-
   theme: ThemeInterface
 }
 
@@ -47,10 +49,17 @@ const MainControls = (props: MainControlsProps) => {
       </DroneControls>
 
       <StyledTempoWidget tempo={props.tempo} setTempo={props.setTempo} />
+
       <ThumbControlsWrapper>
-        <MuteButton width="40px" height="40px" onClick={props.openAudioMenu}>
-          <Icon icon="volume" fillColor={props.theme.primary} size={32} />
-        </MuteButton>
+        <AudioMenuButton
+          toggleAudioMenu={props.toggleAudioMenu}
+          closeAudioMenu={props.closeAudioMenu}
+          metronomeVolume={props.metronomeVolume}
+          setMetronomeVolume={props.setMetronomeVolume}
+          droneVolume={props.droneVolume}
+          setDroneVolume={props.setDroneVolume}
+          audioMenuVisible={props.audioMenuVisible}
+        />
 
         <PlayBtnWrapper>
           <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
@@ -70,8 +79,6 @@ const MainControls = (props: MainControlsProps) => {
 }
 
 const Wrapper = styled.div`
-  /* background-color: lightgreen; */
-  /* margin-top: auto; */
   margin-left: auto;
   margin-right: auto;
   width: 100%;
@@ -103,32 +110,19 @@ const StyledTempoWidget = styled(TempoWidget)`
 
 const ThumbControlsWrapper = styled.div`
   grid-area: thumb-controls;
-
-  display: grid;
-  grid-template-columns: 45px auto 45px;
-  grid-template-rows: auto;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  width: 300px;
 `
 
-const StyledButton = styled(Button)`
-  margin-top: auto;
-  margin-left: auto;
-  margin-right: auto;
-`
-const MuteButton = styled(StyledButton)`
-  /* margin-left: 100%; */
-`
-const TapButton = styled(StyledButton)`
-  /* margin-right: 100%; */
-`
+const TapButton = styled(Button)``
 
-const StyledPlayButton = styled(PlayButton)`
-  background-color: white;
-`
+const StyledPlayButton = styled(PlayButton)``
 
 const PlayBtnWrapper = styled.div`
-  /* background-color: lightseagreen; */
   display: flex;
   justify-content: center;
   align-items: center;

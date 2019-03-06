@@ -5,15 +5,12 @@ import styled from 'styled-components'
 
 import Metronome from '../audio-engines/Metronome'
 import Drone from '../audio-engines/Drone'
-import BeatStaff from '../components/BeatStaff'
-
-import TimeSignature from '../components/TimeSignature'
 import MainControls from './MainControls'
 import StaffSection from './StaffSection'
-
 import Navbar from '../components/Navbar'
 
 import { Key, ChordType } from '../data/Types'
+import { clamp } from '../utils/utils'
 
 export enum BeatLengthOptions {
   one,
@@ -48,10 +45,12 @@ export interface AppState {
   // True if required media samples are fetched and decoded
   audioLoaded: boolean
   timeSigMenuVisible: boolean
+  audioMenuVisible: boolean
 }
 
 class App extends Component<AppProps, AppState> {
   audioCtx!: AudioContext
+  masterGain!: GainNode
 
   constructor(props: AppProps) {
     super(props)
@@ -66,6 +65,10 @@ class App extends Component<AppProps, AppState> {
     }
     this.audioCtx = new AudioContext()
 
+    this.masterGain = this.audioCtx.createGain()
+    this.masterGain.connect(this.audioCtx.destination)
+    this.masterGain.gain.setValueAtTime(1.0, this.audioCtx.currentTime)
+
     this.state = {
       tempo: 90,
       beatCount: 4,
@@ -74,11 +77,12 @@ class App extends Component<AppProps, AppState> {
       chordKey: Key.C,
       chordType: ChordType.Major,
       a4: 440,
-      metronomeVolume: 1.0,
-      droneVolume: 0.05,
+      metronomeVolume: 75,
+      droneVolume: 75,
       isPlaying: false,
       audioLoaded: false,
-      timeSigMenuVisible: false
+      timeSigMenuVisible: false,
+      audioMenuVisible: false
     }
   }
 
@@ -90,9 +94,9 @@ class App extends Component<AppProps, AppState> {
 
   togglePlayState = () => {
     this.audioCtx.resume()
-    // if (this.state.audioLoaded) {
-    this.setState({ isPlaying: !this.state.isPlaying })
-    // }
+    if (this.state.audioLoaded) {
+      this.setState({ isPlaying: !this.state.isPlaying })
+    }
     // TODO: Stop automatically after all bars are played
   }
 
@@ -100,14 +104,21 @@ class App extends Component<AppProps, AppState> {
     this.setState({ tempo: val })
   }
 
-  toggleTimeSigMenu = () => {
-    this.state.timeSigMenuVisible ? this.closeTimeSigMenu() : this.openTimeSigMenu()
-  }
   openTimeSigMenu = () => {
     this.setState({ timeSigMenuVisible: true })
   }
   closeTimeSigMenu = () => {
     this.setState({ timeSigMenuVisible: false })
+  }
+
+  toggleAudioMenu = () => {
+    this.state.audioMenuVisible ? this.closeAudioMenu() : this.openAudioMenu()
+  }
+  openAudioMenu = () => {
+    this.setState({ audioMenuVisible: true })
+  }
+  closeAudioMenu = () => {
+    this.setState({ audioMenuVisible: false })
   }
 
   setBeatCount = (count: number) => {
@@ -127,7 +138,12 @@ class App extends Component<AppProps, AppState> {
     this.setState({ chordType: newType })
   }
 
-  openAudioMenu = () => {}
+  setMetronomeVolume = (value: number) => {
+    this.setState({ metronomeVolume: clamp(value, 0.0, 100.0) })
+  }
+  setDroneVolume = (value: number) => {
+    this.setState({ droneVolume: clamp(value, 0.0, 100.0) })
+  }
 
   tapTempo = () => {}
 
@@ -138,6 +154,7 @@ class App extends Component<AppProps, AppState> {
           <GlobalStyle />
           <Metronome
             audioCtx={this.audioCtx}
+            masterGain={this.masterGain}
             tempo={this.state.tempo}
             beatCount={this.state.beatCount}
             beatLength={this.state.beatLength}
@@ -146,13 +163,13 @@ class App extends Component<AppProps, AppState> {
             setAudioLoaded={this.setAudioLoaded}
           />
           <Drone
-            audioCtx={this.audioCtx}
             chordKey={this.state.chordKey}
             chordType={this.state.chordType}
+            chordOctave={4}
             isPlaying={this.state.isPlaying}
             volume={this.state.droneVolume}
-            a4={this.state.a4}
           />
+
           <Inner>
             <Navbar />
 
@@ -162,7 +179,7 @@ class App extends Component<AppProps, AppState> {
                   beatCount={this.state.beatCount}
                   beatLength={this.state.beatLength}
                   timeSigMenuVisible={this.state.timeSigMenuVisible}
-                  toggleTimeSigMenu={this.toggleTimeSigMenu}
+                  openTimeSigMenu={this.openTimeSigMenu}
                   closeTimeSigMenu={this.closeTimeSigMenu}
                   setBeatCount={this.setBeatCount}
                   setBeatLength={this.setBeatLength}
@@ -179,8 +196,14 @@ class App extends Component<AppProps, AppState> {
                   setTempo={this.setTempo}
                   isPlaying={this.state.isPlaying}
                   togglePlayState={this.togglePlayState}
-                  openAudioMenu={this.openAudioMenu}
+                  toggleAudioMenu={this.toggleAudioMenu}
+                  closeAudioMenu={this.closeAudioMenu}
                   tapTempo={this.tapTempo}
+                  metronomeVolume={this.state.metronomeVolume}
+                  setMetronomeVolume={this.setMetronomeVolume}
+                  droneVolume={this.state.droneVolume}
+                  setDroneVolume={this.setDroneVolume}
+                  audioMenuVisible={this.state.audioMenuVisible}
                 />
               </BottomRow>
             </AppControlsWrapper>

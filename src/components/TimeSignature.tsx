@@ -2,8 +2,7 @@
  * TimeSignature.tsx
  * Responsible for displaying time signature and opening TimeSignatureMenu
  */
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { ReactNode } from 'react'
 import styled from '../theme/themed-styled-components'
 import Icon from '../ui/Icon'
 import { withTheme } from 'styled-components'
@@ -14,71 +13,66 @@ export interface TimeSignatureProps {
   beatCount: number
   beatLength: number
   menuVisible: boolean
-  toggleTimeSigMenu: () => void
+  openTimeSigMenu: () => void
   closeTimeSigMenu: () => void
   setBeatCount: (count: number) => void
   setBeatLength: (length: number) => void
   theme: ThemeInterface
 }
 
-class TimeSignature extends React.Component<TimeSignatureProps, {}> {
-  constructor(props: TimeSignatureProps) {
-    super(props)
-  }
-
-  componentWillMount = () => {
-    document.addEventListener('mousedown', this.handleClick, false)
-  }
-  componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.handleClick, false)
-  }
-
-  handleClick = (e: any) => {
-    const domNode = ReactDOM.findDOMNode(this)
-    if (!domNode || !domNode.contains(e.target)) {
-      this.props.closeTimeSigMenu!()
+const TimeSignature = (props: TimeSignatureProps) => {
+  const handleClick = () => {
+    if (!props.menuVisible) {
+      props.openTimeSigMenu()
+    } else {
+      props.closeTimeSigMenu()
     }
   }
 
-  render() {
-    return (
-      <Wrapper {...this.props}>
-        <Inner onClick={this.props.toggleTimeSigMenu}>
-          <ChevronWrapper>
-            <Icon icon="chevron" fillColor={this.props.theme.primary} size={8} />
-          </ChevronWrapper>
-          <Column>
-            <Text {...this.props}>{this.props.beatCount}</Text>
+  return (
+    <Wrapper {...props}>
+      <StyledTimeSignatureMenu
+        show={props.menuVisible}
+        handleOutsideClick={props.closeTimeSigMenu}
+        beatCount={props.beatCount}
+        beatLength={props.beatLength}
+        setBeatCount={props.setBeatCount}
+        setBeatLength={props.setBeatLength}
+      />
 
-            <Line {...this.props} />
+      <Inner onClick={handleClick}>
+        <Chevron icon="chevron" fillColor={props.theme.primary} size={8} />
 
-            <Text {...this.props}>{this.props.beatLength}</Text>
-          </Column>
-        </Inner>
-        <TimeSignatureMenu
-          show={this.props.menuVisible}
-          beatCount={this.props.beatCount}
-          beatLength={this.props.beatLength}
-          setBeatCount={this.props.setBeatCount}
-          setBeatLength={this.props.setBeatLength}
-        />
-      </Wrapper>
-    )
-  }
+        <Column>
+          <Text {...props}>{props.beatCount}</Text>
+
+          <Line {...props} />
+
+          <Text {...props}>{props.beatLength}</Text>
+        </Column>
+      </Inner>
+    </Wrapper>
+  )
 }
-const ChevronWrapper = styled.div`
+
+const Chevron = styled(Icon)`
   filter: drop-shadow(${props => props.theme.dropShadow});
 `
+
 const Wrapper = styled.div`
   user-select: none;
   padding-top: 12px;
-  &:hover ${ChevronWrapper} {
+  &:hover ${Chevron} {
     filter: brightness(${props => props.theme.hoverBrightness})
       drop-shadow(${props => props.theme.hoverDropShadow});
   }
-  &:active ${ChevronWrapper} {
+  &:active ${Chevron} {
     filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
   }
+`
+const StyledTimeSignatureMenu = styled(TimeSignatureMenu)`
+  left: 0px;
+  top: 40px;
 `
 const Inner = styled.div`
   display: flex;
