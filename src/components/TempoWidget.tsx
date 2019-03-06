@@ -9,9 +9,9 @@ import { ThemeInterface } from '../theme/theme'
 
 type TempoWidgetProps = {
   tempo: number
+  tempoMin: number
+  tempoMax: number
   setTempo: (val: number) => void
-  minValue?: number
-  maxValue?: number
   theme: ThemeInterface
 }
 
@@ -29,16 +29,15 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
     }
   }
 
-  public static defaultProps = {
-    minValue: 20,
-    maxValue: 240
-  }
-
   componentDidUpdate = (prevProps: TempoWidgetProps, prevState: TempoWidgetState) => {
     if (prevState.value !== this.state.value) {
       if (this.hasValidInput()) {
         this.props.setTempo(parseInt(this.state.value))
       }
+    }
+
+    if (prevProps.tempo !== this.props.tempo) {
+      this.setState({ value: String(this.props.tempo) })
     }
   }
 
@@ -52,12 +51,13 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
 
   hasValidInput = () => {
     const val = this.state.value
-    const isValid = parseInt(val) >= this.props.minValue! && parseInt(val) <= this.props.maxValue!
+    const isValid = parseInt(val) >= this.props.tempoMin! && parseInt(val) <= this.props.tempoMax!
     return isValid
   }
   handleClickIncrement = () => this.handleValueChange(parseInt(this.state.value) + 1 + '')
   handleClickDecrement = () => this.handleValueChange(parseInt(this.state.value) - 1 + '')
   handleInputChange = (e: any) => this.handleValueChange(e.target.value)
+
   handleInputBlur = (e: any) => this.handleValueChange(String(this.props.tempo))
   handleInputFocus = (e: any) => e.target.select()
 

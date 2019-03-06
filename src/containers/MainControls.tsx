@@ -15,6 +15,8 @@ interface MainControlsProps {
   setChordKey: (idx: number) => void
   setChordType: (idx: number) => void
   tempo: number
+  tempoMin: number
+  tempoMax: number
   setTempo: (newTempo: number) => void
   isPlaying: boolean
   togglePlayState: () => void
@@ -48,7 +50,12 @@ const MainControls = (props: MainControlsProps) => {
         />
       </DroneControls>
 
-      <StyledTempoWidget tempo={props.tempo} setTempo={props.setTempo} />
+      <StyledTempoWidget
+        tempo={props.tempo}
+        tempoMin={props.tempoMin}
+        tempoMax={props.tempoMax}
+        setTempo={props.setTempo}
+      />
 
       <ThumbControlsWrapper>
         <AudioMenuButton

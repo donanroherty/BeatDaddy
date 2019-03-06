@@ -31,6 +31,8 @@ export interface AppProps {}
 export interface AppState {
   // Number of beats per minute
   tempo: number
+  tempoMin: number
+  tempoMax: number
   // Number of beats in a bar
   beatCount: number
   beatLength: number
@@ -51,6 +53,7 @@ export interface AppState {
 class App extends Component<AppProps, AppState> {
   audioCtx!: AudioContext
   masterGain!: GainNode
+  private lastTapTime: number = 0
 
   constructor(props: AppProps) {
     super(props)
@@ -71,6 +74,8 @@ class App extends Component<AppProps, AppState> {
 
     this.state = {
       tempo: 90,
+      tempoMin: 20,
+      tempoMax: 240,
       beatCount: 4,
       beatLength: 4,
       subdivisions: SubDivisionOptions.sixteenth,
@@ -145,7 +150,17 @@ class App extends Component<AppProps, AppState> {
     this.setState({ droneVolume: clamp(value, 0.0, 100.0) })
   }
 
-  tapTempo = () => {}
+  tapTempo = () => {
+    const now = new Date().getTime()
+    const diff = now - this.lastTapTime
+    const bpm = Math.floor(60 / (diff / 1000.0))
+
+    this.lastTapTime = now
+
+    if (bpm > this.state.tempoMin) {
+      this.setTempo(clamp(bpm, this.state.tempoMin, this.state.tempoMax))
+    }
+  }
 
   render() {
     return (
@@ -193,6 +208,8 @@ class App extends Component<AppProps, AppState> {
                   setChordKey={this.setChordKey}
                   setChordType={this.setChordType}
                   tempo={this.state.tempo}
+                  tempoMin={this.state.tempoMin}
+                  tempoMax={this.state.tempoMax}
                   setTempo={this.setTempo}
                   isPlaying={this.state.isPlaying}
                   togglePlayState={this.togglePlayState}
