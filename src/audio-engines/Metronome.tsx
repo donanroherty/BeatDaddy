@@ -4,6 +4,7 @@
  */
 
 import React, { Component } from 'react'
+import { Accent } from '../data/Types'
 
 export interface MetronomeProps {
   audioCtx: AudioContext
@@ -11,19 +12,26 @@ export interface MetronomeProps {
   tempo: number
   beatCount: number
   beatLength: number
+  beatAccents: Accent[]
   isPlaying: boolean
   volume: number
   setAudioLoaded: (val: boolean) => void
 }
 export interface MetronomeState {
-  soundPath: string
+  beatSoundLightPath: string
+  beatSoundMediumPath: string
+  beatSoundHeavyPath: string
 }
 
 class Metronome extends Component<MetronomeProps, MetronomeState> {
   private metronomeGain = this.props.audioCtx.createGain()
   private metronomeBuffer = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
-  private sound = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+
   private metronomeSource!: AudioBufferSourceNode
+
+  private beatLight = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+  private beatMedium = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+  private beatHeavy = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
 
   constructor(props: MetronomeProps) {
     super(props)
@@ -31,14 +39,23 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     this.metronomeGain.connect(this.props.masterGain)
 
     this.state = {
-      soundPath: '/audio/metronome.wav'
+      beatSoundLightPath: '/audio/wood-light.wav',
+      beatSoundMediumPath: '/audio/wood-medium.wav',
+      beatSoundHeavyPath: '/audio/wood-heavy.wav'
     }
 
     this.loadPreset()
   }
 
   componentDidUpdate(prevProps: MetronomeProps, prevState: MetronomeState) {
-    if (prevProps.isPlaying !== this.props.isPlaying) {
+    const playStateUpdated = prevProps.isPlaying !== this.props.isPlaying
+    const tempoUpdated = prevProps.tempo !== this.props.tempo
+    const beatCountUpdated = prevProps.beatCount !== this.props.beatCount
+    const beatLengthUpdated = prevProps.beatLength !== this.props.beatLength
+    const beatAccentsUpdated = prevProps.beatAccents !== this.props.beatAccents
+    const volumeUpdated = prevProps.volume !== this.props.volume
+
+    if (playStateUpdated) {
       if (this.props.isPlaying) {
         this.start()
       } else {
@@ -46,18 +63,14 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
       }
     }
 
-    if (
-      prevProps.tempo !== this.props.tempo ||
-      prevProps.beatCount !== this.props.beatCount ||
-      prevProps.beatLength !== this.props.beatLength
-    ) {
+    if (tempoUpdated || beatCountUpdated || beatLengthUpdated || beatAccentsUpdated) {
       if (this.props.isPlaying) {
         this.stop()
         this.start()
       }
     }
 
-    if (prevProps.volume !== this.props.volume) {
+    if (volumeUpdated) {
       this.metronomeGain.gain.value = this.getSafeVolume()
     }
   }
@@ -71,9 +84,14 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
   loadPreset = () => {
     this.props.setAudioLoaded(false)
 
-    this.fetchSample(this.state.soundPath, sample => (this.sound = sample))
+    Promise.all([
+      this.fetchSample(this.state.beatSoundLightPath, sample => (this.beatLight = sample)),
+      this.fetchSample(this.state.beatSoundMediumPath, sample => (this.beatMedium = sample)),
+      this.fetchSample(this.state.beatSoundHeavyPath, sample => (this.beatHeavy = sample))
+    ])
       .then(() => {
         this.props.setAudioLoaded(true)
+        // console.log(this.beatLight)
       })
       .catch(err => console.log(err))
   }
@@ -106,9 +124,20 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
 
     // Add a sample to the buffer for each beat
     const filledBuffer = sampleStartTimes.reduce((acc, time, i) => {
-      acc.copyToChannel(this.sound.getChannelData(0), 0, time)
+      const accent = this.props.beatAccents[i]
+
+      const beatSound =
+        accent === Accent.normal
+          ? this.beatLight
+          : accent === Accent.medium
+            ? this.beatMedium
+            : accent === Accent.heavy
+              ? this.beatHeavy
+              : this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
+
+      acc.copyToChannel(beatSound.getChannelData(0), 0, time)
       return acc
-    }, this.props.audioCtx.createBuffer(1, sampleCount + this.sound.length, this.props.audioCtx.sampleRate))
+    }, this.props.audioCtx.createBuffer(1, sampleCount + this.beatHeavy.length, this.props.audioCtx.sampleRate))
 
     // Crop the buffer to correct length
     const croppedTrack = this.props.audioCtx.createBuffer(

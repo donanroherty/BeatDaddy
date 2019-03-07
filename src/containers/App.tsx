@@ -9,24 +9,8 @@ import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
 
-import { Key, ChordType, Accent } from '../data/Types'
+import { Key, ChordType, Accent, SubDivisionOptions } from '../data/Types'
 import { clamp } from '../utils/utils'
-
-export enum BeatLengthOptions {
-  one,
-  two,
-  four,
-  eight,
-  sixteen,
-  thirtytwo
-}
-
-export enum SubDivisionOptions {
-  none,
-  eighth,
-  sixteenth,
-  triplet
-}
 
 export interface AppProps {}
 export interface AppState {
@@ -198,6 +182,7 @@ class App extends Component<AppProps, AppState> {
             tempo={this.state.tempo}
             beatCount={this.state.beatCount}
             beatLength={this.state.beatLength}
+            beatAccents={this.state.beatAccents}
             isPlaying={this.state.isPlaying}
             volume={this.state.metronomeVolume}
             setAudioLoaded={this.setAudioLoaded}
@@ -228,6 +213,7 @@ class App extends Component<AppProps, AppState> {
                   cycleBeatAccent={this.cycleBeatAccent}
                 />
               </TopRow>
+
               <BottomRow>
                 <MainControls
                   chordKey={this.state.chordKey}
@@ -275,7 +261,6 @@ body{
 `
 
 const Wrapper = styled.div`
-  /* background-color: lightskyblue; */
   max-width: 900px;
   height: 100%;
   padding: 0px 20px 0px 20px;
@@ -289,21 +274,17 @@ const Inner = styled.div`
   flex-direction: column;
 `
 const AppControlsWrapper = styled.div`
-  /* background-color: lightslategrey; */
   height: 100%;
   width: 100%;
   display: grid;
   grid-template-rows: 1fr auto;
 `
 const TopRow = styled.div`
-  /* background-color: lightcoral; */
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
 `
 const BottomRow = styled.div`
-  /* background-color: lightgreen; */
-  /* margin-top: auto; */
   margin-bottom: 110px;
   width: 100%;
 `

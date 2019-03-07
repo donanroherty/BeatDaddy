@@ -1,8 +1,24 @@
 export enum Accent {
   normal,
-  light,
   heavy,
+  medium,
   silent
+}
+
+export enum BeatLengthOptions {
+  one,
+  two,
+  four,
+  eight,
+  sixteen,
+  thirtytwo
+}
+
+export enum SubDivisionOptions {
+  none,
+  eighth,
+  sixteenth,
+  triplet
 }
 
 export enum Key {

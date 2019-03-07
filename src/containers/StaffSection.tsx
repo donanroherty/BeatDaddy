@@ -2,11 +2,9 @@ import React from 'react'
 import styled from '../theme/themed-styled-components'
 import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
-import { SubDivisionOptions } from './App'
 import TimeSignature from '../components/TimeSignature'
-
 import BeatStaff from '../components/BeatStaff'
-import { Accent } from '../data/Types'
+import { Accent, SubDivisionOptions } from '../data/Types'
 
 interface StaffSectionProps {
   beatCount: number

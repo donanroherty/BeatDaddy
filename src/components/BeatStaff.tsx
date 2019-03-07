@@ -7,8 +7,8 @@ import styled, { withTheme } from 'styled-components/macro'
 import { ThemeInterface } from '../theme/theme'
 import Icon from '../ui/Icon'
 import iconDefinitions, { getIconDimensions } from '../ui/iconDefinitions'
-import { SubDivisionOptions } from '../containers/App'
-import { Accent } from '../data/Types'
+
+import { Accent, SubDivisionOptions } from '../data/Types'
 
 export interface BeatStaffProps {
   beatCount: number
@@ -105,9 +105,9 @@ const BeatStaff = (props: BeatStaffProps) => {
 
     const accentIconOffset = { x: 3, y: 60 }
     const accent = props.beatAccents[beatIdx]
-    const hasAccent = accent === Accent.light || accent === Accent.heavy
+    const hasAccent = accent === Accent.medium || accent === Accent.heavy
     const accentIcon =
-      accent === Accent.light ? 'accentLight' : accent === Accent.heavy ? 'accentHeavy' : ''
+      accent === Accent.medium ? 'accentLight' : accent === Accent.heavy ? 'accentHeavy' : ''
 
     return (
       <BeatIconWrapper
@@ -144,7 +144,7 @@ const BeatStaff = (props: BeatStaffProps) => {
           <svg {...accentIconOffset}>
             <Icon
               icon={
-                props.beatAccents[beatIdx] === Accent.light
+                props.beatAccents[beatIdx] === Accent.medium
                   ? 'accentLight'
                   : props.beatAccents[beatIdx] === Accent.heavy
                     ? 'accentHeavy'
