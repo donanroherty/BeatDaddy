@@ -1,3 +1,26 @@
+export enum Accent {
+  normal,
+  medium,
+  heavy,
+  silent
+}
+
+export enum BeatLengthOptions {
+  one,
+  two,
+  four,
+  eight,
+  sixteen,
+  thirtytwo
+}
+
+export enum SubDivisionOptions {
+  none,
+  eighth,
+  sixteenth,
+  triplet
+}
+
 export enum Key {
   C = 'C',
   CSharp = 'C_SHARP',

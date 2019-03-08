@@ -2,20 +2,21 @@ import React from 'react'
 import styled from '../theme/themed-styled-components'
 import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
-import { SubDivisionOptions } from './App'
 import TimeSignature from '../components/TimeSignature'
-
 import BeatStaff from '../components/BeatStaff'
+import { Accent, SubDivisionOptions } from '../utils/Types'
 
 interface StaffSectionProps {
   beatCount: number
   beatLength: number
   subdivisions: SubDivisionOptions
   timeSigMenuVisible: boolean
+  beatAccents: Accent[]
   openTimeSigMenu: () => void
   closeTimeSigMenu: () => void
   setBeatCount: (count: number) => void
   setBeatLength: (length: number) => void
+  cycleBeatAccent: (beatIdx: number) => void
   theme: ThemeInterface
 }
 
@@ -37,6 +38,8 @@ const StaffSection = (props: StaffSectionProps) => {
           beatCount={props.beatCount}
           beatLength={props.beatLength}
           subdivisions={props.subdivisions}
+          beatAccents={props.beatAccents}
+          cycleBeatAccent={props.cycleBeatAccent}
         />
       </Staff>
     </Wrapper>
@@ -44,7 +47,6 @@ const StaffSection = (props: StaffSectionProps) => {
 }
 
 const Wrapper = styled.div`
-  /* background-color: lightcoral; */
   width: 100%;
   height: 100%;
   margin-top: auto;

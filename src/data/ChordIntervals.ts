@@ -1,4 +1,4 @@
-import { Interval, ChordType } from './Types'
+import { Interval, ChordType } from '../utils/Types'
 
 export interface ChordDefinition {
   type: ChordType

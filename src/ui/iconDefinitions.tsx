@@ -12,6 +12,8 @@ interface IconDefinitionsType {
   volume: IconType
   metronome: IconType
   keyboard: IconType
+  accentLight: IconType
+  accentHeavy: IconType
 }
 
 interface ViewBoxDimensions {
@@ -151,6 +153,24 @@ const iconDefinitions: IconDefinitionsType = {
       <path
         className="color2"
         d="M15.76,2v8.81a2,2,0,0,1-2,2H10.6a2,2,0,0,1-2-2V2a2,2,0,0,1,2-2h3.16A2,2,0,0,1,15.76,2Z"
+      />
+    ]
+  },
+  accentLight: {
+    viewBox: { x1: 0, y1: 0, x2: 34, y2: 27 },
+    paths: [
+      <path
+        className="color1"
+        d="M2.5,27a2.5,2.5,0,0,1-.89-4.84L24.45,13.5,1.61,4.84A2.5,2.5,0,1,1,3.39.16l29,11a2.51,2.51,0,0,1,0,4.68l-29,11A2.5,2.5,0,0,1,2.5,27Z"
+      />
+    ]
+  },
+  accentHeavy: {
+    viewBox: { x1: 0, y1: 0, x2: 37.5, y2: 37 },
+    paths: [
+      <path
+        className="color1"
+        d="M2.5,37a2.54,2.54,0,0,1-1.13-.27,2.51,2.51,0,0,1-1.1-3.36l16.25-32a2.5,2.5,0,0,1,4.46,0l16.25,32A2.5,2.5,0,0,1,35,37H31.45a2.49,2.49,0,0,1-2.23-1.37L17,11.52,4.73,35.63A2.5,2.5,0,0,1,2.5,37Z"
       />
     ]
   }

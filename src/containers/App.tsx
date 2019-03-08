@@ -9,23 +9,9 @@ import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
 
-import { Key, ChordType } from '../data/Types'
+import { Key, ChordType, Accent, SubDivisionOptions } from '../utils/Types'
 import { clamp } from '../utils/utils'
-
-export enum BeatLengthOptions {
-  one,
-  two,
-  four,
-  eight,
-  sixteen,
-  thirtytwo
-}
-export enum SubDivisionOptions {
-  none,
-  eighth,
-  sixteenth,
-  triplet
-}
+import { BeatSoundPreset, beatSoundPresets } from '../data/MetronomeSounds'
 
 export interface AppProps {}
 export interface AppState {
@@ -37,6 +23,7 @@ export interface AppState {
   beatCount: number
   beatLength: number
   subdivisions: SubDivisionOptions
+  beatSoundPreset: BeatSoundPreset
   chordKey: Key
   chordType: ChordType
   a4: number
@@ -48,6 +35,7 @@ export interface AppState {
   audioLoaded: boolean
   timeSigMenuVisible: boolean
   audioMenuVisible: boolean
+  beatAccents: Accent[]
 }
 
 class App extends Component<AppProps, AppState> {
@@ -79,6 +67,7 @@ class App extends Component<AppProps, AppState> {
       beatCount: 4,
       beatLength: 4,
       subdivisions: SubDivisionOptions.sixteenth,
+      beatSoundPreset: beatSoundPresets.click,
       chordKey: Key.C,
       chordType: ChordType.Major,
       a4: 440,
@@ -87,11 +76,20 @@ class App extends Component<AppProps, AppState> {
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
-      audioMenuVisible: false
+      audioMenuVisible: false,
+      beatAccents: new Array(4).fill(undefined).map(() => Accent.normal)
     }
   }
 
-  componentDidUpdate(prevProps: AppProps, prevState: AppState) {}
+  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    if (prevState.beatCount !== this.state.beatCount) {
+      const newBeatAccents = new Array(this.state.beatCount)
+        .fill(undefined)
+        .map(() => Accent.normal)
+
+      this.setState({ beatAccents: newBeatAccents })
+    }
+  }
 
   setAudioLoaded = (val: boolean) => {
     this.setState({ audioLoaded: val })
@@ -162,6 +160,20 @@ class App extends Component<AppProps, AppState> {
     }
   }
 
+  cycleBeatAccent = (beatIdx: number) => {
+    const newAccents = this.state.beatAccents.map((val, i) => {
+      if (i === beatIdx) {
+        const max = Object.keys(Accent).length / 2
+        const current = this.state.beatAccents[beatIdx]
+        const newAccent = current + 1 < max ? current + 1 : 0
+
+        return newAccent
+      } else return val
+    })
+
+    this.setState({ beatAccents: newAccents })
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -173,6 +185,8 @@ class App extends Component<AppProps, AppState> {
             tempo={this.state.tempo}
             beatCount={this.state.beatCount}
             beatLength={this.state.beatLength}
+            beatAccents={this.state.beatAccents}
+            beatSoundPreset={this.state.beatSoundPreset}
             isPlaying={this.state.isPlaying}
             volume={this.state.metronomeVolume}
             setAudioLoaded={this.setAudioLoaded}
@@ -199,8 +213,11 @@ class App extends Component<AppProps, AppState> {
                   setBeatCount={this.setBeatCount}
                   setBeatLength={this.setBeatLength}
                   subdivisions={this.state.subdivisions}
+                  beatAccents={this.state.beatAccents}
+                  cycleBeatAccent={this.cycleBeatAccent}
                 />
               </TopRow>
+
               <BottomRow>
                 <MainControls
                   chordKey={this.state.chordKey}
@@ -248,7 +265,6 @@ body{
 `
 
 const Wrapper = styled.div`
-  /* background-color: lightskyblue; */
   max-width: 900px;
   height: 100%;
   padding: 0px 20px 0px 20px;
@@ -262,21 +278,17 @@ const Inner = styled.div`
   flex-direction: column;
 `
 const AppControlsWrapper = styled.div`
-  /* background-color: lightslategrey; */
   height: 100%;
   width: 100%;
   display: grid;
   grid-template-rows: 1fr auto;
 `
 const TopRow = styled.div`
-  /* background-color: lightcoral; */
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
 `
 const BottomRow = styled.div`
-  /* background-color: lightgreen; */
-  /* margin-top: auto; */
   margin-bottom: 110px;
   width: 100%;
 `

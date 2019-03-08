@@ -7,12 +7,15 @@ import styled, { withTheme } from 'styled-components/macro'
 import { ThemeInterface } from '../theme/theme'
 import Icon from '../ui/Icon'
 import iconDefinitions, { getIconDimensions } from '../ui/iconDefinitions'
-import { SubDivisionOptions } from '../containers/App'
+
+import { Accent, SubDivisionOptions } from '../utils/Types'
 
 export interface BeatStaffProps {
   beatCount: number
   beatLength: number
   subdivisions: SubDivisionOptions
+  beatAccents: Accent[]
+  cycleBeatAccent: (beatIdx: number) => void
   theme: ThemeInterface
 }
 
@@ -83,7 +86,7 @@ const BeatStaff = (props: BeatStaffProps) => {
   }
 
   // Creates an icon used for marking beats
-  const makeBeatMarker = (xPos: number, color: string, key: string) => {
+  const makeBeatMarker = (beatIdx: number, xPos: number, color: string, key: string) => {
     const { beatLength } = props
     const beatIcon: keyof typeof iconDefinitions =
       beatLength === 1
@@ -99,20 +102,59 @@ const BeatStaff = (props: BeatStaffProps) => {
     const beatIconDimensions = getIconDimensions(beatIcon, beatIconSize)
     const horizAdjust = -8.0
     const iconWidthPerc = ((beatIconDimensions.width + horizAdjust) / elementWidth) * 100
+
+    const accentIconOffset = { x: 3, y: 60 }
+    const accent = props.beatAccents[beatIdx]
+    const hasAccent = accent === Accent.medium || accent === Accent.heavy
+    const accentIcon =
+      accent === Accent.medium ? 'accentLight' : accent === Accent.heavy ? 'accentHeavy' : ''
+
     return (
       <BeatIconWrapper
         x={`${xPos - iconWidthPerc / 2}%`}
         y={verticalCenter - beatIconDimensions.height + 7.5}
         key={key}
+        onClick={() => handleBeatClick(beatIdx)}
       >
         <rect
           x="0"
           y="0"
           width={beatIconDimensions.width + horizAdjust}
-          height={beatIconSize}
+          height={beatIconSize + accentIconOffset.y}
           fill="transparent"
         />
-        <Icon icon={beatIcon} fillColor={color} size={beatIconSize} />
+
+        <Icon
+          icon={beatIcon}
+          fillColor={accent === Accent.silent ? 'lightgrey' : color}
+          size={beatIconSize}
+        />
+
+        {accent === Accent.silent && (
+          <line
+            x1="0"
+            y1="0"
+            x2={beatIconDimensions.width}
+            y2={beatIconSize}
+            style={{ stroke: color, strokeWidth: 3 }}
+          />
+        )}
+
+        {hasAccent && (
+          <svg {...accentIconOffset}>
+            <Icon
+              icon={
+                props.beatAccents[beatIdx] === Accent.medium
+                  ? 'accentLight'
+                  : props.beatAccents[beatIdx] === Accent.heavy
+                    ? 'accentHeavy'
+                    : undefined
+              }
+              fillColor={color}
+              size={15}
+            />
+          </svg>
+        )}
       </BeatIconWrapper>
     )
   }
@@ -125,9 +167,9 @@ const BeatStaff = (props: BeatStaffProps) => {
 
   // Generate markers for beats
   const beats = staffDivisions.filter(div => div.type === SubDivLevel.beat)
-  const beatMarkers = beats.map(beat => {
+  const beatMarkers = beats.map((beat, i) => {
     const xPos = getMarkerXPosition(beat)
-    return makeBeatMarker(xPos, props.theme.primary, String(beat.time))
+    return makeBeatMarker(i, xPos, props.theme.primary, String(beat.time))
   })
 
   // Generate markers for subdivisions
@@ -137,6 +179,10 @@ const BeatStaff = (props: BeatStaffProps) => {
     const length = subdiv.type === SubDivLevel.eighth ? 15 : 8
     return makeVertLineMarker(xPos, props.theme.light, length, 1, `${subdiv.time}`)
   })
+
+  const handleBeatClick = (beatIdx: number) => {
+    props.cycleBeatAccent(beatIdx)
+  }
 
   return (
     <Wrapper>
