@@ -1,7 +1,7 @@
 export enum Accent {
   normal,
-  heavy,
   medium,
+  heavy,
   silent
 }
 

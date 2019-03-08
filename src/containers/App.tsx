@@ -9,8 +9,9 @@ import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
 
-import { Key, ChordType, Accent, SubDivisionOptions } from '../data/Types'
+import { Key, ChordType, Accent, SubDivisionOptions } from '../utils/Types'
 import { clamp } from '../utils/utils'
+import { BeatSoundPreset, beatSoundPresets } from '../data/MetronomeSounds'
 
 export interface AppProps {}
 export interface AppState {
@@ -22,6 +23,7 @@ export interface AppState {
   beatCount: number
   beatLength: number
   subdivisions: SubDivisionOptions
+  beatSoundPreset: BeatSoundPreset
   chordKey: Key
   chordType: ChordType
   a4: number
@@ -65,6 +67,7 @@ class App extends Component<AppProps, AppState> {
       beatCount: 4,
       beatLength: 4,
       subdivisions: SubDivisionOptions.sixteenth,
+      beatSoundPreset: beatSoundPresets.click,
       chordKey: Key.C,
       chordType: ChordType.Major,
       a4: 440,
@@ -183,6 +186,7 @@ class App extends Component<AppProps, AppState> {
             beatCount={this.state.beatCount}
             beatLength={this.state.beatLength}
             beatAccents={this.state.beatAccents}
+            beatSoundPreset={this.state.beatSoundPreset}
             isPlaying={this.state.isPlaying}
             volume={this.state.metronomeVolume}
             setAudioLoaded={this.setAudioLoaded}

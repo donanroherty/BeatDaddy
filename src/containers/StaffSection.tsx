@@ -4,7 +4,7 @@ import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
 import TimeSignature from '../components/TimeSignature'
 import BeatStaff from '../components/BeatStaff'
-import { Accent, SubDivisionOptions } from '../data/Types'
+import { Accent, SubDivisionOptions } from '../utils/Types'
 
 interface StaffSectionProps {
   beatCount: number

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Key, ChordType, getKeySafeName } from '../data/Types'
+import { Key, ChordType, getKeySafeName } from '../utils/Types'
 import { chords } from '../data/ChordIntervals'
 // @ts-ignore
 import Tone from 'tone'

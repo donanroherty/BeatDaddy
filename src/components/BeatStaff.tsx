@@ -8,7 +8,7 @@ import { ThemeInterface } from '../theme/theme'
 import Icon from '../ui/Icon'
 import iconDefinitions, { getIconDimensions } from '../ui/iconDefinitions'
 
-import { Accent, SubDivisionOptions } from '../data/Types'
+import { Accent, SubDivisionOptions } from '../utils/Types'
 
 export interface BeatStaffProps {
   beatCount: number

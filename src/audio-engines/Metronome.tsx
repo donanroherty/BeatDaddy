@@ -4,7 +4,8 @@
  */
 
 import React, { Component } from 'react'
-import { Accent } from '../data/Types'
+import { Accent } from '../utils/Types'
+import { BeatSoundPreset } from '../data/MetronomeSounds'
 
 export interface MetronomeProps {
   audioCtx: AudioContext
@@ -13,6 +14,7 @@ export interface MetronomeProps {
   beatCount: number
   beatLength: number
   beatAccents: Accent[]
+  beatSoundPreset: BeatSoundPreset
   isPlaying: boolean
   volume: number
   setAudioLoaded: (val: boolean) => void
@@ -39,9 +41,9 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     this.metronomeGain.connect(this.props.masterGain)
 
     this.state = {
-      beatSoundLightPath: '/audio/wood-light.wav',
-      beatSoundMediumPath: '/audio/wood-medium.wav',
-      beatSoundHeavyPath: '/audio/wood-heavy.wav'
+      beatSoundLightPath: this.props.beatSoundPreset.light,
+      beatSoundMediumPath: this.props.beatSoundPreset.medium,
+      beatSoundHeavyPath: this.props.beatSoundPreset.heavy
     }
 
     this.loadPreset()
@@ -54,6 +56,9 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     const beatLengthUpdated = prevProps.beatLength !== this.props.beatLength
     const beatAccentsUpdated = prevProps.beatAccents !== this.props.beatAccents
     const volumeUpdated = prevProps.volume !== this.props.volume
+
+    // TODO: Handle user changes beat sound preset.  Requires fetch new audio and restart
+    const beatSoundPresetUpdated = prevProps.beatSoundPreset !== this.props.beatSoundPreset
 
     if (playStateUpdated) {
       if (this.props.isPlaying) {
