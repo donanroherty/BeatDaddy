@@ -47,7 +47,7 @@ const StaffSection = (props: StaffSectionProps) => {
 }
 
 const Wrapper = styled.div`
-  width: 100%;
+  padding: 0px 20px 0px 20px;
   height: 100%;
   margin-top: auto;
   margin-bottom: auto;

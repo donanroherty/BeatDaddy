@@ -41,6 +41,9 @@ const Wrapper = styled.div<any>`
   font-size: 21px;
   color: ${props => props.contentColor};
 
+  border-radius: 5px;
+  border: 1px solid ${props => props.theme.primaryVeryLight};
+
   &:hover ${Content} {
     filter: brightness(${props => props.theme.hoverBrightness})
       drop-shadow(${props => props.theme.hoverDropShadow});

@@ -71,8 +71,8 @@ class App extends Component<AppProps, AppState> {
       chordKey: Key.C,
       chordType: ChordType.Major,
       a4: 440,
-      metronomeVolume: 75,
-      droneVolume: 75,
+      metronomeVolume: 100,
+      droneVolume: 60,
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
@@ -200,46 +200,53 @@ class App extends Component<AppProps, AppState> {
           />
 
           <Inner>
-            <Navbar />
+            <NavbarWrapper>
+              <Navbar />
+            </NavbarWrapper>
 
             <AppControlsWrapper>
               <TopRow>
-                <StaffSection
-                  beatCount={this.state.beatCount}
-                  beatLength={this.state.beatLength}
-                  timeSigMenuVisible={this.state.timeSigMenuVisible}
-                  openTimeSigMenu={this.openTimeSigMenu}
-                  closeTimeSigMenu={this.closeTimeSigMenu}
-                  setBeatCount={this.setBeatCount}
-                  setBeatLength={this.setBeatLength}
-                  subdivisions={this.state.subdivisions}
-                  beatAccents={this.state.beatAccents}
-                  cycleBeatAccent={this.cycleBeatAccent}
-                />
+                <StaffWrapper>
+                  <StaffSection
+                    beatCount={this.state.beatCount}
+                    beatLength={this.state.beatLength}
+                    timeSigMenuVisible={this.state.timeSigMenuVisible}
+                    openTimeSigMenu={this.openTimeSigMenu}
+                    closeTimeSigMenu={this.closeTimeSigMenu}
+                    setBeatCount={this.setBeatCount}
+                    setBeatLength={this.setBeatLength}
+                    subdivisions={this.state.subdivisions}
+                    beatAccents={this.state.beatAccents}
+                    cycleBeatAccent={this.cycleBeatAccent}
+                  />
+                </StaffWrapper>
               </TopRow>
 
-              <BottomRow>
-                <MainControls
-                  chordKey={this.state.chordKey}
-                  chordType={this.state.chordType}
-                  setChordKey={this.setChordKey}
-                  setChordType={this.setChordType}
-                  tempo={this.state.tempo}
-                  tempoMin={this.state.tempoMin}
-                  tempoMax={this.state.tempoMax}
-                  setTempo={this.setTempo}
-                  isPlaying={this.state.isPlaying}
-                  togglePlayState={this.togglePlayState}
-                  toggleAudioMenu={this.toggleAudioMenu}
-                  closeAudioMenu={this.closeAudioMenu}
-                  tapTempo={this.tapTempo}
-                  metronomeVolume={this.state.metronomeVolume}
-                  setMetronomeVolume={this.setMetronomeVolume}
-                  droneVolume={this.state.droneVolume}
-                  setDroneVolume={this.setDroneVolume}
-                  audioMenuVisible={this.state.audioMenuVisible}
-                />
-              </BottomRow>
+              <BottomSection>
+                <BottomSectionBGPattern />
+                <BottomSectionContent>
+                  <MainControls
+                    chordKey={this.state.chordKey}
+                    chordType={this.state.chordType}
+                    setChordKey={this.setChordKey}
+                    setChordType={this.setChordType}
+                    tempo={this.state.tempo}
+                    tempoMin={this.state.tempoMin}
+                    tempoMax={this.state.tempoMax}
+                    setTempo={this.setTempo}
+                    isPlaying={this.state.isPlaying}
+                    togglePlayState={this.togglePlayState}
+                    toggleAudioMenu={this.toggleAudioMenu}
+                    closeAudioMenu={this.closeAudioMenu}
+                    tapTempo={this.tapTempo}
+                    metronomeVolume={this.state.metronomeVolume}
+                    setMetronomeVolume={this.setMetronomeVolume}
+                    droneVolume={this.state.droneVolume}
+                    setDroneVolume={this.setDroneVolume}
+                    audioMenuVisible={this.state.audioMenuVisible}
+                  />
+                </BottomSectionContent>
+              </BottomSection>
             </AppControlsWrapper>
           </Inner>
         </Wrapper>
@@ -265,32 +272,59 @@ body{
 `
 
 const Wrapper = styled.div`
-  max-width: 900px;
+  width: 100vw;
   height: 100%;
-  padding: 0px 20px 0px 20px;
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  background-image: url('images/backgrounds/paper.png');
+  background-size: calc(500px * 1.5) calc(593px * 1.5);
 `
 const Inner = styled.div`
   height: 100%;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   display: grid;
   grid-template-rows: auto 1fr;
   flex-direction: column;
+`
+const NavbarWrapper = styled.div`
+  margin: 0px auto 0px auto;
+  max-width: 900px;
+  width: 100%;
 `
 const AppControlsWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto auto;
 `
 const TopRow = styled.div`
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
 `
-const BottomRow = styled.div`
-  margin-bottom: 110px;
+const StaffWrapper = styled.div`
+  /* width: 100%; */
+  margin-left: auto;
+  margin-right: auto;
+`
+const BottomSection = styled.div`
+  height: 100%;
+  background-color: blue;
+  clip-path: polygon(0% 70px, 100% 0%, 100% 100%, 0% 100%);
+  background-image: linear-gradient(to bottom right, #3565dd, #87cbf0);
+`
+const BottomSectionBGPattern = styled.div`
+  position: absolute;
+  top: 0px;
+  background-image: url('images/backgrounds/snow.png');
+  mix-blend-mode: multiply;
   width: 100%;
+  height: 100%;
+`
+const BottomSectionContent = styled.div`
+  padding-top: 70px;
 `
 
 export default App

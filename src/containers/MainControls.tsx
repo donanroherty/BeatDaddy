@@ -58,7 +58,7 @@ const MainControls = (props: MainControlsProps) => {
       />
 
       <ThumbControlsWrapper>
-        <AudioMenuButton
+        <StyledAudioMenuButton
           toggleAudioMenu={props.toggleAudioMenu}
           closeAudioMenu={props.closeAudioMenu}
           metronomeVolume={props.metronomeVolume}
@@ -72,12 +72,7 @@ const MainControls = (props: MainControlsProps) => {
           <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
         </PlayBtnWrapper>
 
-        <TapButton
-          width="40px"
-          height="40px"
-          contentColor={props.theme.primary}
-          onClick={props.tapTempo}
-        >
+        <TapButton width="40px" height="40px" contentColor={'white'} onClick={props.tapTempo}>
           Tap
         </TapButton>
       </ThumbControlsWrapper>
@@ -107,12 +102,14 @@ const DroneControls = styled.div`
   grid-gap: 10px;
   margin: 0 auto 0 auto;
   margin-bottom: 30px;
+  z-index: 10;
 `
 const StyledTempoWidget = styled(TempoWidget)`
   grid-area: tempo;
   margin: 0 auto 20px auto;
   padding-top: 10px;
   padding-bottom: 10px;
+  z-index: 2;
 `
 
 const ThumbControlsWrapper = styled.div`
@@ -123,9 +120,19 @@ const ThumbControlsWrapper = styled.div`
   flex-direction: row;
   align-items: flex-end;
   width: 300px;
+  z-index: 2;
 `
 
-const TapButton = styled(Button)``
+const TapButton = styled(Button)`
+  width: 56px;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid ${props => props.theme.primaryVeryLight};
+  &:hover {
+    border: 1px solid ${props => props.theme.primaryVeryLight};
+  }
+`
+const StyledAudioMenuButton = styled(AudioMenuButton)``
 
 const StyledPlayButton = styled(PlayButton)``
 

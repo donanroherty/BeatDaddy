@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 `
 
 const Brand = styled.div`
+padding-left: 20px;
   /* color: ${props => props.theme.primary}; */
   color: ${props => props.theme.dark};
   font-size: 20px;
