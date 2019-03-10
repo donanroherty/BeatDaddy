@@ -8,6 +8,7 @@ import Drone from '../audio-engines/Drone'
 import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
+import About from '../components/About'
 
 import { Key, ChordType, Accent, SubDivisionOptions } from '../utils/Types'
 import { clamp } from '../utils/utils'
@@ -223,30 +224,29 @@ class App extends Component<AppProps, AppState> {
               </TopRow>
 
               <BottomSection>
-                <BottomSectionBackground />
-
-                <BottomSectionContent>
-                  <MainControls
-                    chordKey={this.state.chordKey}
-                    chordType={this.state.chordType}
-                    setChordKey={this.setChordKey}
-                    setChordType={this.setChordType}
-                    tempo={this.state.tempo}
-                    tempoMin={this.state.tempoMin}
-                    tempoMax={this.state.tempoMax}
-                    setTempo={this.setTempo}
-                    isPlaying={this.state.isPlaying}
-                    togglePlayState={this.togglePlayState}
-                    toggleAudioMenu={this.toggleAudioMenu}
-                    closeAudioMenu={this.closeAudioMenu}
-                    tapTempo={this.tapTempo}
-                    metronomeVolume={this.state.metronomeVolume}
-                    setMetronomeVolume={this.setMetronomeVolume}
-                    droneVolume={this.state.droneVolume}
-                    setDroneVolume={this.setDroneVolume}
-                    audioMenuVisible={this.state.audioMenuVisible}
-                  />
-                </BottomSectionContent>
+                <MainControls
+                  chordKey={this.state.chordKey}
+                  chordType={this.state.chordType}
+                  setChordKey={this.setChordKey}
+                  setChordType={this.setChordType}
+                  tempo={this.state.tempo}
+                  tempoMin={this.state.tempoMin}
+                  tempoMax={this.state.tempoMax}
+                  setTempo={this.setTempo}
+                  isPlaying={this.state.isPlaying}
+                  togglePlayState={this.togglePlayState}
+                  toggleAudioMenu={this.toggleAudioMenu}
+                  closeAudioMenu={this.closeAudioMenu}
+                  tapTempo={this.tapTempo}
+                  metronomeVolume={this.state.metronomeVolume}
+                  setMetronomeVolume={this.setMetronomeVolume}
+                  droneVolume={this.state.droneVolume}
+                  setDroneVolume={this.setDroneVolume}
+                  audioMenuVisible={this.state.audioMenuVisible}
+                />
+                <AboutWrapper>
+                  <About />
+                </AboutWrapper>
               </BottomSection>
             </AppControlsWrapper>
           </Inner>
@@ -310,15 +310,11 @@ const StaffWrapper = styled.div`
 `
 const BottomSection = styled.div`
   height: 100%;
-  background-color: blue;
-  clip-path: polygon(0% 70px, 100% 0%, 100% 100%, 0% 100%);
-`
-
-const BottomSectionBackground = styled.div`
-  position: absolute;
-  top: 0px;
   width: 100%;
-  height: 100%;
+  padding-top: 70px;
+  background-color: #3565dd;
+  clip-path: polygon(0% 70px, 100% 0%, 100% 100%, 0% 100%);
+
   background: url('images/backgrounds/snow.png');
   background-size: auto;
   background-position: center;
@@ -334,10 +330,16 @@ const BottomSectionBackground = styled.div`
     background-image: linear-gradient(to bottom right, #3565dd, #b4e7ff);
     opacity: 0.88;
   }
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
-const BottomSectionContent = styled.div`
-  padding-top: 70px;
+const AboutWrapper = styled.div`
+  max-width: 900px;
+  padding: 20px;
+  margin-top: 100px;
 `
 
 export default App
