@@ -223,7 +223,8 @@ class App extends Component<AppProps, AppState> {
               </TopRow>
 
               <BottomSection>
-                <BottomSectionBGPattern />
+                <BottomSectionBackground />
+
                 <BottomSectionContent>
                   <MainControls
                     chordKey={this.state.chordKey}
@@ -274,10 +275,9 @@ body{
 const Wrapper = styled.div`
   width: 100vw;
   height: 100%;
-  /* margin-left: auto; */
-  /* margin-right: auto; */
   background-image: url('images/backgrounds/paper.png');
   background-size: calc(500px * 1.5) calc(593px * 1.5);
+  background-position: center;
 `
 const Inner = styled.div`
   height: 100%;
@@ -305,7 +305,6 @@ const TopRow = styled.div`
   width: 100%;
 `
 const StaffWrapper = styled.div`
-  /* width: 100%; */
   margin-left: auto;
   margin-right: auto;
 `
@@ -313,16 +312,30 @@ const BottomSection = styled.div`
   height: 100%;
   background-color: blue;
   clip-path: polygon(0% 70px, 100% 0%, 100% 100%, 0% 100%);
-  background-image: linear-gradient(to bottom right, #3565dd, #87cbf0);
 `
-const BottomSectionBGPattern = styled.div`
+
+const BottomSectionBackground = styled.div`
   position: absolute;
   top: 0px;
-  background-image: url('images/backgrounds/snow.png');
-  mix-blend-mode: multiply;
   width: 100%;
   height: 100%;
+  background: url('images/backgrounds/snow.png');
+  background-size: auto;
+  background-position: center;
+  filter: brightness(80%) contrast(180%);
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to bottom right, #3565dd, #b4e7ff);
+    opacity: 0.88;
+  }
 `
+
 const BottomSectionContent = styled.div`
   padding-top: 70px;
 `
