@@ -23,34 +23,38 @@ interface StaffSectionProps {
 const StaffSection = (props: StaffSectionProps) => {
   return (
     <Wrapper>
-      <Staff>
-        <TimeSignature
-          beatCount={props.beatCount}
-          beatLength={props.beatLength}
-          menuVisible={props.timeSigMenuVisible}
-          closeTimeSigMenu={props.closeTimeSigMenu}
-          openTimeSigMenu={props.openTimeSigMenu}
-          setBeatCount={props.setBeatCount}
-          setBeatLength={props.setBeatLength}
-        />
-
-        <BeatStaff
-          beatCount={props.beatCount}
-          beatLength={props.beatLength}
-          subdivisions={props.subdivisions}
-          beatAccents={props.beatAccents}
-          cycleBeatAccent={props.cycleBeatAccent}
-        />
-      </Staff>
+      <Inner>
+        <Staff>
+          <TimeSignature
+            beatCount={props.beatCount}
+            beatLength={props.beatLength}
+            menuVisible={props.timeSigMenuVisible}
+            closeTimeSigMenu={props.closeTimeSigMenu}
+            openTimeSigMenu={props.openTimeSigMenu}
+            setBeatCount={props.setBeatCount}
+            setBeatLength={props.setBeatLength}
+          />
+          <BeatStaff
+            beatCount={props.beatCount}
+            beatLength={props.beatLength}
+            subdivisions={props.subdivisions}
+            beatAccents={props.beatAccents}
+            cycleBeatAccent={props.cycleBeatAccent}
+          />
+        </Staff>
+      </Inner>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
-  padding: 0px 20px 0px 20px;
   height: 100%;
+  width: 100%;
   margin-top: auto;
   margin-bottom: auto;
+`
+const Inner = styled.div`
+  padding: 0px 20px 0px 20px;
 `
 const Staff = styled.div`
   display: flex;

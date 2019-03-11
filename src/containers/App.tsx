@@ -9,6 +9,7 @@ import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
 import About from '../components/About'
+import Footer from '../components/Footer'
 
 import { Key, ChordType, Accent, SubDivisionOptions } from '../utils/Types'
 import { clamp } from '../utils/utils'
@@ -201,6 +202,7 @@ class App extends Component<AppProps, AppState> {
           />
 
           <Inner>
+            <PaperBG />
             <NavbarWrapper>
               <Navbar />
             </NavbarWrapper>
@@ -224,29 +226,34 @@ class App extends Component<AppProps, AppState> {
               </TopRow>
 
               <BottomSection>
-                <MainControls
-                  chordKey={this.state.chordKey}
-                  chordType={this.state.chordType}
-                  setChordKey={this.setChordKey}
-                  setChordType={this.setChordType}
-                  tempo={this.state.tempo}
-                  tempoMin={this.state.tempoMin}
-                  tempoMax={this.state.tempoMax}
-                  setTempo={this.setTempo}
-                  isPlaying={this.state.isPlaying}
-                  togglePlayState={this.togglePlayState}
-                  toggleAudioMenu={this.toggleAudioMenu}
-                  closeAudioMenu={this.closeAudioMenu}
-                  tapTempo={this.tapTempo}
-                  metronomeVolume={this.state.metronomeVolume}
-                  setMetronomeVolume={this.setMetronomeVolume}
-                  droneVolume={this.state.droneVolume}
-                  setDroneVolume={this.setDroneVolume}
-                  audioMenuVisible={this.state.audioMenuVisible}
-                />
-                <AboutWrapper>
-                  <About />
-                </AboutWrapper>
+                <GradientBackground />
+
+                <BottomSectionContent>
+                  <MainControls
+                    chordKey={this.state.chordKey}
+                    chordType={this.state.chordType}
+                    setChordKey={this.setChordKey}
+                    setChordType={this.setChordType}
+                    tempo={this.state.tempo}
+                    tempoMin={this.state.tempoMin}
+                    tempoMax={this.state.tempoMax}
+                    setTempo={this.setTempo}
+                    isPlaying={this.state.isPlaying}
+                    togglePlayState={this.togglePlayState}
+                    toggleAudioMenu={this.toggleAudioMenu}
+                    closeAudioMenu={this.closeAudioMenu}
+                    tapTempo={this.tapTempo}
+                    metronomeVolume={this.state.metronomeVolume}
+                    setMetronomeVolume={this.setMetronomeVolume}
+                    droneVolume={this.state.droneVolume}
+                    setDroneVolume={this.setDroneVolume}
+                    audioMenuVisible={this.state.audioMenuVisible}
+                  />
+                  <AboutWrapper>
+                    <About />
+                  </AboutWrapper>
+                </BottomSectionContent>
+                <Footer />
               </BottomSection>
             </AppControlsWrapper>
           </Inner>
@@ -273,8 +280,14 @@ body{
 `
 
 const Wrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100%;
+`
+const PaperBG = styled.div`
+  height: 350px;
+  width: 100%;
+  position: absolute;
+  z-index: 0;
   background-image: url('images/backgrounds/paper.png');
   background-size: calc(500px * 1.5) calc(593px * 1.5);
   background-position: center;
@@ -284,20 +297,22 @@ const Inner = styled.div`
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  display: grid;
-  grid-template-rows: auto 1fr;
+  display: flex;
   flex-direction: column;
 `
 const NavbarWrapper = styled.div`
   margin: 0px auto 0px auto;
   max-width: 900px;
   width: 100%;
+  z-index: 2;
 `
 const AppControlsWrapper = styled.div`
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-template-rows: auto auto;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
 `
 const TopRow = styled.div`
   margin-top: auto;
@@ -312,13 +327,26 @@ const BottomSection = styled.div`
   height: 100%;
   width: 100%;
   padding-top: 70px;
-  background-color: #3565dd;
-  clip-path: polygon(0% 70px, 100% 0%, 100% 100%, 0% 100%);
+  position: relative;
+  z-index: 10;
 
-  background: url('images/backgrounds/snow.png');
-  background-size: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const GradientBackground = styled.div`
+  position: absolute;
+  z-index: 0;
+  height: 700px;
+  width: 100%;
+
+  background-color: #3565dd;
+  clip-path: polygon(0% 70px, 100% 0%, 100% calc(100% - 70px), 0% 100%);
+
+  background: url('images/backgrounds/snow-contrast.png');
+  background-size: calc(1000px * 0.5) calc(1000px * 0.5);
   background-position: center;
-  filter: brightness(80%) contrast(180%);
 
   &:before {
     content: '';
@@ -327,13 +355,15 @@ const BottomSection = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: linear-gradient(to bottom right, #3565dd, #b4e7ff);
+    background-image: linear-gradient(to bottom right, #012985, #b4e7ff);
     opacity: 0.88;
   }
+`
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const BottomSectionContent = styled.div`
+  position: relative;
+  z-index: 10;
+  padding-top: 70px;
 `
 
 const AboutWrapper = styled.div`

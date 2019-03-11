@@ -85,14 +85,8 @@ const Wrapper = styled.div`
   margin-right: auto;
   width: 100%;
 
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto auto auto;
-
-  grid-template-areas:
-    'drone'
-    'tempo'
-    'thumb-controls';
+  display: flex;
+  flex-direction: column;
 `
 
 const DroneControls = styled.div`

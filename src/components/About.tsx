@@ -36,6 +36,7 @@ const Wrapper = styled.div`
   max-width: 900px;
   background-color: white;
   border-radius: 20px;
+  filter: drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.16));
 `
 const Content = styled.div`
   padding: 40px;
@@ -44,7 +45,6 @@ const Content = styled.div`
 const Header = styled.div`
   font-size: 40px;
   font-weight: bolder;
-
   text-align: center;
 `
 
