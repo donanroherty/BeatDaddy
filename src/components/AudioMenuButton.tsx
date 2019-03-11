@@ -19,8 +19,8 @@ interface AudioMenuButtonProps {
 const AudioMenuButton = (props: AudioMenuButtonProps) => {
   return (
     <Wrapper>
-      <Button width="40px" height="40px" onClick={props.toggleAudioMenu}>
-        <Icon icon="volume" fillColor={props.theme.primary} size={32} />
+      <Button width="56px" height="40px" onClick={props.toggleAudioMenu}>
+        <StyledIcon icon="volume" fillColor={'white'} size={32} />
       </Button>
       <StyledAudioMenu
         metronomeVolume={props.metronomeVolume}
@@ -34,10 +34,15 @@ const AudioMenuButton = (props: AudioMenuButtonProps) => {
   )
 }
 const Wrapper = styled.div`
-  width: 40px;
-  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `
-
+const StyledIcon = styled(Icon)`
+  position: relative;
+  top: 3px;
+`
 const StyledAudioMenu = styled(AudioMenu)`
   top: -105px;
   left: -5px;

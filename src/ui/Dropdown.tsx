@@ -126,9 +126,10 @@ const Selection = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-left: 14px;
+  font-size: 16px;
 `
 
-const optionItemHeight = 35
+const optionItemHeight = 40
 const OptionPanelWrapper = styled.div<any>`
   position: absolute;
   z-index: 1;
@@ -150,6 +151,7 @@ const Option = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-left: 14px;
+  font-size: 16px;
   &:hover {
     background-color: ${props => props.theme.primaryVeryLight};
   }

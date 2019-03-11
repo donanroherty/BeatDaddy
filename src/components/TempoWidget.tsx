@@ -6,6 +6,7 @@ import React from 'react'
 import styled, { withTheme } from 'styled-components'
 import Icon from '../ui/Icon'
 import { ThemeInterface } from '../theme/theme'
+import Button from '../ui/Button'
 
 type TempoWidgetProps = {
   tempo: number
@@ -110,7 +111,7 @@ const BpmField = styled.input`
   font-family: 'Roboto', arial, sans-serif;
   font-size: 26px;
   font-weight: bold;
-  color: ${props => props.theme.primary};
+  color: white;
   text-align: center;
   width: 45px;
   height: 22px;
@@ -135,16 +136,19 @@ const Equals = styled.div`
   padding-left: 6px;
 `
 
-const Btn = styled.div`
-  color: ${props => props.theme.primary};
-  font-size: 16px;
-  width: 20px;
-  height: 20px;
+const Btn = styled(Button)`
+  color: white;
+  font-size: 20px;
+
+  width: 30px;
+  height: 30px;
   text-align: center;
   border-radius: 5px;
+  background-color: ${props => props.theme.primary};
+  border: 1px solid transparent;
 
   &:hover {
-    background-color: ${props => props.theme.primaryVeryLight};
+    border: 1px solid ${props => props.theme.primaryVeryLight};
   }
 `
 const MinusBtn = styled(Btn)`

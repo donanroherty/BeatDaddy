@@ -8,6 +8,8 @@ import Drone from '../audio-engines/Drone'
 import MainControls from './MainControls'
 import StaffSection from './StaffSection'
 import Navbar from '../components/Navbar'
+import About from '../components/About'
+import Footer from '../components/Footer'
 
 import { Key, ChordType, Accent, SubDivisionOptions } from '../utils/Types'
 import { clamp } from '../utils/utils'
@@ -71,8 +73,8 @@ class App extends Component<AppProps, AppState> {
       chordKey: Key.C,
       chordType: ChordType.Major,
       a4: 440,
-      metronomeVolume: 75,
-      droneVolume: 75,
+      metronomeVolume: 100,
+      droneVolume: 60,
       isPlaying: false,
       audioLoaded: false,
       timeSigMenuVisible: false,
@@ -199,49 +201,64 @@ class App extends Component<AppProps, AppState> {
             volume={this.state.droneVolume}
           />
 
-          <Inner>
-            <Navbar />
+          <PageContent>
+            <PaperBG />
+            <NavbarWrapper>
+              <Navbar />
+            </NavbarWrapper>
 
             <AppControlsWrapper>
               <TopRow>
-                <StaffSection
-                  beatCount={this.state.beatCount}
-                  beatLength={this.state.beatLength}
-                  timeSigMenuVisible={this.state.timeSigMenuVisible}
-                  openTimeSigMenu={this.openTimeSigMenu}
-                  closeTimeSigMenu={this.closeTimeSigMenu}
-                  setBeatCount={this.setBeatCount}
-                  setBeatLength={this.setBeatLength}
-                  subdivisions={this.state.subdivisions}
-                  beatAccents={this.state.beatAccents}
-                  cycleBeatAccent={this.cycleBeatAccent}
-                />
+                <StaffWrapper>
+                  <StaffSection
+                    beatCount={this.state.beatCount}
+                    beatLength={this.state.beatLength}
+                    timeSigMenuVisible={this.state.timeSigMenuVisible}
+                    openTimeSigMenu={this.openTimeSigMenu}
+                    closeTimeSigMenu={this.closeTimeSigMenu}
+                    setBeatCount={this.setBeatCount}
+                    setBeatLength={this.setBeatLength}
+                    subdivisions={this.state.subdivisions}
+                    beatAccents={this.state.beatAccents}
+                    cycleBeatAccent={this.cycleBeatAccent}
+                  />
+                </StaffWrapper>
               </TopRow>
 
-              <BottomRow>
-                <MainControls
-                  chordKey={this.state.chordKey}
-                  chordType={this.state.chordType}
-                  setChordKey={this.setChordKey}
-                  setChordType={this.setChordType}
-                  tempo={this.state.tempo}
-                  tempoMin={this.state.tempoMin}
-                  tempoMax={this.state.tempoMax}
-                  setTempo={this.setTempo}
-                  isPlaying={this.state.isPlaying}
-                  togglePlayState={this.togglePlayState}
-                  toggleAudioMenu={this.toggleAudioMenu}
-                  closeAudioMenu={this.closeAudioMenu}
-                  tapTempo={this.tapTempo}
-                  metronomeVolume={this.state.metronomeVolume}
-                  setMetronomeVolume={this.setMetronomeVolume}
-                  droneVolume={this.state.droneVolume}
-                  setDroneVolume={this.setDroneVolume}
-                  audioMenuVisible={this.state.audioMenuVisible}
-                />
-              </BottomRow>
+              <BottomSection>
+                <GradientBackground />
+
+                <BottomSectionContent>
+                  <MainControls
+                    chordKey={this.state.chordKey}
+                    chordType={this.state.chordType}
+                    setChordKey={this.setChordKey}
+                    setChordType={this.setChordType}
+                    tempo={this.state.tempo}
+                    tempoMin={this.state.tempoMin}
+                    tempoMax={this.state.tempoMax}
+                    setTempo={this.setTempo}
+                    isPlaying={this.state.isPlaying}
+                    togglePlayState={this.togglePlayState}
+                    toggleAudioMenu={this.toggleAudioMenu}
+                    closeAudioMenu={this.closeAudioMenu}
+                    tapTempo={this.tapTempo}
+                    metronomeVolume={this.state.metronomeVolume}
+                    setMetronomeVolume={this.setMetronomeVolume}
+                    droneVolume={this.state.droneVolume}
+                    setDroneVolume={this.setDroneVolume}
+                    audioMenuVisible={this.state.audioMenuVisible}
+                  />
+
+                  <AboutWrapper>
+                    <About />
+                  </AboutWrapper>
+
+                  <Footer>© Ronan Doherty 2018</Footer>
+                </BottomSectionContent>
+              </BottomSection>
             </AppControlsWrapper>
-          </Inner>
+          </PageContent>
         </Wrapper>
       </ThemeProvider>
     )
@@ -262,35 +279,109 @@ body{
 #root{
   height: 100%;
 }
+a{
+  color: ${theme.primary};
+  text-decoration: none;
+  &:link {
+    text-decoration: none;
+  }
+  &:visited {
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+  &:active {
+    text-decoration: underline;
+  }
+}
 `
 
 const Wrapper = styled.div`
-  max-width: 900px;
+  width: 100%;
   height: 100%;
-  padding: 0px 20px 0px 20px;
+`
+
+const PageContent = styled.div`
+  height: 100%;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
-`
-const Inner = styled.div`
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto 1fr;
+  display: flex;
   flex-direction: column;
+`
+const NavbarWrapper = styled.div`
+  margin: 0px auto 40px auto;
+  max-width: 900px;
+  width: 100%;
+  z-index: 2;
 `
 const AppControlsWrapper = styled.div`
   height: 100%;
   width: 100%;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  padding-top: 20px;
+  z-index: 2;
 `
 const TopRow = styled.div`
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
 `
-const BottomRow = styled.div`
-  margin-bottom: 110px;
+const StaffWrapper = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+`
+const BottomSection = styled.div`
+  height: 100%;
   width: 100%;
+  padding-top: 70px;
+  position: relative;
+  z-index: 10;
+`
+const PaperBG = styled.div`
+  height: 400px;
+  width: 100%;
+  position: absolute;
+  z-index: 0;
+  background-image: url('images/backgrounds/paper.png');
+  background-size: calc(500px * 1.5) calc(593px * 1.5);
+  background-position: center;
+`
+const GradientBackground = styled.div`
+  position: absolute;
+  z-index: 0;
+  height: 700px;
+  width: 100%;
+
+  background-color: #012985;
+  clip-path: polygon(0% 70px, 100% 0%, 100% calc(100% - 70px), 0% 100%);
+
+  background: url('images/backgrounds/snow-contrast.png');
+  background-size: calc(1000px * 0.5) calc(1000px * 0.5);
+  background-position: center;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to bottom right, #012985, #b4e7ff);
+    opacity: 0.88;
+  }
+`
+
+const BottomSectionContent = styled.div`
+  position: relative;
+  z-index: 10;
+  padding-top: 70px;
+`
+
+const AboutWrapper = styled.div`
+  max-width: 900px;
+  padding: 20px;
+  margin: 100px auto 0 auto;
 `
 
 export default App
