@@ -201,7 +201,7 @@ class App extends Component<AppProps, AppState> {
             volume={this.state.droneVolume}
           />
 
-          <Inner>
+          <PageContent>
             <PaperBG />
             <NavbarWrapper>
               <Navbar />
@@ -249,14 +249,16 @@ class App extends Component<AppProps, AppState> {
                     setDroneVolume={this.setDroneVolume}
                     audioMenuVisible={this.state.audioMenuVisible}
                   />
+
                   <AboutWrapper>
                     <About />
                   </AboutWrapper>
+
+                  <Footer>© Ronan Doherty 2018</Footer>
                 </BottomSectionContent>
-                <Footer />
               </BottomSection>
             </AppControlsWrapper>
-          </Inner>
+          </PageContent>
         </Wrapper>
       </ThemeProvider>
     )
@@ -277,22 +279,30 @@ body{
 #root{
   height: 100%;
 }
+a{
+  color: ${theme.primary};
+  text-decoration: none;
+  &:link {
+    text-decoration: none;
+  }
+  &:visited {
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+  &:active {
+    text-decoration: underline;
+  }
+}
 `
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-const PaperBG = styled.div`
-  height: 350px;
-  width: 100%;
-  position: absolute;
-  z-index: 0;
-  background-image: url('images/backgrounds/paper.png');
-  background-size: calc(500px * 1.5) calc(593px * 1.5);
-  background-position: center;
-`
-const Inner = styled.div`
+
+const PageContent = styled.div`
   height: 100%;
   width: 100%;
   margin-left: auto;
@@ -301,7 +311,7 @@ const Inner = styled.div`
   flex-direction: column;
 `
 const NavbarWrapper = styled.div`
-  margin: 0px auto 0px auto;
+  margin: 0px auto 40px auto;
   max-width: 900px;
   width: 100%;
   z-index: 2;
@@ -310,8 +320,6 @@ const AppControlsWrapper = styled.div`
   height: 100%;
   width: 100%;
   padding-top: 20px;
-  display: flex;
-  flex-direction: column;
   z-index: 2;
 `
 const TopRow = styled.div`
@@ -329,19 +337,23 @@ const BottomSection = styled.div`
   padding-top: 70px;
   position: relative;
   z-index: 10;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `
-
+const PaperBG = styled.div`
+  height: 400px;
+  width: 100%;
+  position: absolute;
+  z-index: 0;
+  background-image: url('images/backgrounds/paper.png');
+  background-size: calc(500px * 1.5) calc(593px * 1.5);
+  background-position: center;
+`
 const GradientBackground = styled.div`
   position: absolute;
   z-index: 0;
   height: 700px;
   width: 100%;
 
-  background-color: #3565dd;
+  background-color: #012985;
   clip-path: polygon(0% 70px, 100% 0%, 100% calc(100% - 70px), 0% 100%);
 
   background: url('images/backgrounds/snow-contrast.png');
@@ -369,7 +381,7 @@ const BottomSectionContent = styled.div`
 const AboutWrapper = styled.div`
   max-width: 900px;
   padding: 20px;
-  margin-top: 100px;
+  margin: 100px auto 0 auto;
 `
 
 export default App

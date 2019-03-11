@@ -7,7 +7,7 @@ const Footer = (props: FooterProps) => {
   return (
     <Wrapper>
       <Container>
-        <Text>© Ronan Doherty 2018</Text>
+        <Text href="https://www.ronandoherty.com">© Ronan Doherty 2018</Text>
       </Container>
     </Wrapper>
   )
@@ -18,8 +18,9 @@ const Wrapper = styled.div`
   height: 50px;
   position: absolute;
   top: calc(100% - 50px);
+  bottom: 0;
   margin-top: 100px;
-  background-color: ${props => props.theme.dark};
+  /* background-color: ${props => props.theme.dark}; */
 `
 const Container = styled.div`
   width: 100%;
@@ -33,6 +34,21 @@ const Container = styled.div`
   align-items: flex-end;
   justify-content: center;
 `
-const Text = styled.div``
+const Text = styled.a`
+  color: ${props => props.theme.primary};
+  text-decoration: none;
+  &:link {
+    text-decoration: none;
+  }
+  &:visited {
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+  &:active {
+    text-decoration: underline;
+  }
+`
 
 export default withTheme(Footer)
