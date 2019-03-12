@@ -42,7 +42,11 @@ const Wrapper = styled.div<any>`
   color: ${props => props.contentColor};
 
   border-radius: 5px;
-  border: 1px solid ${props => props.theme.primaryVeryLight};
+  border: 1px solid ${props => props.theme.primary};
+
+  &:hover {
+    border: 1px solid ${props => props.theme.primaryVeryLight};
+  }
 
   &:hover ${Content} {
     filter: brightness(${props => props.theme.hoverBrightness})

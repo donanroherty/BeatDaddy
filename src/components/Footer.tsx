@@ -35,6 +35,7 @@ const Container = styled.div`
   justify-content: center;
 `
 const Text = styled.a`
+  padding-right: 20px;
   color: ${props => props.theme.primary};
   text-decoration: none;
   &:link {

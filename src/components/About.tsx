@@ -1,5 +1,6 @@
 import React from 'react'
 import styled, { withTheme } from 'styled-components'
+import breakpoints from '../utils/breakpoints'
 
 interface AboutProps {}
 
@@ -9,22 +10,17 @@ const About = (props: AboutProps) => {
       <Content>
         <Header>?</Header>
         <p>
-          BeatDaddy is a practice tool for musicians working on scales, arpeggios and tight
-          time-keeping. The metronome is a staple of music practice helping you lock in with your
-          favourite time signatures. The chord drone gives you a harmonic context to the notes you
-          are playing. Accenting beats helps you to target specific beats or simulate different
-          genres of music.
+          Beatdaddy is a music practice tool combining a metronome and chord drone, allowing
+          musicians to practice in time and in harmonic context.
         </p>
+
         <p>
-          As a bass player myself, I built BeatDaddy to consolidate the various apps, videos and
-          sound files I use in my regular practice. I hope you find it useful. If you have any
-          suggestions to make BeatDaddy a better tool for the practicing musician I'd love to hear
-          from you at{' '}
+          I hope you find it useful, I have a lot more features planned. If you have any suggestions
+          to improve BeatDaddy I'd love to hear from you at&nbsp;
           <a href="mailto:ronandohertydev@gmail.com" target="_top">
             ronandohertydev@gmail.com
           </a>
         </p>
-        -Ronan
       </Content>
     </Wrapper>
   )
@@ -33,7 +29,6 @@ const About = (props: AboutProps) => {
 const Wrapper = styled.div`
   z-index: 1;
   width: 100%;
-  max-width: 900px;
   background-color: white;
   border-radius: 20px;
   filter: drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.16));
@@ -41,8 +36,14 @@ const Wrapper = styled.div`
 const Content = styled.div`
   padding: 40px 80px 60px 80px;
   color: ${props => props.theme.dark};
-  font-size: 20px;
-  /* font-weight: bold; */
+  font-size: 18px;
+
+  @media (max-width: ${breakpoints.tablet}px) {
+    padding: 40px 40px 60px 40px;
+  }
+  @media (max-width: ${breakpoints.phone}px) {
+    padding: 40px 20px 60px 20px;
+  }
 `
 const Header = styled.div`
   font-size: 40px;

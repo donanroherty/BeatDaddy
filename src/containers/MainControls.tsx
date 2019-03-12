@@ -72,9 +72,9 @@ const MainControls = (props: MainControlsProps) => {
           <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
         </PlayBtnWrapper>
 
-        <TapButton width="40px" height="40px" contentColor={'white'} onClick={props.tapTempo}>
+        <Button width="56px" height="40px" contentColor={'white'} onClick={props.tapTempo}>
           Tap
-        </TapButton>
+        </Button>
       </ThumbControlsWrapper>
     </Wrapper>
   )
@@ -120,11 +120,6 @@ const ThumbControlsWrapper = styled.div`
 const TapButton = styled(Button)`
   width: 56px;
   height: 40px;
-  border-radius: 5px;
-  border: 1px solid ${props => props.theme.primaryVeryLight};
-  &:hover {
-    border: 1px solid ${props => props.theme.primaryVeryLight};
-  }
 `
 const StyledAudioMenuButton = styled(AudioMenuButton)``
 

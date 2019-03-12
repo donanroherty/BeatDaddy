@@ -79,7 +79,9 @@ class App extends Component<AppProps, AppState> {
       audioLoaded: false,
       timeSigMenuVisible: false,
       audioMenuVisible: false,
-      beatAccents: new Array(4).fill(undefined).map(() => Accent.normal)
+      beatAccents: new Array(4)
+        .fill(undefined)
+        .map((val, i) => (i === 0 ? Accent.heavy : Accent.normal))
     }
   }
 
@@ -282,18 +284,10 @@ body{
 a{
   color: ${theme.primary};
   text-decoration: none;
-  &:link {
-    text-decoration: none;
-  }
-  &:visited {
-    text-decoration: none;
-  }
-  &:hover {
-    text-decoration: underline;
-  }
-  &:active {
-    text-decoration: underline;
-  }
+  &:link {text-decoration: none;}
+  &:visited {text-decoration: none;}
+  &:hover {text-decoration: underline;}
+  &:active {text-decoration: underline;}
 }
 `
 
@@ -319,7 +313,6 @@ const NavbarWrapper = styled.div`
 const AppControlsWrapper = styled.div`
   height: 100%;
   width: 100%;
-  padding-top: 20px;
   z-index: 2;
 `
 const TopRow = styled.div`
@@ -334,7 +327,7 @@ const StaffWrapper = styled.div`
 const BottomSection = styled.div`
   height: 100%;
   width: 100%;
-  padding-top: 70px;
+  padding-top: 30px;
   position: relative;
   z-index: 10;
 `
@@ -371,16 +364,19 @@ const GradientBackground = styled.div`
     opacity: 0.88;
   }
 `
-
 const BottomSectionContent = styled.div`
-  position: relative;
-  z-index: 10;
+  /* position: relative; */
+  /* z-index: 10; */
   padding-top: 70px;
 `
-
 const AboutWrapper = styled.div`
   max-width: 900px;
-  padding: 20px;
+  padding: 0 20px 0 20px;
+  margin: 100px auto 0 auto;
+`
+const FooterWrapper = styled.div`
+  max-width: 900px;
+  padding: 0 20px 0 20px;
   margin: 100px auto 0 auto;
 `
 
