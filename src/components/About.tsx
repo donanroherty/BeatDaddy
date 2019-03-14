@@ -10,8 +10,9 @@ const About = (props: AboutProps) => {
       <Content>
         <Header>?</Header>
         <p>
-          Beatdaddy is a music practice tool combining a metronome and chord drone, allowing
-          musicians to practice in time and in harmonic context.
+          Beatdaddy is a combined metronome and chord drone, allowing musicians to practice in time
+          and in a harmonic context. Set the tempo, pick a chord to practice over, click beats to
+          change their accents and get to work!
         </p>
 
         <p>

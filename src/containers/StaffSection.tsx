@@ -3,6 +3,7 @@ import styled from '../theme/themed-styled-components'
 import { withTheme } from 'styled-components'
 import { ThemeInterface } from '../theme/theme'
 import TimeSignature from '../components/TimeSignature'
+import BeatCount from '../components/BeatCount'
 import BeatStaff from '../components/BeatStaff'
 import { Accent, SubDivisionOptions } from '../utils/Types'
 
@@ -25,7 +26,7 @@ const StaffSection = (props: StaffSectionProps) => {
     <Wrapper>
       <Inner>
         <Staff>
-          <TimeSignature
+          <BeatCount
             beatCount={props.beatCount}
             beatLength={props.beatLength}
             menuVisible={props.timeSigMenuVisible}
@@ -58,6 +59,7 @@ const Staff = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  height: 90px;
 `
 
 export default withTheme(StaffSection)

@@ -11,6 +11,9 @@ interface DropdownProps {
   selected: number
   handleOptionSelection?: (idx: number) => void
   borderRadius?: string
+  chevronOnLeft?: boolean
+  labelSize?: number
+  transparentLabel?: boolean
   theme?: ThemeInterface
 }
 
@@ -30,7 +33,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     width: '200px',
     options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
     selected: 0,
-    borderRadius: '10px'
+    borderRadius: '10px',
+    transparentLabel: false,
+    chevronOnLeft: false,
+    labelSize: 16
   }
 
   componentWillMount = () => document.addEventListener('mousedown', this.handleClick, false)
@@ -63,11 +69,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     return (
       <Wrapper {...this.props} isOpen={this.state.isOpen}>
         <TopSection {...this.props} isOpen={this.state.isOpen} onClick={this.toggleMenuOpen}>
-          <Selection>
+          <Selection {...this.props}>
             <div>{this.props.options![this.props.selected]}</div>
           </Selection>
           <ChevronWrapper>
-            <Icon icon="chevron" fillColor={this.props.theme!.primary} size={6} />
+            <Icon icon="chevron" fillColor={this.props.theme!.primary} size={7} />
           </ChevronWrapper>
         </TopSection>
         <OptionPanelWrapper {...this.props} isOpen={this.state.isOpen}>
@@ -83,11 +89,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 const Wrapper = styled.div<any>`
   width: ${props => props.width};
   height: ${props => (props.isOpen ? 'auto' : '40px')};
-  background-color: white;
+  background-color: ${props => (props.transparentLabel ? 'transparent' : 'white')};
   font-size: 14px;
   font-weight: bold;
   user-select: none;
-  border: 1px solid ${props => props.theme.primaryLight};
+  border: 1px solid ${props => (props.transparentLabel ? 'transparent' : props.theme.primaryLight)};
   border-radius: ${props => props.borderRadius};
   overflow: hidden;
 `
@@ -101,7 +107,7 @@ const ChevronWrapper = styled.div`
 const TopSection = styled.div<any>`
   height: 40px;
   display: flex;
-  flex-direction: row;
+  flex-direction: ${props => (props.chevronOnLeft ? 'row-reverse' : 'row')};
 
   border-radius: ${props =>
     `${props.borderRadius} ${props.borderRadius} ${props.isOpen ? '0' : props.borderRadius} ${
@@ -109,7 +115,8 @@ const TopSection = styled.div<any>`
     }`};
 
   &:hover {
-    background-color: ${props => props.theme.primaryVeryLight};
+    background-color: ${props =>
+      props.transparentLabel ? 'transparent' : props.theme.primaryVeryLight};
   }
   &:hover ${ChevronWrapper} {
     filter: brightness(${props => props.theme.hoverBrightness})
@@ -119,20 +126,20 @@ const TopSection = styled.div<any>`
     filter: brightness(${props => 1 - (props.theme.hoverBrightness - 1)});
   }
 `
-const Selection = styled.div`
+const Selection = styled.div<any>`
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 14px;
-  font-size: 16px;
+  padding-left: ${props => (props.chevronOnLeft ? '0' : '14px')};
+  font-size: ${props => props.labelSize}px;
 `
 
 const optionItemHeight = 40
 const OptionPanelWrapper = styled.div<any>`
   position: absolute;
-  z-index: 1;
+  z-index: 20;
   overflow: hidden;
   border: 1px solid ${props => props.theme.primaryLight};
   border-radius: ${props => props.borderRadius};
