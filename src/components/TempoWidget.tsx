@@ -66,14 +66,11 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
   public render() {
     return (
       <Wrapper {...this.props}>
+        <ValidationText>{!this.hasValidInput() && <div>min: 20, max 240</div>} </ValidationText>
         <Row>
           {this.hasValidInput()}
 
           <MinusBtn onClick={this.handleClickDecrement}>-</MinusBtn>
-
-          <Icon icon="quarterNote" fillColor={this.props.theme.dark} size={25} />
-
-          <Equals>=</Equals>
 
           <BpmField
             value={this.state.value}
@@ -83,11 +80,9 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
             type="number"
           />
 
-          <BpmSuffix>bpm</BpmSuffix>
-
           <PlusBtn onClick={this.handleClickIncrement}>+</PlusBtn>
         </Row>
-        {!this.hasValidInput() && <ValidationText>min: 20, max 240</ValidationText>}
+        <BpmSuffix>bpm</BpmSuffix>
       </Wrapper>
     )
   }
@@ -100,6 +95,7 @@ const Wrapper = styled('div')`
   flex-direction: column;
   font-weight: bold;
   align-items: center;
+
   user-select: none;
 `
 const Row = styled.div`
@@ -130,11 +126,7 @@ const BpmField = styled.input`
 const BpmSuffix = styled.div`
   color: ${props => props.theme.dark};
   font-size: 16px;
-`
-const Equals = styled.div`
-  color: ${props => props.theme.dark};
-  font-size: 20px;
-  padding-left: 6px;
+  padding-left: 4px;
 `
 
 const Btn = styled(Button)`
@@ -162,6 +154,7 @@ const PlusBtn = styled(Btn)`
 const ValidationText = styled.div`
   font-size: 12px;
   color: red;
+  height: 14px;
 `
 
 export default withTheme(TempoWidget)

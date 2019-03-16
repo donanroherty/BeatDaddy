@@ -70,11 +70,11 @@ const AudioMenu = (props: AudioMenuProps) => {
         <DroneSection>
           <IconWrapper>
             <Icon
-              icon="keyboard"
+              icon="chord"
               fillColor={props.theme!.dark!}
               fillColor2={props.theme!.primary!}
               fillColor3="white"
-              size={27}
+              size={40}
             />
           </IconWrapper>
           <SectionContent>
