@@ -5,30 +5,22 @@
 
 import React, { Component } from 'react'
 import { Accent } from '../utils/Types'
-import { BeatSoundPreset } from '../data/MetronomeSounds'
 
-export interface MetronomeProps {
+import { connect } from 'react-redux'
+import { IRootState } from '../store'
+import { Dispatch } from 'redux'
+import * as mnActions from '../store/metronome/actions'
+import { MetronomeActions } from '../store/metronome/types'
+
+export interface MetronomeProps extends ReduxType {
   audioCtx: AudioContext
   masterGain: GainNode
-  tempo: number
-  beatCount: number
-  beatLength: number
-  beatAccents: Accent[]
-  beatSoundPreset: BeatSoundPreset
-  isPlaying: boolean
-  volume: number
-  setAudioLoaded: (val: boolean) => void
 }
-export interface MetronomeState {
-  beatSoundLightPath: string
-  beatSoundMediumPath: string
-  beatSoundHeavyPath: string
-}
+export interface MetronomeState {}
 
 class Metronome extends Component<MetronomeProps, MetronomeState> {
   private metronomeGain = this.props.audioCtx.createGain()
   private metronomeBuffer = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
-
   private metronomeSource!: AudioBufferSourceNode
 
   private beatLight = this.props.audioCtx.createBuffer(1, 1, this.props.audioCtx.sampleRate)
@@ -39,13 +31,6 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     super(props)
     this.metronomeGain.gain.value = this.getSafeVolume()
     this.metronomeGain.connect(this.props.masterGain)
-
-    this.state = {
-      beatSoundLightPath: this.props.beatSoundPreset.light,
-      beatSoundMediumPath: this.props.beatSoundPreset.medium,
-      beatSoundHeavyPath: this.props.beatSoundPreset.heavy
-    }
-
     this.loadPreset()
   }
 
@@ -55,7 +40,7 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
     const beatCountUpdated = prevProps.beatCount !== this.props.beatCount
     const beatLengthUpdated = prevProps.beatLength !== this.props.beatLength
     const beatAccentsUpdated = prevProps.beatAccents !== this.props.beatAccents
-    const volumeUpdated = prevProps.volume !== this.props.volume
+    const volumeUpdated = prevProps.metronomeVolume !== this.props.metronomeVolume
 
     // TODO: Handle user changes beat sound preset.  Requires fetch new audio and restart
     const beatSoundPresetUpdated = prevProps.beatSoundPreset !== this.props.beatSoundPreset
@@ -82,30 +67,29 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
 
   getSafeVolume = () => {
     const volMax = 1.0
-    return (volMax / 100) * this.props.volume
+    return (volMax / 100) * this.props.metronomeVolume
   }
 
   // Load audio samples
   loadPreset = () => {
+    // Fetch and decode a sample at the given path and then call the setter
+    const fetchSample = (path: string, callback: (sample: AudioBuffer) => void) => {
+      return fetch(path)
+        .then(res => res.arrayBuffer())
+        .then(raw => this.props.audioCtx.decodeAudioData(raw, decoded => callback(decoded)))
+        .catch(err => console.log(err))
+    }
+
     this.props.setAudioLoaded(false)
 
     Promise.all([
-      this.fetchSample(this.state.beatSoundLightPath, sample => (this.beatLight = sample)),
-      this.fetchSample(this.state.beatSoundMediumPath, sample => (this.beatMedium = sample)),
-      this.fetchSample(this.state.beatSoundHeavyPath, sample => (this.beatHeavy = sample))
+      fetchSample(this.props.beatSoundPreset.light, sample => (this.beatLight = sample)),
+      fetchSample(this.props.beatSoundPreset.medium, sample => (this.beatMedium = sample)),
+      fetchSample(this.props.beatSoundPreset.heavy, sample => (this.beatHeavy = sample))
     ])
       .then(() => {
         this.props.setAudioLoaded(true)
-        // console.log(this.beatLight)
       })
-      .catch(err => console.log(err))
-  }
-
-  // Fetch and decode a sample at the given path
-  fetchSample = (path: string, setter: (sample: AudioBuffer) => void) => {
-    return fetch(path)
-      .then(res => res.arrayBuffer())
-      .then(raw => this.props.audioCtx.decodeAudioData(raw, decoded => setter(decoded)))
       .catch(err => console.log(err))
   }
 
@@ -170,4 +154,27 @@ class Metronome extends Component<MetronomeProps, MetronomeState> {
   }
 }
 
-export default Metronome
+// Redux
+//////////////////////
+const mapDispatcherToProps = (dispatch: Dispatch<MetronomeActions>) => {
+  return {
+    setTempo: (value: number) => dispatch(mnActions.setTempo(value)),
+    setBeatCount: (value: number) => dispatch(mnActions.setBeatCount(value)),
+    setMetronomeVolume: (value: number) => dispatch(mnActions.setMetronomeVolume(value)),
+    setAudioLoaded: (value: boolean) => dispatch(mnActions.setAudioLoaded(value))
+  }
+}
+
+const mapStateToProps = ({ metronome, app }: IRootState) => {
+  const { tempo, metronomeVolume, beatCount, beatLength, beatAccents, beatSoundPreset } = metronome
+  const { isPlaying } = app
+  return { tempo, metronomeVolume, beatCount, beatLength, beatAccents, beatSoundPreset, isPlaying }
+}
+
+type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
+//////////////////////
+
+export default connect(
+  mapStateToProps,
+  mapDispatcherToProps
+)(Metronome)

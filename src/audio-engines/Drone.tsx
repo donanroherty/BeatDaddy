@@ -4,14 +4,10 @@ import { chords } from '../data/ChordIntervals'
 // @ts-ignore
 import Tone from 'tone'
 import { mapToRange } from '../utils/utils'
+import { connect } from 'react-redux'
+import { IRootState } from '../store'
 
-interface DroneProps {
-  chordKey: Key
-  chordOctave: number
-  chordType: ChordType
-  isPlaying: boolean
-  volume: number
-}
+interface DroneProps extends ReduxType {}
 
 interface DroneState {}
 
@@ -39,8 +35,8 @@ class Drone extends React.Component<DroneProps, DroneState> {
       this.handleChordChanged()
     }
 
-    if (prevProps.volume !== this.props.volume) {
-      if (this.props.volume === 0) {
+    if (prevProps.droneVolume !== this.props.droneVolume) {
+      if (this.props.droneVolume === 0) {
         this.synth.volume.rampTo(-100, 0)
       } else {
         this.synth.volume.rampTo(this.getSafeVolume(), 0)
@@ -52,7 +48,7 @@ class Drone extends React.Component<DroneProps, DroneState> {
   getSafeVolume = () => {
     const min = -40
     const max = 0
-    return mapToRange(this.props.volume, 0, 100, min, max)
+    return mapToRange(this.props.droneVolume, 0, 100, min, max)
   }
 
   start = () => {
@@ -105,4 +101,15 @@ class Drone extends React.Component<DroneProps, DroneState> {
   }
 }
 
-export default Drone
+// Redux
+//////////////////////
+const mapStateToProps = ({ drone, app }: IRootState) => {
+  const { chordKey, chordType, chordOctave, droneVolume } = drone
+  const { isPlaying } = app
+  return { chordKey, chordType, chordOctave, droneVolume, isPlaying }
+}
+
+type ReduxType = ReturnType<typeof mapStateToProps>
+//////////////////////
+
+export default connect(mapStateToProps)(Drone)
