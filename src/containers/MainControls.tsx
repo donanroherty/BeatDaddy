@@ -9,43 +9,48 @@ import Button from '../ui/Button'
 import PlayButton from '../components/PlayButton'
 import AudioMenuButton from '../components/AudioMenuButton'
 
-interface MainControlsProps {
-  chordKey: Key
-  chordType: ChordType
-  setChordKey: (idx: number) => void
-  setChordType: (idx: number) => void
-  tempo: number
-  tempoMin: number
-  tempoMax: number
-  setTempo: (newTempo: number) => void
-  isPlaying: boolean
-  togglePlayState: () => void
-  toggleAudioMenu: () => void
-  closeAudioMenu: () => void
-  metronomeVolume: number
-  setMetronomeVolume: (value: number) => void
-  droneVolume: number
-  setDroneVolume: (value: number) => void
-  audioMenuVisible: boolean
-  tapTempo: () => void
+// Redux
+//////////////////////
+import { connect } from 'react-redux'
+import { IRootState } from '../store'
+import { Dispatch } from 'redux'
+import * as metronomeActions from '../store/metronome/actions'
+import { MetronomeActions } from '../store/metronome/types'
+import * as droneActions from '../store/drone/actions'
+import { DroneActions } from '../store/drone/types'
+import * as appActions from '../store/app/actions'
+import { AppActions } from '../store/app/types'
+//////////////////////
+
+interface MainControlsProps extends ReduxType {
   theme: ThemeInterface
 }
 
 const MainControls = (props: MainControlsProps) => {
+  const handleSetChordKey = (idx: number) => {
+    const newKey = Key[Object.keys(Key)[idx] as keyof typeof Key]
+    props.setChordKey(newKey)
+  }
+
+  const handleSetChordType = (idx: number) => {
+    const newType = ChordType[Object.keys(ChordType)[idx] as keyof typeof ChordType]
+    props.setChordType(newType)
+  }
+
   return (
     <Wrapper>
       <DroneControls>
         <Dropdown
           selected={Object.values(Key).findIndex(val => val === props.chordKey)}
           options={Object.values(Key).map(key => getKeySafeName(key))}
-          handleOptionSelection={props.setChordKey}
+          handleOptionSelection={handleSetChordKey}
           width={'70px'}
           dropdownHeight={'200px'}
         />
         <Dropdown
           selected={Object.values(ChordType).findIndex(val => val === props.chordType)}
           options={Object.values(ChordType).map(type => getChordTypeSafeName(type))}
-          handleOptionSelection={props.setChordType}
+          handleOptionSelection={handleSetChordType}
           width={'70px'}
         />
       </DroneControls>
@@ -59,8 +64,7 @@ const MainControls = (props: MainControlsProps) => {
 
       <ThumbControlsWrapper>
         <StyledAudioMenuButton
-          toggleAudioMenu={props.toggleAudioMenu}
-          closeAudioMenu={props.closeAudioMenu}
+          setMenuVisible={props.setAudioMenuVisible}
           metronomeVolume={props.metronomeVolume}
           setMetronomeVolume={props.setMetronomeVolume}
           droneVolume={props.droneVolume}
@@ -69,7 +73,7 @@ const MainControls = (props: MainControlsProps) => {
         />
 
         <PlayBtnWrapper>
-          <StyledPlayButton onClick={props.togglePlayState} isPlaying={props.isPlaying} />
+          <StyledPlayButton onClick={props.toggleIsPlaying} isPlaying={props.isPlaying} />
         </PlayBtnWrapper>
 
         <Button width="56px" height="40px" contentColor={'white'} onClick={props.tapTempo}>
@@ -117,10 +121,6 @@ const ThumbControlsWrapper = styled.div`
   z-index: 2;
 `
 
-const TapButton = styled(Button)`
-  width: 56px;
-  height: 40px;
-`
 const StyledAudioMenuButton = styled(AudioMenuButton)``
 
 const StyledPlayButton = styled(PlayButton)``
@@ -136,4 +136,46 @@ const PlayBtnWrapper = styled.div`
   height: 170px;
 `
 
-export default withTheme(MainControls)
+// Redux
+//////////////////////
+const mapDispatcherToProps = (
+  dispatch: Dispatch<MetronomeActions> & Dispatch<DroneActions> & Dispatch<AppActions>
+) => {
+  return {
+    setTempo: (value: number) => dispatch(metronomeActions.setTempo(value)),
+    setBeatCount: (value: number) => dispatch(metronomeActions.setBeatCount(value)),
+    setMetronomeVolume: (value: number) => dispatch(metronomeActions.setMetronomeVolume(value)),
+    tapTempo: () => dispatch(metronomeActions.tapTempo()),
+    setChordKey: (value: Key) => dispatch(droneActions.setChordKey(value)),
+    setChordType: (value: ChordType) => dispatch(droneActions.setChordType(value)),
+    setDroneVolume: (value: number) => dispatch(droneActions.setDroneVolume(value)),
+    toggleIsPlaying: () => dispatch(appActions.toggleIsPlaying()),
+    setAudioMenuVisible: (value: boolean) => dispatch(appActions.setAudioMenuVisible(value))
+  }
+}
+
+const mapStateToProps = ({ metronome, drone, app }: IRootState) => {
+  const { tempo, tempoMin, tempoMax, metronomeVolume } = metronome
+  const { chordKey, chordType, droneVolume } = drone
+  const { isPlaying, audioMenuVisible } = app
+  return {
+    tempo,
+    tempoMin,
+    tempoMax,
+    metronomeVolume,
+    chordKey,
+    chordType,
+    droneVolume,
+    isPlaying,
+    audioMenuVisible
+  }
+}
+
+type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
+
+//////////////////////
+
+export default connect(
+  mapStateToProps,
+  mapDispatcherToProps
+)(withTheme(MainControls))

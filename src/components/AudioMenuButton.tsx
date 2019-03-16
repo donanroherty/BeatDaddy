@@ -6,20 +6,23 @@ import Icon from '../ui/Icon'
 import { ThemeInterface } from '../theme/theme'
 
 interface AudioMenuButtonProps {
-  toggleAudioMenu: () => void
-  closeAudioMenu: () => void
+  setMenuVisible: (val: boolean) => void
+  audioMenuVisible: boolean
   metronomeVolume: number
   setMetronomeVolume: (value: number) => void
   droneVolume: number
   setDroneVolume: (value: number) => void
-  audioMenuVisible: boolean
+
   theme: ThemeInterface
 }
 
 const AudioMenuButton = (props: AudioMenuButtonProps) => {
+  const handleClick = () => props.setMenuVisible(!props.audioMenuVisible)
+  const handleOutsideClick = () => props.setMenuVisible(false)
+
   return (
     <Wrapper>
-      <Button width="56px" height="40px" onClick={props.toggleAudioMenu}>
+      <Button width="56px" height="40px" onClick={handleClick}>
         <StyledIcon icon="volume" fillColor={'white'} size={32} />
       </Button>
       <StyledAudioMenu
@@ -28,7 +31,7 @@ const AudioMenuButton = (props: AudioMenuButtonProps) => {
         droneVolume={props.droneVolume}
         setDroneVolume={props.setDroneVolume}
         show={props.audioMenuVisible}
-        handleOutsideClick={props.closeAudioMenu}
+        handleOutsideClick={handleOutsideClick}
       />
     </Wrapper>
   )

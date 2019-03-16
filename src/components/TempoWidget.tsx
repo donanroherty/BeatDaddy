@@ -33,6 +33,7 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
   componentDidUpdate = (prevProps: TempoWidgetProps, prevState: TempoWidgetState) => {
     if (prevState.value !== this.state.value) {
       if (this.hasValidInput()) {
+        // TODO: Tapping tempo causes tempo widget to change value and set state again. Optimise.
         this.props.setTempo(parseInt(this.state.value))
       }
     }
