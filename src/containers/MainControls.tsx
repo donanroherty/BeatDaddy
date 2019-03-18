@@ -8,6 +8,7 @@ import TempoWidget from '../components/TempoWidget'
 import Button from '../ui/Button'
 import PlayButton from '../components/PlayButton'
 import AudioMenuButton from '../components/AudioMenuButton'
+import CircularSlider from '../components/CircularSlider'
 
 // Redux
 //////////////////////
@@ -20,6 +21,7 @@ import * as droneActions from '../store/drone/actions'
 import { DroneActions } from '../store/drone/types'
 import * as appActions from '../store/app/actions'
 import { AppActions } from '../store/app/types'
+import { mapToRange } from '../utils/utils'
 //////////////////////
 
 interface MainControlsProps extends ReduxType {
@@ -35,6 +37,10 @@ const MainControls = (props: MainControlsProps) => {
   const handleSetChordType = (idx: number) => {
     const newType = ChordType[Object.keys(ChordType)[idx] as keyof typeof ChordType]
     props.setChordType(newType)
+  }
+
+  const handleSetTempoSlider = (val: number) => {
+    props.setTempo(mapToRange(val, 0, 100, props.tempoMin, props.tempoMax))
   }
 
   return (
@@ -74,6 +80,11 @@ const MainControls = (props: MainControlsProps) => {
 
         <PlayBtnWrapper>
           <StyledPlayButton onClick={props.toggleIsPlaying} isPlaying={props.isPlaying} />
+
+          <StyledCircularSlider
+            value={mapToRange(props.tempo, props.tempoMin, props.tempoMax, 0, 100)}
+            setValue={handleSetTempoSlider}
+          />
         </PlayBtnWrapper>
 
         <Button width="56px" height="40px" contentColor={'white'} onClick={props.tapTempo}>
@@ -88,7 +99,6 @@ const Wrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-
   display: flex;
   flex-direction: column;
 `
@@ -123,7 +133,14 @@ const ThumbControlsWrapper = styled.div`
 
 const StyledAudioMenuButton = styled(AudioMenuButton)``
 
-const StyledPlayButton = styled(PlayButton)``
+const StyledPlayButton = styled(PlayButton)`
+  position: absolute;
+  z-index: 3;
+`
+const StyledCircularSlider = styled(CircularSlider)`
+  position: absolute;
+  z-index: 2;
+`
 
 const PlayBtnWrapper = styled.div`
   display: flex;
@@ -132,8 +149,8 @@ const PlayBtnWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
-  width: 170px;
-  height: 170px;
+  width: 175px;
+  height: 175px;
 `
 
 // Redux

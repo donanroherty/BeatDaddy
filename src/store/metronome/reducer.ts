@@ -25,7 +25,7 @@ export const metronomeReducer = (
 ): IMetronomeState => {
   switch (action.type) {
     case Constants.SET_TEMPO:
-      return { ...state, tempo: action.payload.value }
+      return { ...state, tempo: Math.floor(action.payload.value) }
 
     case Constants.TAP_TEMPO:
       const now = new Date().getTime()

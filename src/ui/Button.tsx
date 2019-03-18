@@ -41,8 +41,8 @@ const Wrapper = styled.div<any>`
   font-size: 21px;
   color: ${props => props.contentColor};
 
-  border-radius: 5px;
-  border: 1px solid ${props => props.theme.primary};
+  border-radius: 10px;
+  border: 1px solid white;
 
   &:hover {
     border: 1px solid ${props => props.theme.primaryVeryLight};

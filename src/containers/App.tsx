@@ -176,8 +176,6 @@ const GradientBackground = styled.div`
   }
 `
 const BottomSectionContent = styled.div`
-  /* position: relative; */
-  /* z-index: 10; */
   padding-top: 70px;
 `
 const AboutWrapper = styled.div`
