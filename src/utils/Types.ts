@@ -144,4 +144,9 @@ export enum Interval {
   m14
 }
 
+export interface Vector2D {
+  x: number
+  y: number
+}
+
 const getIntervalAsNumber = (interval: Interval) => {}

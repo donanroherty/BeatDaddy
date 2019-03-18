@@ -4,7 +4,6 @@
  */
 import React from 'react'
 import styled, { withTheme } from 'styled-components'
-import Icon from '../ui/Icon'
 import { ThemeInterface } from '../theme/theme'
 import Button from '../ui/Button'
 
@@ -45,7 +44,6 @@ class TempoWidget extends React.Component<TempoWidgetProps, TempoWidgetState> {
 
   handleValueChange = (val: string) => {
     var reg = new RegExp('^[0-9]+$')
-
     if ((val === '' || reg.test(val)) && val.length < 4) {
       this.setState({ value: val })
     }

@@ -21,7 +21,7 @@ const AudioMenuButton = (props: AudioMenuButtonProps) => {
   const handleOutsideClick = () => props.setMenuVisible(false)
 
   return (
-    <Wrapper>
+    <Wrapper {...props}>
       <Button width="56px" height="40px" onClick={handleClick}>
         <StyledIcon icon="volume" fillColor={'white'} size={32} />
       </Button>

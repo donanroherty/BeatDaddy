@@ -25,3 +25,37 @@ export const mapToRange = (
 ) => {
   return ((num - inRangeA) / (inRangeB - inRangeA)) * (outRangeB - outRangeA) + outRangeA
 }
+
+export const degToRad = (angleInDegrees: number) => (angleInDegrees - 90) * (Math.PI / 180.0)
+
+export const polarToCartesian = (
+  centerX: number,
+  centerY: number,
+  radius: number,
+  angleInDegrees: number
+) => {
+  const a = degToRad(angleInDegrees)
+  return {
+    x: centerX + radius * Math.cos(a),
+    y: centerY + radius * Math.sin(a)
+  }
+}
+
+export const makeArc = (
+  x: number,
+  y: number,
+  radius: number,
+  startAngle: number,
+  endAngle: number
+) => {
+  const fullCircle = endAngle - startAngle === 360
+  const start = polarToCartesian(x, y, radius, endAngle - 0.01)
+  const end = polarToCartesian(x, y, radius, startAngle)
+  const arcSweep = endAngle - startAngle <= 180 ? '0' : '1'
+
+  const d = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${arcSweep} 0 ${end.x} ${end.y}${
+    fullCircle ? 'z' : ''
+  }`
+
+  return d
+}
