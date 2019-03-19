@@ -11,6 +11,10 @@ import Navbar from '../components/Navbar'
 import About from '../components/About'
 import Footer from '../components/Footer'
 
+import ReactGA from 'react-ga'
+ReactGA.initialize('UA-121200245-2')
+ReactGA.pageview(window.location.pathname + window.location.search)
+
 export interface AppProps {}
 export interface AppState {}
 
